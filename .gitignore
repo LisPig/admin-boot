@@ -3,3 +3,5 @@
 /**/target/
 # 排除logs日志文件夹
 /logs/
+# 忽略config/local/oss.yml文件
+/config/local/oss.yml
