@@ -12,4 +12,5 @@ import com.mybatisflex.core.service.IService;
  */
 public interface AppletAlumniAssociationUserService extends IService<AppletAlumniAssociationUser> {
 
+    boolean join(AppletAlumniAssociationUser appletAlumniAssociationUser);
 }

@@ -36,13 +36,15 @@ public class SchoolMasterVO {
     @Schema(description =  "画像")
     private String avatar;
 
-    @ExcelProperty(value = "任期记录(包含开始结束时间和职务描述)")
-    @Schema(description =  "任期记录(包含开始结束时间和职务描述)")
+    @Schema(description =  "开始时间")
+    private String startTime;
+    @Schema(description =  "结束时间")
+    private String endTime;
+    @Schema(description =  "职务")
+    private String position;
+    @Schema(description =  "描述")
+    private String description;
 
-    private SchoolMasterCreateDTO.HistoryDTO historyDTO;
-
-    @JsonIgnore
-    private String history;
 
     @ExcelProperty(value = "创建时间")
     @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")

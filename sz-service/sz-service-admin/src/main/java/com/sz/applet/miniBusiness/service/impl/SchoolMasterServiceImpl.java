@@ -48,12 +48,12 @@ public class SchoolMasterServiceImpl extends ServiceImpl<SchoolMasterMapper, Sch
     @Override
     public void create(SchoolMasterCreateDTO dto){
         SchoolMaster schoolMaster = BeanCopyUtils.copy(dto, SchoolMaster.class);
-        try{
+        /*try{
             String history = objectMapper.writeValueAsString(dto.getHistory());
             schoolMaster.setHistory(history);
         }catch (JsonProcessingException e){
             throw new RuntimeException(e.getMessage());
-        }
+        }*/
         save(schoolMaster);
     }
 
@@ -78,9 +78,9 @@ public class SchoolMasterServiceImpl extends ServiceImpl<SchoolMasterMapper, Sch
     @Override
     public List<SchoolMasterVO> list(SchoolMasterListDTO dto){
         List<SchoolMasterVO> list = listAs(buildQueryWrapper(dto), SchoolMasterVO.class);
-        for (SchoolMasterVO vo : list){
+        /*for (SchoolMasterVO vo : list){
             vo.setHistoryDTO(this.translateHistory(vo.getHistory()));
-        }
+        }*/
         return list;
     }
 
@@ -96,7 +96,7 @@ public class SchoolMasterServiceImpl extends ServiceImpl<SchoolMasterMapper, Sch
         CommonResponseEnum.INVALID_ID.assertNull(schoolMaster);
         SchoolMasterVO vo = new SchoolMasterVO();
         BeanCopyUtils.copy(schoolMaster, vo);
-        vo.setHistoryDTO(this.translateHistory(schoolMaster.getHistory()));
+        //vo.setHistoryDTO(this.translateHistory(schoolMaster.getHistory()));
         return vo;
     }
 
@@ -128,19 +128,16 @@ public class SchoolMasterServiceImpl extends ServiceImpl<SchoolMasterMapper, Sch
         if (Utils.isNotNull(dto.getAvatar())) {
             wrapper.eq(SchoolMaster::getAvatar, dto.getAvatar());
         }
-        if (Utils.isNotNull(dto.getHistory())) {
-            wrapper.eq(SchoolMaster::getHistory, dto.getHistory());
-        }
         return wrapper;
     }
 
 
-    private SchoolMasterCreateDTO.HistoryDTO translateHistory(String history) {
+    /*private SchoolMasterCreateDTO.HistoryDTO translateHistory(String history) {
         try{
             SchoolMasterCreateDTO.HistoryDTO historyDTO = objectMapper.readValue(history, SchoolMasterCreateDTO.HistoryDTO.class);
             return historyDTO;
         }catch (Exception e){
             throw new RuntimeException("数据转换失败");
         }
-    }
+    }*/
 }

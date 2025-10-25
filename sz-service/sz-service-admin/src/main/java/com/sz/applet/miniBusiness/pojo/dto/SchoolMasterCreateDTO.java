@@ -25,20 +25,15 @@ public class SchoolMasterCreateDTO {
    @Schema(description =  "画像")
    private String avatar;
 
-   @Schema(description =  "任期记录(包含开始结束时间和职务描述)")
-   private HistoryDTO history;
 
+   @Schema(description =  "开始时间")
+   private String startTime;
+   @Schema(description =  "结束时间")
+   private String endTime;
+   @Schema(description =  "职务")
+   private String position;
+   @Schema(description =  "描述")
+   private String description;
 
-   @Data
-   public class HistoryDTO{
-      @Schema(description =  "开始时间")
-      private String startTime;
-      @Schema(description =  "结束时间")
-      private String endTime;
-      @Schema(description =  "职务")
-      private String position;
-      @Schema(description =  "描述")
-      private String description;
-   }
 }
 

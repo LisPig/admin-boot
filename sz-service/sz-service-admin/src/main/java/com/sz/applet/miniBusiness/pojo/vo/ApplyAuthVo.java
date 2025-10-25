@@ -1,5 +1,6 @@
 package com.sz.applet.miniBusiness.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.mybatisflex.annotation.Column;
 import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
@@ -18,6 +19,7 @@ import java.util.Date;
  */
 @Accessors(chain = true)
 @Data
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class ApplyAuthVo {
 
     /**
@@ -48,6 +50,10 @@ public class ApplyAuthVo {
      */
     @Schema(description = "身份证号")
     private String idCard;
+
+
+    @Schema(description = "手机号")
+    private String phone;
 
     /**
      * 学号

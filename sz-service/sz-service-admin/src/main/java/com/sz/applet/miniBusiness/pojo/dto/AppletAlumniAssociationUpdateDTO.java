@@ -8,34 +8,36 @@ import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
- * SchoolMaster修改DTO
+ * AppletAlumniAssociation修改DTO
  * </p>
  *
  * @author LisPig
- * @since 2025-10-23
+ * @since 2025-10-25
  */
 @Data
 @Accessors(chain = true)
-@Schema(description = "SchoolMaster修改DTO")
-public class SchoolMasterUpdateDTO {
+@Schema(description = "AppletAlumniAssociation修改DTO")
+public class AppletAlumniAssociationUpdateDTO {
 
     @Schema(description =  "ID")
     private Long id;
 
-    @Schema(description =  "姓名")
+    @Schema(description =  "名称")
     private String name;
 
-    @Schema(description =  "画像")
+    @Schema(description =  "头像")
     private String avatar;
 
-    @Schema(description =  "开始时间")
-    private String startTime;
-    @Schema(description =  "结束时间")
-    private String endTime;
-    @Schema(description =  "职务")
-    private String position;
     @Schema(description =  "描述")
     private String description;
 
+    @Schema(description =  "联系人")
+    private String contract;
+
+    @Schema(description =  "联系电话")
+    private String phone;
+
+    @Schema(description =  "状态（1-正常，2-禁用）")
+    private String status;
 
 }

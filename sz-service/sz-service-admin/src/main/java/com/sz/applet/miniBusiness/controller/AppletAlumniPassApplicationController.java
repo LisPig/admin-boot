@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.mybatisflex.core.paginate.Page;
 import com.sz.applet.miniBusiness.pojo.bo.AppletAlumniPassApplicationBo;
 import com.sz.applet.miniBusiness.pojo.dto.AppletAlumniPassApplicationCreateDTO;
+import com.sz.applet.miniBusiness.pojo.dto.AppletAlumniPassApplicationListDTO;
 import com.sz.applet.miniBusiness.pojo.vo.AppletAlumniPassApplicationVO;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.PageResult;
@@ -41,7 +42,7 @@ public class AppletAlumniPassApplicationController {
     private AppletAlumniPassApplicationService appletAlumniPassApplicationService;
 
     @Operation(summary = "新增")
-    @SaCheckPermission(value = "applet.alumni.pass.application.create")
+    //@SaCheckPermission(value = "applet.alumni.pass.application.create")
     @PostMapping
     public ApiResult<Void> create(@RequestBody AppletAlumniPassApplicationCreateDTO dto) {
         appletAlumniPassApplicationService.create(dto);
@@ -49,7 +50,7 @@ public class AppletAlumniPassApplicationController {
     }
 
     @Operation(summary = "修改")
-    @SaCheckPermission(value = "applet.alumni.pass.application.update")
+    //@SaCheckPermission(value = "applet.alumni.pass.application.update")
     @PutMapping
     public ApiResult<Void> update(@RequestBody AppletAlumniPassApplicationCreateDTO dto) {
         appletAlumniPassApplicationService.update(dto);
@@ -57,7 +58,7 @@ public class AppletAlumniPassApplicationController {
     }
 
     @Operation(summary = "删除")
-    @SaCheckPermission(value = "applet.alumni.pass.application.remove")
+    //@SaCheckPermission(value = "applet.alumni.pass.application.remove")
     @DeleteMapping
     public ApiResult<Void> remove(@RequestBody SelectIdsDTO dto) {
         appletAlumniPassApplicationService.remove(dto);
@@ -65,7 +66,7 @@ public class AppletAlumniPassApplicationController {
     }
 
     @Operation(summary = "详情")
-    @SaCheckPermission(value = "applet.alumni.pass.application.query_table")
+    //@SaCheckPermission(value = "applet.alumni.pass.application.query_table")
     @GetMapping("/{id}")
     public ApiResult<AppletAlumniPassApplicationVO> detail(@PathVariable Object id) {
         return ApiResult.success(appletAlumniPassApplicationService.detail(id));
@@ -99,5 +100,18 @@ public class AppletAlumniPassApplicationController {
     @GetMapping("/page")
     public ApiResult<PageResult<AppletAlumniPassApplicationVO>> page(AppletAlumniPassApplicationBo bo) {
         return ApiResult.success(appletAlumniPassApplicationService.page(bo));
+    }
+
+    @Operation(summary = "小程序-用户通行证列表")
+    @GetMapping("/list")
+    public ApiResult<List<AppletAlumniPassApplicationVO>> list(AppletAlumniPassApplicationListDTO dto) {
+        return ApiResult.success(appletAlumniPassApplicationService.list(dto));
+    }
+
+    @Operation(summary = "通行证审批")
+    @PostMapping("/approve")
+    public ApiResult<Void> approve(@RequestBody AppletAlumniPassApplicationCreateDTO dto) {
+        appletAlumniPassApplicationService.approve(dto);
+        return ApiResult.success();
     }
 }

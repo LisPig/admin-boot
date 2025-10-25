@@ -27,6 +27,7 @@ import com.sz.applet.miniBusiness.mapper.ApplyAuthMapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
 
@@ -47,20 +48,33 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
     @Override
     public void applyAuth(ApplyAuthBo bo) {
         bo.setUserId(Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
-        // 判断是否已经有通过验证的相同申请表数据
-        ApplyAuth applyAuth = this.getOne(new QueryWrapper()
+        // 检查是否存在完全相同的申请（包括未通过的）
+        ApplyAuth existingApply = this.getOne(new QueryWrapper()
                 .eq(ApplyAuth::getPhone, bo.getPhone(), ObjectUtil.isNotNull(bo.getPhone()))
                 .eq(ApplyAuth::getName, bo.getName(), ObjectUtil.isNotNull(bo.getName()))
                 .eq(ApplyAuth::getIdCard, bo.getIdCard(), ObjectUtil.isNotNull(bo.getIdCard()))
                 .eq(ApplyAuth::getIdentity, bo.getIdentity(), ObjectUtil.isNotNull(bo.getIdentity()))
-                .eq(ApplyAuth::getStatus,2));
-        if (ObjectUtil.isNotNull(applyAuth)) {
-            SchoolUserBinding schoolUserBinding = new SchoolUserBinding();
-            schoolUserBinding.setMiniUserId(LoginUtils.getMiniLoginUser().getUserId());
-            schoolUserBinding.setSchoolUserId(applyAuth.getId());
-            schoolUserBinding.setBindType(1);
-            schoolUserBinding.setStatus(1);
-            schoolUserBindingService.save(schoolUserBinding);
+                .eq(ApplyAuth::getUserId, bo.getUserId())  // 同一用户
+                .in(ApplyAuth::getStatus, Arrays.asList(1, 2, 3))); // 包含待审核、已拒绝、已通过状态
+
+        if (ObjectUtil.isNotNull(existingApply)) {
+            // 根据现有申请状态做不同处理
+            if (existingApply.getStatus().equals("2")) {
+                // 已通过的情况，创建绑定
+                SchoolUserBinding schoolUserBinding = new SchoolUserBinding();
+                schoolUserBinding.setMiniUserId(LoginUtils.getMiniLoginUser().getUserId());
+                schoolUserBinding.setSchoolUserId(existingApply.getId());
+                schoolUserBinding.setBindType(1);
+                schoolUserBinding.setStatus(1);
+                schoolUserBindingService.save(schoolUserBinding);
+            } else {
+                // 其他状态，更新申请信息而非创建新记录
+                ApplyAuth updateApply = BeanCopyUtils.copy(bo, ApplyAuth.class);
+                updateApply.setId(existingApply.getId());
+                updateApply.setStatus("0"); // 重置为待审核状态
+                updateApply.setCreateTime(new Date());
+                this.updateById(updateApply);
+            }
         } else {
             this.save(BeanCopyUtils.copy(bo, ApplyAuth.class));
         }

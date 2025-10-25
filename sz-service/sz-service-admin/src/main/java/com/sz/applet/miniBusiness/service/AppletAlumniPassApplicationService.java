@@ -30,4 +30,6 @@ public interface AppletAlumniPassApplicationService extends IService<AppletAlumn
 
     AppletAlumniPassApplicationVO detail(Object id);
     PageResult<AppletAlumniPassApplicationVO> page(AppletAlumniPassApplicationBo bo);
+
+    void approve(AppletAlumniPassApplicationCreateDTO dto);
 }
