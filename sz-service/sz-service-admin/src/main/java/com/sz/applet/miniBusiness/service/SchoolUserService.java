@@ -2,9 +2,9 @@ package com.sz.applet.miniBusiness.service;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.service.IService;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserCreateBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserListBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserUpdateBO;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserCreateBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserListBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserUpdateBo;
 import com.sz.applet.miniBusiness.pojo.po.SchoolUser;
 import com.sz.applet.miniBusiness.pojo.vo.SchoolUserVO;
 import com.sz.core.common.entity.SelectIdsDTO;
@@ -26,14 +26,14 @@ public interface SchoolUserService extends IService<SchoolUser> {
      *
      * @param bo 学校师生新增BO
      */
-    void create(SchoolUserCreateBO bo);
+    void create(SchoolUserCreateBo bo);
 
     /**
      * 更新学校师生
      *
      * @param bo 学校师生更新BO
      */
-    void update(SchoolUserUpdateBO bo);
+    void update(SchoolUserUpdateBo bo);
 
     /**
      * 删除学校师生
@@ -56,7 +56,7 @@ public interface SchoolUserService extends IService<SchoolUser> {
      * @param bo 查询参数
      * @return 学校师生分页结果
      */
-    Page<SchoolUserVO> page(SchoolUserListBO bo);
+    Page<SchoolUserVO> page(SchoolUserListBo bo);
 
     /**
      * 列表查询学校师生
@@ -64,7 +64,7 @@ public interface SchoolUserService extends IService<SchoolUser> {
      * @param bo 查询参数
      * @return 学校师生列表
      */
-    List<SchoolUserVO> list(SchoolUserListBO bo);
+    List<SchoolUserVO> list(SchoolUserListBo bo);
     
     /**
      * 审核学校师生认证申请

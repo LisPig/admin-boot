@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @Schema(description = "Article查询BO")
-public class ArticleListBO extends PageQuery {
+public class ArticleListBo extends PageQuery {
 
     @Schema(description = "文章类型")
     private String type;

@@ -4,15 +4,16 @@ import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.applet.miniBusiness.mapper.SchoolUserMapper;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserCreateBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserListBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserUpdateBO;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserCreateBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserListBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserUpdateBo;
 import com.sz.applet.miniBusiness.pojo.po.SchoolUser;
 import com.sz.applet.miniBusiness.pojo.vo.SchoolUserVO;
 import com.sz.applet.miniBusiness.service.SchoolUserService;
 import com.sz.core.common.entity.SelectIdsDTO;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.util.PageUtils;
+import com.sz.security.core.util.LoginUtils;
 import com.sz.utils.MapstructUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -20,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import static com.sz.applet.miniBusiness.pojo.po.table.SchoolUserTableDef.SCHOOL_USER;
 
@@ -38,7 +40,7 @@ public class SchoolUserServiceImpl extends ServiceImpl<SchoolUserMapper, SchoolU
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(SchoolUserCreateBO bo) {
+    public void create(SchoolUserCreateBo bo) {
         SchoolUser schoolUser = MapstructUtils.convert(bo, SchoolUser.class);
         // 默认设置为待审核状态
         schoolUser.setStatus(0);
@@ -47,7 +49,7 @@ public class SchoolUserServiceImpl extends ServiceImpl<SchoolUserMapper, SchoolU
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(SchoolUserUpdateBO bo) {
+    public void update(SchoolUserUpdateBo bo) {
         SchoolUser schoolUser = MapstructUtils.convert(bo, SchoolUser.class);
         CommonResponseEnum.NOT_FOUND.assertNull(schoolUser, "学校师生不存在或已被删除");
         updateById(schoolUser);
@@ -67,13 +69,13 @@ public class SchoolUserServiceImpl extends ServiceImpl<SchoolUserMapper, SchoolU
     }
 
     @Override
-    public Page<SchoolUserVO> page(SchoolUserListBO bo) {
+    public Page<SchoolUserVO> page(SchoolUserListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
         return this.pageAs(PageUtils.getPage(bo), queryWrapper, SchoolUserVO.class);
     }
 
     @Override
-    public List<SchoolUserVO> list(SchoolUserListBO bo) {
+    public List<SchoolUserVO> list(SchoolUserListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
         return listAs(queryWrapper, SchoolUserVO.class);
     }
@@ -85,7 +87,7 @@ public class SchoolUserServiceImpl extends ServiceImpl<SchoolUserMapper, SchoolU
         CommonResponseEnum.NOT_FOUND.assertNull(schoolUser, "学校师生不存在或已被删除");
         
         schoolUser.setStatus(status);
-        schoolUser.setReviewerId(/* 当前审核员ID */ null); // TODO: 获取当前登录用户ID
+        schoolUser.setReviewerId(Objects.requireNonNull(LoginUtils.getLoginUser()).getUserInfo().getId());
         schoolUser.setReviewTime(new Date());
         schoolUser.setReviewRemark(remark);
         updateById(schoolUser);
@@ -97,7 +99,7 @@ public class SchoolUserServiceImpl extends ServiceImpl<SchoolUserMapper, SchoolU
      * @param bo 查询参数
      * @return QueryWrapper
      */
-    private QueryWrapper buildQueryWrapper(SchoolUserListBO bo) {
+    private QueryWrapper buildQueryWrapper(SchoolUserListBo bo) {
         return QueryWrapper.create()
                 .select()
                 .from(SCHOOL_USER)

@@ -29,7 +29,7 @@ public class MiniUser implements Serializable {
 
     @Id(keyType = KeyType.Auto)
     @Schema(description = "ID")
-    private Integer id;
+    private Long id;
 
     @Schema(description = "关联的系统用户ID")
     private Integer sysUserId;
@@ -60,6 +60,9 @@ public class MiniUser implements Serializable {
 
     @Schema(description = "删除标识")
     private String delFlag;
+
+    @Schema(description = "认证状态")
+    private Integer authStatus;
 
     @Schema(description = "创建时间")
     private LocalDateTime createTime;

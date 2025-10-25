@@ -1,19 +1,23 @@
 package com.sz.applet.miniBusiness.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.applet.miniBusiness.mapper.BannerMapper;
 import com.sz.applet.miniBusiness.pojo.bo.BannerBo;
-import com.sz.applet.miniBusiness.pojo.bo.BannerListBO;
+import com.sz.applet.miniBusiness.pojo.bo.BannerListBo;
 import com.sz.applet.miniBusiness.pojo.po.Banner;
 import com.sz.applet.miniBusiness.pojo.vo.BannerVO;
 import com.sz.applet.miniBusiness.service.BannerService;
+import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.util.PageUtils;
 import com.sz.utils.MapstructUtils;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -36,7 +40,9 @@ public class BannerServiceImpl extends ServiceImpl<BannerMapper, Banner> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void create(BannerBo bo) {
-        save(MapstructUtils.convert(bo, Banner.class));
+        Banner banner = new Banner();
+        BeanUtils.copyProperties(bo, banner);
+        save(banner);
     }
 
     @Override
@@ -69,13 +75,13 @@ public class BannerServiceImpl extends ServiceImpl<BannerMapper, Banner> impleme
     }
 
     @Override
-    public Page<BannerVO> page(BannerListBO bo) {
+    public PageResult<BannerVO> page(BannerListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
-        return this.pageAs(PageUtils.getPage(bo), queryWrapper, BannerVO.class);
+        return PageUtils.getPageResult(pageAs(PageUtils.getPage(bo), queryWrapper, BannerVO.class));
     }
 
     @Override
-    public List<BannerVO> list(BannerListBO bo) {
+    public List<BannerVO> list(BannerListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
         return listAs(queryWrapper, BannerVO.class);
     }
@@ -86,14 +92,14 @@ public class BannerServiceImpl extends ServiceImpl<BannerMapper, Banner> impleme
      * @param bo 查询参数
      * @return QueryWrapper
      */
-    private QueryWrapper buildQueryWrapper(BannerListBO bo) {
+    private QueryWrapper buildQueryWrapper(BannerListBo bo) {
         return QueryWrapper.create()
                 .select()
                 .from(BANNER)
-                .where(BANNER.TYPE.like(bo.getType()))
-                .and(BANNER.NAMES.like(bo.getNames()))
-                .and(BANNER.STATUS.eq(bo.getStatus()))
-                .and(BANNER.DEL_FLAG.eq("0"))
+                .where(BANNER.TYPE.like(bo.getType(), StrUtil.isNotBlank(bo.getType())))
+                .and(BANNER.NAMES.like(bo.getNames(),StrUtil.isNotBlank(bo.getNames())))
+                .and(BANNER.STATUS.eq(bo.getStatus(),StrUtil.isNotBlank(bo.getStatus())))
+                //.and(BANNER.DEL_FLAG.eq("F"))
                 .orderBy(BANNER.SORT.desc(), BANNER.CREATE_TIME.desc());
     }
 }

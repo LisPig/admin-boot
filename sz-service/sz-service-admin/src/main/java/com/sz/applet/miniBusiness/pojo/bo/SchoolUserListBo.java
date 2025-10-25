@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @Schema(description = "学校师生表查询BO")
-public class SchoolUserListBO extends PageQuery {
+public class SchoolUserListBo extends PageQuery {
 
     @Schema(description = "姓名")
     private String name;

@@ -7,10 +7,7 @@ import com.sz.core.common.entity.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 /**
  * <p>
@@ -29,9 +26,15 @@ public class MiniUserController {
     private final MiniUserService miniUserService;
 
     @Operation(summary = "登录")
-    @PostMapping("login")
+    @PostMapping("/login")
     public ApiResult<MiniUserVO> login(@RequestBody MiniLoginDTO dto) {
         return ApiResult.success(miniUserService.doLogin(dto));
+    }
+
+    @Operation(summary = "检查认证状态")
+    @GetMapping("/check/{openId}")
+    public ApiResult<Boolean> check(@PathVariable String openId) {
+        return ApiResult.success(miniUserService.checkAuthStatus(openId));
     }
 
 }

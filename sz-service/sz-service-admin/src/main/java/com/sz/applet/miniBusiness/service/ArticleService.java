@@ -2,10 +2,11 @@ package com.sz.applet.miniBusiness.service;
 
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.service.IService;
-import com.sz.applet.miniBusiness.pojo.bo.ArticleBO;
-import com.sz.applet.miniBusiness.pojo.bo.ArticleListBO;
+import com.sz.applet.miniBusiness.pojo.bo.ArticleBo;
+import com.sz.applet.miniBusiness.pojo.bo.ArticleListBo;
 import com.sz.applet.miniBusiness.pojo.po.Article;
 import com.sz.applet.miniBusiness.pojo.vo.ArticleVO;
+import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 
 import java.util.List;
@@ -24,13 +25,13 @@ public interface ArticleService extends IService<Article> {
      * 创建文章
      * @param bo 文章创建信息
      */
-    void create(ArticleBO bo);
+    void create(ArticleBo bo);
 
     /**
      * 更新文章
      * @param bo 文章更新信息
      */
-    void update(ArticleBO bo);
+    void update(ArticleBo bo);
 
     /**
      * 删除文章
@@ -50,12 +51,16 @@ public interface ArticleService extends IService<Article> {
      * @param bo 查询条件
      * @return 文章分页列表
      */
-    Page<ArticleVO> page(ArticleListBO bo);
+    PageResult<ArticleVO> page(ArticleListBo bo);
 
     /**
      * 查询文章列表(全部)
      * @param bo 查询条件
      * @return 文章列表
      */
-    List<ArticleVO> list(ArticleListBO bo);
+    List<ArticleVO> list(ArticleListBo bo);
+
+    void check(ArticleBo bo);
+
+    List<ArticleVO> miniList(ArticleListBo bo);
 }

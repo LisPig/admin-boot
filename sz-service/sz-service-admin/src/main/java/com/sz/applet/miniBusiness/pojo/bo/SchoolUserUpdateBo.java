@@ -7,17 +7,20 @@ import java.io.Serializable;
 
 /**
  * <p>
- * 学校师生表新增BO
+ * 学校师生表修改BO
  * </p>
  *
  * @author sz
  * @since 2025-10-13
  */
 @Data
-@Schema(description = "学校师生表新增BO")
-public class SchoolUserCreateBO implements Serializable {
+@Schema(description = "学校师生表修改BO")
+public class SchoolUserUpdateBo implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    @Schema(description = "用户ID")
+    private Long id;
 
     @Schema(description = "姓名")
     private String name;
@@ -44,7 +47,7 @@ public class SchoolUserCreateBO implements Serializable {
     private String teacherId;
 
     @Schema(description = "申请状态：0-待审核，1-审核通过，2-审核拒绝")
-    private Integer status = 0;
+    private Integer status;
     
     @Schema(description = "身份证正面")
     private String idCardFront;
@@ -58,6 +61,12 @@ public class SchoolUserCreateBO implements Serializable {
     @Schema(description = "其他证明材料")
     private String otherProof;
     
-    @Schema(description = "申请人微信用户ID")
-    private Long applicantMiniUserId;
+    @Schema(description = "审核人ID")
+    private Long reviewerId;
+    
+    @Schema(description = "审核时间")
+    private java.util.Date reviewTime;
+    
+    @Schema(description = "审核备注")
+    private String reviewRemark;
 }

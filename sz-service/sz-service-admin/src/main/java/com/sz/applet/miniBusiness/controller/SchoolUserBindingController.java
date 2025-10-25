@@ -1,9 +1,9 @@
 package com.sz.applet.miniBusiness.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingCreateBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingListBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBO;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingCreateBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingListBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBo;
 import com.sz.applet.miniBusiness.pojo.vo.SchoolUserBindingVO;
 import com.sz.applet.miniBusiness.service.SchoolUserBindingService;
 import com.sz.core.common.constant.GlobalConstant;
@@ -22,7 +22,7 @@ import java.util.List;
  * 学校用户绑定小程序用户 前端控制器
  * </p>
  *
- * @author sz
+ * @author LisPig
  * @since 2025-10-13
  */
 @Tag(name = "学校用户绑定管理")
@@ -36,7 +36,7 @@ public class SchoolUserBindingController {
     @Operation(summary = "申请绑定学校用户")
     //@SaCheckPermission(value = "school.user.binding.add_btn", orRole = GlobalConstant.SUPER_ROLE)
     @PostMapping
-    public ApiResult<Void> create(@RequestBody SchoolUserBindingCreateBO bo) {
+    public ApiResult<Void> create(@RequestBody SchoolUserBindingCreateBo bo) {
         schoolUserBindingService.create(bo);
         return ApiResult.success();
     }
@@ -44,7 +44,7 @@ public class SchoolUserBindingController {
     @Operation(summary = "更新绑定申请")
     @SaCheckPermission(value = "school.user.binding.edit_btn", orRole = GlobalConstant.SUPER_ROLE)
     @PutMapping
-    public ApiResult<Void> update(@RequestBody SchoolUserBindingUpdateBO bo) {
+    public ApiResult<Void> update(@RequestBody SchoolUserBindingUpdateBo bo) {
         schoolUserBindingService.update(bo);
         return ApiResult.success();
     }
@@ -67,14 +67,14 @@ public class SchoolUserBindingController {
     @Operation(summary = "绑定申请分页列表")
     @SaCheckPermission(value = "school.user.binding.page_btn", orRole = GlobalConstant.SUPER_ROLE)
     @GetMapping("/page")
-    public ApiResult<Object> page(SchoolUserBindingListBO bo) {
+    public ApiResult<Object> page(SchoolUserBindingListBo bo) {
         return ApiPageResult.success(schoolUserBindingService.page(bo));
     }
 
     @Operation(summary = "绑定申请列表")
     @SaCheckPermission(value = "school.user.binding.list_btn", orRole = GlobalConstant.SUPER_ROLE)
     @GetMapping("/list")
-    public ApiResult<List<SchoolUserBindingVO>> list(SchoolUserBindingListBO bo) {
+    public ApiResult<List<SchoolUserBindingVO>> list(SchoolUserBindingListBo bo) {
         return ApiResult.success(schoolUserBindingService.list(bo));
     }
 

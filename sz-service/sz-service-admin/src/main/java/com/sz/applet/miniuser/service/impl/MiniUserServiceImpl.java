@@ -1,5 +1,6 @@
 package com.sz.applet.miniuser.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.applet.miniuser.mapper.MiniUserMapper;
@@ -10,6 +11,7 @@ import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.util.JsonUtils;
 import com.sz.core.util.Utils;
+import com.sz.utils.MapstructUtils;
 import com.sz.wechat.mini.MiniWechatService;
 import com.sz.wechat.mini.LoginInfoResult;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +40,12 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
         String accessToken = miniWechatService.getAccessToken();
         LoginInfoResult loginInfoResult = miniWechatService.miniLogin(dto.getCode(), accessToken);
         log.info(" 小程序登录返回信息：{}", JsonUtils.toJsonString(loginInfoResult));
-        // [do something ...] 结合实际业务进行处理
-        return null;
+        // 存储用户信息
+        this.savaMiniUser(loginInfoResult);
+        MiniUserVO miniUser = new MiniUserVO();
+        miniUser.setOpenid(loginInfoResult.getOpenid());
+        miniUser.setUnionid(loginInfoResult.getUnionId());
+        return miniUser;
     }
 
     @Override
@@ -47,19 +53,40 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
         QueryWrapper wrapper = QueryWrapper.create().where(MINI_USER.OPENID.eq(openId));
         MiniUser miniUser = getOne(wrapper);
         if (miniUser == null) {
-            // [do something ...] 创建新的微信用户信息
-        } else {
-            // 绑定了sys_user账户
-            if (Utils.isNotNull(miniUser.getSysUserId())) {
-                // [do something ...]
-            } else {
-                // 未绑定sys_user账户
-                // [do something ...]
-            }
+            // 创建新的微信用户信息
+            miniUser = new MiniUser();
+            miniUser.setOpenid(openId);
+            miniUser.setUnionid(unionid);
+            save(miniUser);
         }
-
-        return null;
+        
+        // 如果绑定了sys_user账户
+        if (Utils.isNotNull(miniUser.getSysUserId())) {
+            // 返回包含完整登录信息的对象
+            return MapstructUtils.convert(miniUser, MiniLoginUser.class);
+        } else {
+            // 未绑定sys_user账户，但仍需返回MiniLoginUser对象
+            MiniLoginUser loginUser = new MiniLoginUser();
+            loginUser.setUserId(miniUser.getId());
+            loginUser.setOpenid(miniUser.getOpenid());
+            loginUser.setNickname(miniUser.getNickname());
+            loginUser.setPhone(miniUser.getPhone());
+            return loginUser;
+        }
     }
+
+    public void savaMiniUser(LoginInfoResult loginInfoResult) {
+        //检测是否已存在
+        if(!this.exists(new QueryWrapper()
+                .eq(MiniUser::getOpenid,loginInfoResult.getOpenid(), ObjectUtil.isNotNull(loginInfoResult.getOpenid()))
+                .eq(MiniUser::getUnionid,loginInfoResult.getUnionId(), ObjectUtil.isNotNull(loginInfoResult.getUnionId())))){
+            MiniUser miniUser = new MiniUser();
+            miniUser.setOpenid(loginInfoResult.getOpenid());
+            miniUser.setUnionid(loginInfoResult.getUnionId());
+            this.save(miniUser);
+        }
+    }
+
 
     @Override
     public boolean isBoundToSchoolUser(Long miniUserId) {
@@ -69,6 +96,14 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
     @Override
     public Object getBoundSchoolUser(Long miniUserId) {
         return null;
+    }
+
+    @Override
+    public Boolean checkAuthStatus(String openId) {
+        if(this.exists(new QueryWrapper().eq(MiniUser::getOpenid,openId).eq(MiniUser::getAuthStatus,1))){
+            return true;
+        }
+        return false;
     }
 
 }

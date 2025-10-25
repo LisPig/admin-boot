@@ -2,9 +2,9 @@ package com.sz.applet.miniBusiness.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.mybatisflex.core.paginate.Page;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserCreateBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserListBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserUpdateBO;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserCreateBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserListBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserUpdateBo;
 import com.sz.applet.miniBusiness.pojo.vo.SchoolUserVO;
 import com.sz.applet.miniBusiness.service.SchoolUserService;
 import com.sz.core.common.constant.GlobalConstant;
@@ -24,7 +24,7 @@ import java.util.List;
  * 学校师生表 前端控制器
  * </p>
  *
- * @author sz
+ * @author LisPig
  * @since 2025-10-13
  */
 @Tag(name = "学校师生管理")
@@ -37,7 +37,7 @@ public class SchoolUserController {
 
     @Operation(summary = "申请认证为学校师生")
     @PostMapping("/apply")
-    public ApiResult<Void> applyForCertification(@RequestBody SchoolUserCreateBO bo) {
+    public ApiResult<Void> applyForCertification(@RequestBody SchoolUserCreateBo bo) {
         schoolUserService.create(bo);
         return ApiResult.success();
     }
@@ -45,7 +45,7 @@ public class SchoolUserController {
     @Operation(summary = "更新学校师生信息")
     @SaCheckPermission(value = "school.user.edit_btn", orRole = GlobalConstant.SUPER_ROLE)
     @PutMapping
-    public ApiResult<Void> update(@RequestBody SchoolUserUpdateBO bo) {
+    public ApiResult<Void> update(@RequestBody SchoolUserUpdateBo bo) {
         schoolUserService.update(bo);
         return ApiResult.success();
     }
@@ -68,7 +68,7 @@ public class SchoolUserController {
     @Operation(summary = "学校师生分页列表")
     @SaCheckPermission(value = "school.user.page_btn", orRole = GlobalConstant.SUPER_ROLE)
     @GetMapping("/page")
-    public ApiResult<PageResult<SchoolUserVO>> page(SchoolUserListBO bo) {
+    public ApiResult<PageResult<SchoolUserVO>> page(SchoolUserListBo bo) {
         Page<SchoolUserVO> page = schoolUserService.page(bo);
         return ApiPageResult.success(page);
     }
@@ -76,7 +76,7 @@ public class SchoolUserController {
     @Operation(summary = "学校师生列表")
     @SaCheckPermission(value = "school.user.list_btn", orRole = GlobalConstant.SUPER_ROLE)
     @GetMapping("/list")
-    public ApiResult<List<SchoolUserVO>> list(SchoolUserListBO bo) {
+    public ApiResult<List<SchoolUserVO>> list(SchoolUserListBo bo) {
         return ApiResult.success(schoolUserService.list(bo));
     }
     
