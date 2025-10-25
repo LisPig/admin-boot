@@ -25,7 +25,4 @@ public class SchoolMasterListDTO extends PageQuery {
     @Schema(description =  "画像")
     private String avatar;
 
-    @Schema(description =  "任期记录(包含开始结束时间和职务描述)")
-    private String history;
-
 }

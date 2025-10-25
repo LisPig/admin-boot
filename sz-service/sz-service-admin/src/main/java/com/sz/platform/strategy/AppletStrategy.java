@@ -2,6 +2,13 @@ package com.sz.platform.strategy;
 
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.util.ObjectUtil;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.sz.applet.miniBusiness.pojo.po.ApplyAuth;
+import com.sz.applet.miniBusiness.pojo.po.SchoolUserBinding;
+import com.sz.applet.miniBusiness.pojo.vo.ApplyAuthVo;
+import com.sz.applet.miniBusiness.service.ApplyAuthService;
+import com.sz.applet.miniBusiness.service.SchoolUserBindingService;
 import com.sz.applet.miniuser.pojo.po.MiniLoginUser;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.common.entity.MiniLoginUserDTO;
@@ -42,6 +49,10 @@ public class AppletStrategy implements IAuthStrategy {
     private final MiniWechatService miniWechatService;
 
     private final MiniUserService miniUserService;
+
+    private final ApplyAuthService applyAuthService;
+
+    private final SchoolUserBindingService schoolUserBindingService;
 
     @Override
     public LoginVO login(LoginInfo info, ClientVO client) {
@@ -93,7 +104,20 @@ public class AppletStrategy implements IAuthStrategy {
         loginVo.setAccessToken(StpUtil.getTokenValue());
         loginVo.setExpireIn(StpUtil.getTokenTimeout());
         loginVo.setUserInfo(miniLoginUser);
+        loginVo.setApplyAuthInfo(createApplyAuth(miniLoginUser));
         return loginVo;
+    }
+
+
+    private ApplyAuthVo createApplyAuth(MiniLoginUser miniLoginUser) {
+        SchoolUserBinding schoolUserBinding = schoolUserBindingService.getOne(new QueryWrapper()
+                .eq(SchoolUserBinding::getMiniUserId, miniLoginUser.getUserId()));
+        if(ObjectUtil.isNotNull(schoolUserBinding)) {
+            ApplyAuth applyAuth = applyAuthService.getOne(new QueryWrapper()
+                    .eq(ApplyAuth::getUserId, schoolUserBinding.getSchoolUserId()));
+            return BeanCopyUtils.copy(applyAuth, ApplyAuthVo.class);
+        }
+        return null;
     }
 
 }

@@ -39,10 +39,10 @@ public class AppletAlumniAssociationUserController {
      * @param appletAlumniAssociationUser 校友会用户表
      * @return {@code true} 添加成功，{@code false} 添加失败
      */
-    @Operation(summary = "添加校友会用户表")
-    @PostMapping("/save")
+    @Operation(summary = "小程序-申请加入校友会")
+    @PostMapping("/join")
     public boolean save(@RequestBody AppletAlumniAssociationUser appletAlumniAssociationUser) {
-        return appletAlumniAssociationUserService.save(appletAlumniAssociationUser);
+        return appletAlumniAssociationUserService.join(appletAlumniAssociationUser);
     }
 
 

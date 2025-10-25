@@ -12,6 +12,7 @@ import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.PageUtils;
 import com.sz.core.util.Utils;
+import com.sz.security.core.util.LoginUtils;
 import org.springframework.stereotype.Service;
 import com.sz.applet.miniBusiness.service.AppletAlumniPassApplicationService;
 import com.sz.applet.miniBusiness.pojo.po.AppletAlumniPassApplication;
@@ -19,7 +20,9 @@ import com.sz.applet.miniBusiness.mapper.AppletAlumniPassApplicationMapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 校友通行证申请表 服务层实现。
@@ -32,6 +35,7 @@ public class AppletAlumniPassApplicationServiceImpl extends ServiceImpl<AppletAl
 
     @Override
     public void create(AppletAlumniPassApplicationCreateDTO dto){
+        dto.setUserId(LoginUtils.getMiniLoginUser().getUserId());
         AppletAlumniPassApplication appletAlumniPassApplication = BeanCopyUtils.copy(dto, AppletAlumniPassApplication.class);
         save(appletAlumniPassApplication);
     }
@@ -50,7 +54,9 @@ public class AppletAlumniPassApplicationServiceImpl extends ServiceImpl<AppletAl
 
     @Override
     public List<AppletAlumniPassApplicationVO> list(AppletAlumniPassApplicationListDTO dto){
-        return listAs(buildQueryWrapper(dto), AppletAlumniPassApplicationVO.class);
+        QueryWrapper queryWrapper = buildQueryWrapper(dto);
+        queryWrapper.eq(AppletAlumniPassApplication::getUserId, Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
+        return listAs(queryWrapper, AppletAlumniPassApplicationVO.class);
     }
 
     @Override
@@ -70,6 +76,16 @@ public class AppletAlumniPassApplicationServiceImpl extends ServiceImpl<AppletAl
     public PageResult<AppletAlumniPassApplicationVO> page(AppletAlumniPassApplicationBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
         return PageUtils.getPageResult(pageAs(PageUtils.getPage(bo), queryWrapper, AppletAlumniPassApplicationVO.class));
+    }
+
+    @Override
+    public void approve(AppletAlumniPassApplicationCreateDTO dto) {
+        AppletAlumniPassApplication appletAlumniPassApplication = new AppletAlumniPassApplication();
+        appletAlumniPassApplication.setId(dto.getId());
+        appletAlumniPassApplication.setStatus(dto.getStatus());
+        appletAlumniPassApplication.setApproveTime(new Date());
+        appletAlumniPassApplication.setApproveRemark(dto.getApproveRemark());
+        updateById(appletAlumniPassApplication);
     }
 
 

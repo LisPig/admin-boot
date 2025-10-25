@@ -71,6 +71,7 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
             loginUser.setOpenid(miniUser.getOpenid());
             loginUser.setNickname(miniUser.getNickname());
             loginUser.setPhone(miniUser.getPhone());
+            loginUser.setAvatarUrl(miniUser.getAvatarUrl());
             return loginUser;
         }
     }

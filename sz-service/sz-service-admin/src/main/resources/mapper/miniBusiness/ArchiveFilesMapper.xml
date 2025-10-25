@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sz.applet.miniBusiness.mapper.ArchiveFilesMapper">
+    <!-- 通用映射 -->
+    <resultMap id="BaseResultMap" type="com.sz.applet.miniBusiness.pojo.po.ArchiveFiles">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="time" property="time"/>
+        <result column="phone" property="phone"/>
+        <result column="name" property="name"/>
+        <result column="card" property="card"/>
+        <result column="company" property="company"/>
+        <result column="mark" property="mark"/>
+        <result column="idea" property="idea"/>
+        <result column="userNum" property="userNum"/>
+        <result column="cardImg" property="cardImg"/>
+        <result column="year" property="year"/>
+        <result column="classNo" property="classNo"/>
+        <result column="pass" property="pass"/>
+        <result column="passMark" property="passMark"/>
+        <result column="state" property="state"/>
+        <result column="create_time" property="createTime"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, user_id, time, phone, name, card, company, mark, idea, userNum, cardImg, year, classNo, pass, passMark, state, create_time
+    </sql>
+
+</mapper>

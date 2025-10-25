@@ -21,4 +21,7 @@ public class LoginVO {
     @Schema(description = "用户信息")
     private Object userInfo;
 
+    @Schema(description = "微信用户认证信息")
+    private Object applyAuthInfo;
+
 }

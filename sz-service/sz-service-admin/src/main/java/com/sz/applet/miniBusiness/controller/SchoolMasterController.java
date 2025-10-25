@@ -21,6 +21,8 @@ import com.sz.applet.miniBusiness.pojo.vo.SchoolMasterVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.List;
+
 /**
  * <p>
  * 校长表 Controller
@@ -66,6 +68,12 @@ public class SchoolMasterController  {
     @GetMapping
     public ApiResult<PageResult<SchoolMasterVO>> list(SchoolMasterListDTO dto) {
         return ApiPageResult.success(schoolMasterService.page(dto));
+    }
+
+    @Operation(summary = "小程序-列表查询")
+    @GetMapping("/miniList")
+    public ApiResult<List<SchoolMasterVO>> miniList(SchoolMasterListDTO dto) {
+        return ApiResult.success(schoolMasterService.list(dto));
     }
 
     @Operation(summary = "详情")

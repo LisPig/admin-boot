@@ -36,4 +36,6 @@ public class MiniLoginUser {
     @Schema(description = "邮箱，邮箱为空则未绑定")
     private String email;
 
+    private String avatarUrl;
+
 }
