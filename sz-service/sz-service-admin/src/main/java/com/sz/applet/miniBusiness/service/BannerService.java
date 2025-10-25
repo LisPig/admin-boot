@@ -3,9 +3,10 @@ package com.sz.applet.miniBusiness.service;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.service.IService;
 import com.sz.applet.miniBusiness.pojo.bo.BannerBo;
-import com.sz.applet.miniBusiness.pojo.bo.BannerListBO;
+import com.sz.applet.miniBusiness.pojo.bo.BannerListBo;
 import com.sz.applet.miniBusiness.pojo.po.Banner;
 import com.sz.applet.miniBusiness.pojo.vo.BannerVO;
+import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 
 import java.util.List;
@@ -50,12 +51,12 @@ public interface BannerService extends IService<Banner> {
      * @param bo 查询条件
      * @return Banner分页列表
      */
-    Page<BannerVO> page(BannerListBO bo);
+    PageResult<BannerVO> page(BannerListBo bo);
 
     /**
      * 查询Banner列表(全部)
      * @param bo 查询条件
      * @return Banner列表
      */
-    List<BannerVO> list(BannerListBO bo);
+    List<BannerVO> list(BannerListBo bo);
 }

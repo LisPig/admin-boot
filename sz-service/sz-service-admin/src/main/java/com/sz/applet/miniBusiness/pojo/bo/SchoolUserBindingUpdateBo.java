@@ -15,7 +15,7 @@ import java.io.Serializable;
  */
 @Data
 @Schema(description = "学校用户绑定小程序用户修改BO")
-public class SchoolUserBindingUpdateBO implements Serializable {
+public class SchoolUserBindingUpdateBo implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

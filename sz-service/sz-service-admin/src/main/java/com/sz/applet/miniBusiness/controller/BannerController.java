@@ -1,11 +1,13 @@
 package com.sz.applet.miniBusiness.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.mybatisflex.core.paginate.Page;
 import com.sz.applet.miniBusiness.pojo.bo.BannerBo;
-import com.sz.applet.miniBusiness.pojo.bo.BannerListBO;
+import com.sz.applet.miniBusiness.pojo.bo.BannerListBo;
 import com.sz.applet.miniBusiness.pojo.vo.BannerVO;
 import com.sz.applet.miniBusiness.service.BannerService;
 import com.sz.core.common.entity.ApiResult;
+import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +21,7 @@ import java.util.List;
  * 小程序Banner表 Controller
  * </p>
  *
- * @author sz
+ * @author LisPig
  * @since 2024-09-27
  */
 @Tag(name = "小程序Banner")
@@ -31,7 +33,7 @@ public class BannerController {
     private final BannerService bannerService;
 
     @Operation(summary = "创建Banner")
-    @PostMapping
+    @PostMapping("/add")
     public ApiResult<Void> create(@RequestBody BannerBo bo) {
         bannerService.create(bo);
         return ApiResult.success();
@@ -45,7 +47,7 @@ public class BannerController {
     }
 
     @Operation(summary = "删除Banner")
-    @DeleteMapping
+    @DeleteMapping("/remove")
     public ApiResult<Void> remove(@RequestBody SelectIdsDTO dto) {
         bannerService.remove(dto);
         return ApiResult.success();
@@ -59,13 +61,14 @@ public class BannerController {
 
     @Operation(summary = "Banner列表")
     @GetMapping
-    public ApiResult<Page<BannerVO>> page(BannerListBO bo) {
+    public ApiResult<PageResult<BannerVO>> page(BannerListBo bo) {
         return ApiResult.success(bannerService.page(bo));
     }
 
     @Operation(summary = "Banner列表(全部)")
+    @SaIgnore
     @GetMapping("/list")
-    public ApiResult<List<BannerVO>> list(BannerListBO bo) {
+    public ApiResult<List<BannerVO>> list(BannerListBo bo) {
         return ApiResult.success(bannerService.list(bo));
     }
 }

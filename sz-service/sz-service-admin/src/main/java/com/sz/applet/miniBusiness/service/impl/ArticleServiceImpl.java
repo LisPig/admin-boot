@@ -1,17 +1,20 @@
 package com.sz.applet.miniBusiness.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.admin.system.pojo.po.SysUser;
 import com.sz.applet.miniBusiness.mapper.ArticleMapper;
-import com.sz.applet.miniBusiness.pojo.bo.ArticleBO;
-import com.sz.applet.miniBusiness.pojo.bo.ArticleListBO;
+import com.sz.applet.miniBusiness.pojo.bo.ArticleBo;
+import com.sz.applet.miniBusiness.pojo.bo.ArticleListBo;
 import com.sz.applet.miniBusiness.pojo.po.Article;
 import com.sz.applet.miniBusiness.pojo.vo.ArticleVO;
 import com.sz.applet.miniBusiness.service.ArticleService;
+import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import com.sz.core.common.enums.CommonResponseEnum;
+import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.PageUtils;
 import com.sz.utils.MapstructUtils;
 import lombok.RequiredArgsConstructor;
@@ -36,13 +39,14 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(ArticleBO bo) {
-        save(MapstructUtils.convert(bo, Article.class));
+    public void create(ArticleBo bo) {
+       // Article article = new Article();
+        this.save(BeanCopyUtils.copy(bo, Article.class));
     }
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(ArticleBO bo) {
+    public void update(ArticleBo bo) {
         Article article = getById(bo.getId());
         CommonResponseEnum.NOT_FOUND.assertNull(article, "文章不存在或已被删除");
         article.setType(bo.getType());
@@ -64,7 +68,7 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void remove(SelectIdsDTO dto) {
-        QueryWrapper wrapper = QueryWrapper.create().in(SysUser::getId, dto.getIds());
+        QueryWrapper wrapper = QueryWrapper.create().in(Article::getId, dto.getIds());
         // 检查用户是否存在
         CommonResponseEnum.INVALID_ID.assertTrue(count(wrapper) < 1);
         removeByIds(dto.getIds());
@@ -74,19 +78,34 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     public ArticleVO detail(Long id) {
         Article article = getById(id);
         CommonResponseEnum.NOT_FOUND.assertNull(article, "文章不存在或已被删除");
-        return convertToVO(article);
+        return BeanCopyUtils.copy(article,ArticleVO.class);//convertToVO(article);
     }
 
     @Override
-    public Page<ArticleVO> page(ArticleListBO bo) {
+    public PageResult<ArticleVO> page(ArticleListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
-        Page<ArticleVO> pageResult = this.pageAs(PageUtils.getPage(bo), queryWrapper, ArticleVO.class);
-        return pageResult;
+        return PageUtils.getPageResult(pageAs(PageUtils.getPage( bo), queryWrapper, ArticleVO.class));
     }
 
     @Override
-    public List<ArticleVO> list(ArticleListBO bo) {
+    public List<ArticleVO> list(ArticleListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
+        List<Article> list = list(queryWrapper);
+        return list.stream().map(this::convertToVO).toList();
+    }
+
+    @Override
+    public void check(ArticleBo bo) {
+        Article article = getById(bo.getId());
+        CommonResponseEnum.NOT_FOUND.assertNull(article, "文章不存在或已被删除");
+        article.setStatus(bo.getStatus());
+        updateById(article);
+    }
+
+    @Override
+    public List<ArticleVO> miniList(ArticleListBo bo) {
+        QueryWrapper queryWrapper = buildQueryWrapper(bo);
+        queryWrapper.eq(Article::getStatus,"1");
         List<Article> list = list(queryWrapper);
         return list.stream().map(this::convertToVO).toList();
     }
@@ -97,16 +116,15 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
      * @param bo 查询参数
      * @return QueryWrapper
      */
-    private QueryWrapper buildQueryWrapper(ArticleListBO bo) {
+    private QueryWrapper buildQueryWrapper(ArticleListBo bo) {
         return QueryWrapper.create()
                 .select()
                 .from(ARTICLE)
-                .where(ARTICLE.TYPE.like(bo.getType()))
-                .and(ARTICLE.TITLE.like(bo.getTitle()))
-                .and(ARTICLE.LABEL.like(bo.getLabel()))
-                .and(ARTICLE.AUTHOR.like(bo.getAuthor()))
-                .and(ARTICLE.STATUS.eq(bo.getStatus()))
-                .and(ARTICLE.DEL_FLAG.eq("0"))
+                .where(ARTICLE.TYPE.like(bo.getType(), StrUtil.isNotBlank(bo.getType())))
+                .and(ARTICLE.TITLE.like(bo.getTitle(), StrUtil.isNotBlank(bo.getTitle())))
+                .and(ARTICLE.LABEL.like(bo.getLabel(), StrUtil.isNotBlank(bo.getLabel())))
+                .and(ARTICLE.AUTHOR.like(bo.getAuthor(), StrUtil.isNotBlank(bo.getAuthor())))
+                .and(ARTICLE.STATUS.eq(bo.getStatus(), StrUtil.isNotBlank(bo.getStatus())))
                 .orderBy(ARTICLE.SORT.desc(), ARTICLE.CREATE_TIME.desc());
     }
 

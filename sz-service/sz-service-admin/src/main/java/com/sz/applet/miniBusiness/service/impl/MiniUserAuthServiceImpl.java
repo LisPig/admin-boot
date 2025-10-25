@@ -4,7 +4,7 @@ package com.sz.applet.miniBusiness.service.impl;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.applet.miniBusiness.mapper.UserAuthApplicationMapper;
 import com.sz.applet.miniBusiness.pojo.po.SchoolUser;
-import com.sz.applet.miniBusiness.service.AdminAuthService;
+import com.sz.applet.miniBusiness.service.MiniUserAuthService;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.PageResult;
@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AdminAuthServiceImpl extends ServiceImpl<UserAuthApplicationMapper, SchoolUser> implements AdminAuthService {
+public class MiniUserAuthServiceImpl extends ServiceImpl<UserAuthApplicationMapper, SchoolUser> implements MiniUserAuthService {
 
     private final MiniUserService miniUserService;
     

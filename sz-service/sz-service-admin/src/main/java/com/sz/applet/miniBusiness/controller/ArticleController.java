@@ -1,11 +1,12 @@
 package com.sz.applet.miniBusiness.controller;
 
 import com.mybatisflex.core.paginate.Page;
-import com.sz.applet.miniBusiness.pojo.bo.ArticleBO;
-import com.sz.applet.miniBusiness.pojo.bo.ArticleListBO;
+import com.sz.applet.miniBusiness.pojo.bo.ArticleBo;
+import com.sz.applet.miniBusiness.pojo.bo.ArticleListBo;
 import com.sz.applet.miniBusiness.pojo.vo.ArticleVO;
 import com.sz.applet.miniBusiness.service.ArticleService;
 import com.sz.core.common.entity.ApiResult;
+import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -19,7 +20,7 @@ import java.util.List;
  * 小程序文章表 Controller
  * </p>
  *
- * @author sz
+ * @author LisPig
  * @since 2025-09-12
  */
 @Tag(name = "小程序文章")
@@ -32,14 +33,21 @@ public class ArticleController {
 
     @Operation(summary = "创建文章")
     @PostMapping
-    public ApiResult<Void> create(@RequestBody ArticleBO bo) {
+    public ApiResult<Void> create(@RequestBody ArticleBo bo) {
         articleService.create(bo);
+        return ApiResult.success();
+    }
+
+    @Operation(summary = "审核文章")
+    @PostMapping("/check")
+    public ApiResult<Void> check(@RequestBody ArticleBo bo) {
+        articleService.check(bo);
         return ApiResult.success();
     }
 
     @Operation(summary = "更新文章")
     @PutMapping
-    public ApiResult<Void> update(@RequestBody ArticleBO bo) {
+    public ApiResult<Void> update(@RequestBody ArticleBo bo) {
         articleService.update(bo);
         return ApiResult.success();
     }
@@ -59,13 +67,19 @@ public class ArticleController {
 
     @Operation(summary = "文章列表")
     @GetMapping
-    public ApiResult<Page<ArticleVO>> page(ArticleListBO bo) {
+    public ApiResult<PageResult<ArticleVO>> page(ArticleListBo bo) {
         return ApiResult.success(articleService.page(bo));
     }
 
     @Operation(summary = "文章列表(全部)")
     @GetMapping("/list")
-    public ApiResult<List<ArticleVO>> list(ArticleListBO bo) {
+    public ApiResult<List<ArticleVO>> list(ArticleListBo bo) {
         return ApiResult.success(articleService.list(bo));
+    }
+
+    @Operation(summary = "文章列表-小程序")
+    @GetMapping("/listByMini")
+    public ApiResult<List<ArticleVO>> listByMini(ArticleListBo bo) {
+        return ApiResult.success(articleService.miniList(bo));
     }
 }

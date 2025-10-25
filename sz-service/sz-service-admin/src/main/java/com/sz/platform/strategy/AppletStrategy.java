@@ -4,7 +4,9 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
 import com.sz.applet.miniuser.pojo.po.MiniLoginUser;
 import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.core.common.entity.MiniLoginUserDTO;
 import com.sz.core.common.enums.CommonResponseEnum;
+import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.JsonUtils;
 import com.sz.core.util.Utils;
 import com.sz.security.core.util.LoginUtils;
@@ -20,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 小程序认证策略
@@ -44,6 +47,7 @@ public class AppletStrategy implements IAuthStrategy {
     public LoginVO login(LoginInfo info, ClientVO client) {
         String clientId = client.getClientId();
         String code = info.getCode();
+        log.info("小程序登录code：{}", code);
         CommonResponseEnum.INVALID.message("无效的小程序code").assertFalse(Utils.isNotNull(code));
 
         String accessToken = miniWechatService.getAccessToken();
@@ -54,6 +58,8 @@ public class AppletStrategy implements IAuthStrategy {
         String sessionKey = result.getSessionKey(); // 小程序登录凭证
 
         MiniLoginUser miniLoginUser = miniUserService.getUserByOpenId(openid, unionid);
+        MiniLoginUserDTO miniLoginUserDTO = new MiniLoginUserDTO();
+        BeanCopyUtils.copy(miniLoginUser, miniLoginUserDTO);
 
         // 设置登录模型
         SaLoginModel model = createLoginModel(client);
@@ -61,7 +67,8 @@ public class AppletStrategy implements IAuthStrategy {
         // 设置jwt额外数据
         Map<String, Object> extraData = createExtraData(clientId, userId);
         // 执行登录
-        LoginUtils.performMiniLogin(userId, miniLoginUser, model, extraData);
+        LoginUtils.performMiniLogin(userId, miniLoginUserDTO, model, extraData);
+        //log.info("小程序登录成功，用户ID：{}", Objects.requireNonNull(LoginUtils.getLoginUser()).getUserInfo());
         // 构造返回对象
         return createLoginVO(miniLoginUser);
     }

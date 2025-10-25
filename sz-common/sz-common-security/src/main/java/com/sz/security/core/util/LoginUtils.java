@@ -6,8 +6,8 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.sz.core.common.constant.GlobalConstant;
 import com.sz.core.common.entity.LoginUser;
+import com.sz.core.common.entity.MiniLoginUserDTO;
 import lombok.extern.slf4j.Slf4j;
-
 import java.util.Map;
 
 /**
@@ -55,6 +55,17 @@ public class LoginUtils {
             return null;
         }
         return (LoginUser) session.get(USER_KEY);
+    }
+
+    /**
+     * 获取小程序登录用户
+     */
+    public static MiniLoginUserDTO getMiniLoginUser() {
+        SaSession session = StpUtil.getTokenSession();
+        if (ObjectUtil.isNull(session)) {
+            return null;
+        }
+        return (MiniLoginUserDTO) session.get(USER_KEY);
     }
 
     /**

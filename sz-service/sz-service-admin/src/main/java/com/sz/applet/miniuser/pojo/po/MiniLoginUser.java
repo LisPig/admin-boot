@@ -1,5 +1,6 @@
 package com.sz.applet.miniuser.pojo.po;
 
+import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -11,6 +12,7 @@ import lombok.Data;
  * @version 1.0
  */
 @Data
+@AutoMapper(target = MiniUser.class)
 public class MiniLoginUser {
 
     @Schema(description = "用户ID(MiniUser表主键)")

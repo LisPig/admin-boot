@@ -1,9 +1,9 @@
 package com.sz.applet.miniBusiness.service;
 
 import com.mybatisflex.core.service.IService;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingCreateBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingListBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBO;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingCreateBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingListBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBo;
 import com.sz.applet.miniBusiness.pojo.po.SchoolUserBinding;
 import com.sz.applet.miniBusiness.pojo.vo.SchoolUserBindingVO;
 import com.sz.core.common.entity.SelectIdsDTO;
@@ -25,14 +25,14 @@ public interface SchoolUserBindingService extends IService<SchoolUserBinding> {
      *
      * @param bo 绑定申请BO
      */
-    void create(SchoolUserBindingCreateBO bo);
+    void create(SchoolUserBindingCreateBo bo);
 
     /**
      * 更新绑定申请
      *
      * @param bo 绑定更新BO
      */
-    void update(SchoolUserBindingUpdateBO bo);
+    void update(SchoolUserBindingUpdateBo bo);
 
     /**
      * 删除绑定申请
@@ -55,7 +55,7 @@ public interface SchoolUserBindingService extends IService<SchoolUserBinding> {
      * @param bo 查询参数
      * @return 绑定分页结果
      */
-    Object page(SchoolUserBindingListBO bo);
+    Object page(SchoolUserBindingListBo bo);
 
     /**
      * 列表查询绑定申请
@@ -63,7 +63,7 @@ public interface SchoolUserBindingService extends IService<SchoolUserBinding> {
      * @param bo 查询参数
      * @return 绑定列表
      */
-    List<SchoolUserBindingVO> list(SchoolUserBindingListBO bo);
+    List<SchoolUserBindingVO> list(SchoolUserBindingListBo bo);
     
     /**
      * 审核绑定申请

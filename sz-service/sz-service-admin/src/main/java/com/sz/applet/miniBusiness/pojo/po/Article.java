@@ -57,7 +57,7 @@ public class Article implements Serializable {
     @Column(value = "author")
     private String author;
 
-    @Schema(description = "状态（1-发布）")
+    @Schema(description = "状态（0-草稿1-发布）")
     @Column(value = "status")
     private String status;
 

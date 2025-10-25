@@ -1,5 +1,7 @@
 package com.sz.applet.miniuser.pojo.vo;
 
+import com.sz.applet.miniuser.pojo.po.MiniUser;
+import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,6 +15,21 @@ import lombok.Data;
  */
 @Data
 @Schema(description = "MiniUser返回vo")
+@AutoMapper(target = MiniUser.class)
 public class MiniUserVO {
 
+    @Schema(description = "用户ID")
+    private Long id;
+
+    @Schema(description = "小程序用户的唯一标识")
+    private String openid;
+
+    @Schema(description = "用户在开放平台的唯一标识符")
+    private String unionid;
+
+    @Schema(description = "用户头像URL")
+    private String avatarUrl;
+
+    @Schema(description = "认证状态")
+    private Integer authStatus;
 }

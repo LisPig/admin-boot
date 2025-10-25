@@ -13,7 +13,7 @@ import lombok.Data;
  */
 @Data
 @Schema(description = "Article创建BO")
-public class ArticleBO {
+public class ArticleBo {
     private Integer id;
 
     @Schema(description = "文章类型")
@@ -37,7 +37,7 @@ public class ArticleBO {
     @Schema(description = "作者")
     private String author;
 
-    @Schema(description = "状态（1-发布）")
+    @Schema(description = "状态（-1-审核失败，0-草稿，1-审核，2-发布）")
     private String status;
 
     @Schema(description = "内容类型（link-链接, html-富文本）")

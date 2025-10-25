@@ -3,9 +3,9 @@ package com.sz.applet.miniBusiness.service.impl;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.applet.miniBusiness.mapper.SchoolUserBindingMapper;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingCreateBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingListBO;
-import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBO;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingCreateBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingListBo;
+import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBo;
 import com.sz.applet.miniBusiness.pojo.po.SchoolUserBinding;
 import com.sz.applet.miniBusiness.pojo.vo.SchoolUserBindingVO;
 import com.sz.applet.miniBusiness.service.SchoolUserBindingService;
@@ -33,7 +33,7 @@ public class SchoolUserBindingServiceImpl extends ServiceImpl<SchoolUserBindingM
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void create(SchoolUserBindingCreateBO bo) {
+    public void create(SchoolUserBindingCreateBo bo) {
         SchoolUserBinding binding = MapstructUtils.convert(bo, SchoolUserBinding.class);
         binding.setStatus(0); // 默认待审核状态
         save(binding);
@@ -41,7 +41,7 @@ public class SchoolUserBindingServiceImpl extends ServiceImpl<SchoolUserBindingM
 
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void update(SchoolUserBindingUpdateBO bo) {
+    public void update(SchoolUserBindingUpdateBo bo) {
         SchoolUserBinding binding = MapstructUtils.convert(bo, SchoolUserBinding.class);
         updateById(binding);
     }
@@ -59,13 +59,13 @@ public class SchoolUserBindingServiceImpl extends ServiceImpl<SchoolUserBindingM
     }
 
     @Override
-    public Object page(SchoolUserBindingListBO bo) {
+    public Object page(SchoolUserBindingListBo bo) {
         // TODO: 实现分页查询
         return null;
     }
 
     @Override
-    public List<SchoolUserBindingVO> list(SchoolUserBindingListBO bo) {
+    public List<SchoolUserBindingVO> list(SchoolUserBindingListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
         return listAs(queryWrapper, SchoolUserBindingVO.class);
     }
@@ -99,7 +99,7 @@ public class SchoolUserBindingServiceImpl extends ServiceImpl<SchoolUserBindingM
      * @param bo 查询参数
      * @return QueryWrapper
      */
-    private QueryWrapper buildQueryWrapper(SchoolUserBindingListBO bo) {
+    private QueryWrapper buildQueryWrapper(SchoolUserBindingListBo bo) {
         return QueryWrapper.create()
                 .select()
                 .from(SCHOOL_USER_BINDING)

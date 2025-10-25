@@ -14,7 +14,7 @@ import lombok.Data;
  */
 @Data
 @Schema(description = "学校用户绑定小程序用户查询BO")
-public class SchoolUserBindingListBO extends PageQuery {
+public class SchoolUserBindingListBo extends PageQuery {
 
     @Schema(description = "学校用户ID")
     private Long schoolUserId;

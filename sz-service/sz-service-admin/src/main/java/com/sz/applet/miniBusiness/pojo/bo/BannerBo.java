@@ -1,5 +1,7 @@
 package com.sz.applet.miniBusiness.pojo.bo;
 
+import com.sz.applet.miniBusiness.pojo.po.Banner;
+import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -13,6 +15,7 @@ import lombok.Data;
  */
 @Data
 @Schema(description = "Banner BO")
+@AutoMapper(target = Banner.class,reverseConvertGenerate = false)
 public class BannerBo {
 
 

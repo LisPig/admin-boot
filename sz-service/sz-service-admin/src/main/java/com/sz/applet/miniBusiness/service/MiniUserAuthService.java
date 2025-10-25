@@ -5,7 +5,7 @@ import com.sz.applet.miniBusiness.pojo.po.SchoolUser;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.PageResult;
 
-public interface AdminAuthService {
+public interface MiniUserAuthService {
     
     /**
      * 获取认证申请列表（分页）

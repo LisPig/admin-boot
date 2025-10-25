@@ -33,4 +33,6 @@ public interface MiniUserService extends IService<MiniUser> {
      * @return 学校用户信息
      */
     Object getBoundSchoolUser(Long miniUserId);
+
+    Boolean checkAuthStatus(String openId);
 }
