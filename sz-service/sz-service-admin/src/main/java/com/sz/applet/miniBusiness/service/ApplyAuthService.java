@@ -7,6 +7,7 @@ import com.sz.applet.miniBusiness.pojo.po.ApplyAuth;
 import com.mybatisflex.core.service.IService;
 import com.sz.applet.miniBusiness.pojo.vo.ApplyAuthVo;
 import com.sz.applet.miniBusiness.pojo.vo.ApplyAutoDetailVo;
+import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.PageResult;
 
@@ -18,7 +19,7 @@ import com.sz.core.common.entity.PageResult;
  */
 public interface ApplyAuthService extends IService<ApplyAuth> {
 
-    void applyAuth(ApplyAuthBo bo);
+    Boolean applyAuth(ApplyAuthBo bo);
 
     PageResult<ApplyAuthVo> page(ApplyAuthListBo bo);
     Boolean review(ApplyAuthBo bo);
@@ -26,4 +27,6 @@ public interface ApplyAuthService extends IService<ApplyAuth> {
     ApplyAutoDetailVo detail(Long id);
 
     Object checkIsPassAuth();
+
+    MiniUserVO getUserInfo(String openId, String o);
 }

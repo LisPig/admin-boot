@@ -64,6 +64,12 @@ public class MiniUser implements Serializable {
     @Schema(description = "认证状态")
     private Integer authStatus;
 
+    @Schema(description = "工作单位")
+    private String workUnit;
+
+    @Schema(description = "职务")
+    private String job;
+
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
 

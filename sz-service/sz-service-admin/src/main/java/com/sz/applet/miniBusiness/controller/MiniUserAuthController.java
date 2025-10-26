@@ -14,6 +14,8 @@ import com.sz.applet.miniBusiness.pojo.vo.ApplyAutoDetailVo;
 import com.sz.applet.miniBusiness.service.ApplyAuthService;
 import com.sz.applet.miniBusiness.service.MiniUserAuthService;
 import com.sz.applet.miniBusiness.service.AppletAlumniPassApplicationService;
+import com.sz.applet.miniuser.pojo.dto.UpdateMiniUserInfoDTO;
+import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.MiniLoginUserDTO;
 import com.sz.core.common.entity.PageResult;
@@ -57,10 +59,10 @@ public class MiniUserAuthController {
             throw new RuntimeException("未找到登录用户信息");
         }*/
 
-        bo.setUserId(Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
+       // bo.setUserId(Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
         // 先校验认证的资料是否已存在 已存在则不需要重新认证，直接通过认证，并更新绑定关系
 
-        return ApiResult.success(applyAuthService.save(BeanCopyUtils.copy(bo, ApplyAuth.class)));
+        return ApiResult.success(applyAuthService.applyAuth( bo));
     }
 
     
@@ -100,4 +102,14 @@ public class MiniUserAuthController {
 
         return ApiResult.success(applyAuthService.checkIsPassAuth());
     }
+
+
+    @Operation(summary = "获取用户信息")
+    @GetMapping("/info/{openId}")
+    public ApiResult<MiniUserVO> info(@PathVariable String openId) {
+        MiniUserVO user = applyAuthService.getUserInfo(openId, null);
+        return ApiResult.success(user);
+    }
+
+
 }

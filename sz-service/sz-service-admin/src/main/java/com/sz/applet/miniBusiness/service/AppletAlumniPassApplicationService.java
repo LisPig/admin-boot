@@ -24,7 +24,7 @@ public interface AppletAlumniPassApplicationService extends IService<AppletAlumn
 
     void update(AppletAlumniPassApplicationCreateDTO dto);
 
-    List<AppletAlumniPassApplicationVO> list(AppletAlumniPassApplicationListDTO dto);
+    PageResult<AppletAlumniPassApplicationVO> list(AppletAlumniPassApplicationListDTO dto);
 
     void remove(SelectIdsDTO dto);
 

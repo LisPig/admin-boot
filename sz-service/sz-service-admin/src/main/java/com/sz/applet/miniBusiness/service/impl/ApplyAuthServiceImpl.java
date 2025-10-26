@@ -27,9 +27,12 @@ import com.sz.applet.miniBusiness.mapper.ApplyAuthMapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.Objects;
+
+import static com.sz.applet.miniuser.pojo.po.table.MiniUserTableDef.MINI_USER;
 
 /**
  * 校友申请认证表 服务层实现。
@@ -45,17 +48,14 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
 
     private final SchoolUserBindingService schoolUserBindingService;
 
+
     @Override
-    public void applyAuth(ApplyAuthBo bo) {
+    public Boolean applyAuth(ApplyAuthBo bo) {
         bo.setUserId(Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
         // 检查是否存在完全相同的申请（包括未通过的）
         ApplyAuth existingApply = this.getOne(new QueryWrapper()
-                .eq(ApplyAuth::getPhone, bo.getPhone(), ObjectUtil.isNotNull(bo.getPhone()))
-                .eq(ApplyAuth::getName, bo.getName(), ObjectUtil.isNotNull(bo.getName()))
-                .eq(ApplyAuth::getIdCard, bo.getIdCard(), ObjectUtil.isNotNull(bo.getIdCard()))
-                .eq(ApplyAuth::getIdentity, bo.getIdentity(), ObjectUtil.isNotNull(bo.getIdentity()))
-                .eq(ApplyAuth::getUserId, bo.getUserId())  // 同一用户
-                .in(ApplyAuth::getStatus, Arrays.asList(1, 2, 3))); // 包含待审核、已拒绝、已通过状态
+                //.eq(ApplyAuth::getIdentity, bo.getIdentity(), ObjectUtil.isNotNull(bo.getIdentity()))
+                .eq(ApplyAuth::getUserId, bo.getUserId())); // 包含待审核、已拒绝、已通过状态
 
         if (ObjectUtil.isNotNull(existingApply)) {
             // 根据现有申请状态做不同处理
@@ -66,19 +66,18 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
                 schoolUserBinding.setSchoolUserId(existingApply.getId());
                 schoolUserBinding.setBindType(1);
                 schoolUserBinding.setStatus(1);
-                schoolUserBindingService.save(schoolUserBinding);
+                return schoolUserBindingService.save(schoolUserBinding);
             } else {
                 // 其他状态，更新申请信息而非创建新记录
                 ApplyAuth updateApply = BeanCopyUtils.copy(bo, ApplyAuth.class);
                 updateApply.setId(existingApply.getId());
-                updateApply.setStatus("0"); // 重置为待审核状态
-                updateApply.setCreateTime(new Date());
-                this.updateById(updateApply);
+                updateApply.setStatus("1"); // 重置为待审核状态
+                updateApply.setCreateTime(LocalDateTime.now());
+                return this.updateById(updateApply);
             }
         } else {
-            this.save(BeanCopyUtils.copy(bo, ApplyAuth.class));
+           return this.save(BeanCopyUtils.copy(bo, ApplyAuth.class));
         }
-
     }
 
     @Override
@@ -122,12 +121,35 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
     public Object checkIsPassAuth() {
         Long miniUserId = Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId();
         ApplyAuth applyAuth = this.getOne(new QueryWrapper()
-                .eq(ApplyAuth::getUserId, miniUserId)
-                .in(ApplyAuth::getStatus, 1));
+                .eq(ApplyAuth::getUserId, miniUserId));
+                //.in(ApplyAuth::getStatus, 1,3));
         if(applyAuth != null){
             return BeanCopyUtils.copy(applyAuth, ApplyAuthVo.class);
         }
-        return false;
+        return null;
+    }
+
+    @Override
+    public MiniUserVO getUserInfo(String openId, String unionid) {
+        QueryWrapper wrapper = QueryWrapper.create().where(MINI_USER.OPENID.eq(openId));
+        MiniUser miniUser = miniUserService.getOne(wrapper);
+        if (miniUser == null) {
+            // 创建新的微信用户信息
+            miniUser = new MiniUser();
+            miniUser.setOpenid(openId);
+            miniUser.setUnionid(unionid);
+            miniUserService.save(miniUser);
+        }else{
+            SchoolUserBinding schoolUserBinding = schoolUserBindingService.getOne(new QueryWrapper()
+                    .eq(SchoolUserBinding::getMiniUserId, miniUser.getId()));
+            if(ObjectUtil.isNotNull(schoolUserBinding)) {
+                ApplyAuth applyAuth = this.getOne(new QueryWrapper()
+                        .eq(ApplyAuth::getId, schoolUserBinding.getSchoolUserId()));
+                miniUser.setPhone(applyAuth.getPhone());
+                miniUser.setName(applyAuth.getName());
+            }
+        }
+        return BeanCopyUtils.copy(miniUser, MiniUserVO.class);
     }
 
 

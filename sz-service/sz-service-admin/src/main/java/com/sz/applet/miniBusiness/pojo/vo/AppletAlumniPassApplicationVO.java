@@ -9,8 +9,11 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
+import org.springframework.format.annotation.DateTimeFormat;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * 校友通行证申请表 实体类。
@@ -77,6 +80,10 @@ public class AppletAlumniPassApplicationVO extends PageQuery {
      * 预计返校时间
      */
     @Schema(description = "预计返校时间")
-    private Date expectedTime;
+    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+    private LocalDateTime expectedTime;
+
+
+    private Integer status;
 
 }

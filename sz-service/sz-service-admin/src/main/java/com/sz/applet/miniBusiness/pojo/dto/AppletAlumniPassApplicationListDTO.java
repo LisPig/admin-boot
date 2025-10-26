@@ -4,9 +4,8 @@ import com.sz.core.common.entity.PageQuery;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
+import java.time.Instant;
 import java.time.LocalDateTime;
 
 @Data
@@ -36,18 +35,16 @@ public class AppletAlumniPassApplicationListDTO extends PageQuery {
     private String otherReason;
 
     @Schema(description =  "预计返校时间开始")
-    private LocalDate expectedTimeStart;
+    private Instant expectedTimeStart;
 
     @Schema(description =  "预计返校时间结束")
-    private LocalDate expectedTimeEnd;
+    private Instant expectedTimeEnd;
 
     @Schema(description =  "申请时间开始")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime applicationTimeStart;
+    private Instant applicationTimeStart;
 
     @Schema(description =  "申请时间结束")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime applicationTimeEnd;
+    private Instant applicationTimeEnd;
 
     @Schema(description =  "申请状态（0-待审核，1-已批准，2-已拒绝）")
     private Integer status;
@@ -59,12 +56,10 @@ public class AppletAlumniPassApplicationListDTO extends PageQuery {
     private Long approverId;
 
     @Schema(description =  "审批时间开始")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime approveTimeStart;
+    private Instant approveTimeStart;
 
     @Schema(description =  "审批时间结束")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
-    private LocalDateTime approveTimeEnd;
+    private Instant approveTimeEnd;
 
     @Schema(description =  "审批备注")
     private String approveRemark;

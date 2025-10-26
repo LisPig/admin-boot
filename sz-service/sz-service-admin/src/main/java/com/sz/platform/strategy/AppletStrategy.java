@@ -114,8 +114,10 @@ public class AppletStrategy implements IAuthStrategy {
                 .eq(SchoolUserBinding::getMiniUserId, miniLoginUser.getUserId()));
         if(ObjectUtil.isNotNull(schoolUserBinding)) {
             ApplyAuth applyAuth = applyAuthService.getOne(new QueryWrapper()
-                    .eq(ApplyAuth::getUserId, schoolUserBinding.getSchoolUserId()));
-            return BeanCopyUtils.copy(applyAuth, ApplyAuthVo.class);
+                    .eq(ApplyAuth::getId, schoolUserBinding.getSchoolUserId()));
+            if(ObjectUtil.isNotNull(applyAuth)){
+                return BeanCopyUtils.copy(applyAuth, ApplyAuthVo.class);
+            }
         }
         return null;
     }

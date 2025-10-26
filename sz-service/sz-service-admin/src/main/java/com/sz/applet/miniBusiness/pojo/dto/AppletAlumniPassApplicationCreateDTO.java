@@ -1,12 +1,14 @@
 package com.sz.applet.miniBusiness.pojo.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.springframework.format.annotation.DateTimeFormat;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @Data
 @Accessors(chain = true)
@@ -37,10 +39,9 @@ public class AppletAlumniPassApplicationCreateDTO {
     private String otherReason;
 
     @Schema(description =  "预计返校时间")
-    private LocalDate expectedTime;
+    private LocalDateTime expectedTime;
 
     @Schema(description =  "申请时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime applicationTime;
 
     @Schema(description =  "申请状态（0-待审核，1-已批准，2-已拒绝）")
@@ -53,7 +54,6 @@ public class AppletAlumniPassApplicationCreateDTO {
     private Long approverId;
 
     @Schema(description =  "审批时间")
-    @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private LocalDateTime approveTime;
 
     @Schema(description =  "审批备注")

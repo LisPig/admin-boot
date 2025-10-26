@@ -2,6 +2,7 @@ package com.sz.applet.miniuser.service;
 
 import com.mybatisflex.core.service.IService;
 import com.sz.applet.miniuser.pojo.dto.MiniLoginDTO;
+import com.sz.applet.miniuser.pojo.dto.UpdateMiniUserInfoDTO;
 import com.sz.applet.miniuser.pojo.po.MiniLoginUser;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
@@ -35,4 +36,6 @@ public interface MiniUserService extends IService<MiniUser> {
     Object getBoundSchoolUser(Long miniUserId);
 
     Boolean checkAuthStatus(String openId);
+
+    Boolean updateInfo(UpdateMiniUserInfoDTO dto);
 }

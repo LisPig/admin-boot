@@ -8,7 +8,9 @@ import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
 import java.lang.Long;
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.time.Instant;
 import java.lang.String;
 import java.lang.Integer;
 
@@ -75,13 +77,13 @@ public class AppletAlumniPassApplication {
      * 预计返校时间
      */
     @Column(value = "expected_time")
-    private Date expectedTime;
+    private LocalDateTime expectedTime;
 
     /**
      * 申请时间
      */
     @Column(value = "application_time")
-    private Date applicationTime;
+    private LocalDateTime applicationTime;
 
     /**
      * 申请状态（0-待审核，1-已批准，2-已拒绝）
@@ -105,7 +107,7 @@ public class AppletAlumniPassApplication {
      * 审批时间
      */
     @Column(value = "approve_time")
-    private Date approveTime;
+    private LocalDateTime approveTime;
 
     /**
      * 审批备注
