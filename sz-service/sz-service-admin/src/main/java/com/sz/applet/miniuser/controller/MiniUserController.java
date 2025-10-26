@@ -1,6 +1,7 @@
 package com.sz.applet.miniuser.controller;
 
 import com.sz.applet.miniuser.pojo.dto.MiniLoginDTO;
+import com.sz.applet.miniuser.pojo.dto.UpdateMiniUserInfoDTO;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.common.entity.ApiResult;
@@ -35,6 +36,13 @@ public class MiniUserController {
     @GetMapping("/check/{openId}")
     public ApiResult<Boolean> check(@PathVariable String openId) {
         return ApiResult.success(miniUserService.checkAuthStatus(openId));
+    }
+
+
+    @Operation(summary = "小程序-修改微信用户信息")
+    @PostMapping("/update")
+    public ApiResult<Boolean> updateInfo(@RequestBody UpdateMiniUserInfoDTO dto) {
+        return ApiResult.success(miniUserService.updateInfo(dto));
     }
 
 }

@@ -1,5 +1,7 @@
 package com.sz.applet.miniBusiness.pojo.po;
 
+import com.sz.mysql.EntityChangeListener;
+import com.sz.mysql.WeChatEntityChangeListener;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import com.mybatisflex.annotation.Column;
@@ -7,7 +9,10 @@ import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.lang.Long;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.lang.Object;
 import java.lang.String;
@@ -21,9 +26,11 @@ import java.lang.Integer;
  */
 @Accessors(chain = true)
 @Data
-@Table(value = "apply_auth")
-public class ApplyAuth {
+@Table(value = "apply_auth",onInsert = WeChatEntityChangeListener.class, onUpdate = EntityChangeListener.class)
+public class ApplyAuth implements Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
     /**
      * ID
      */
@@ -118,25 +125,13 @@ public class ApplyAuth {
      * 创建时间
      */
     @Column(value = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
     @Column(value = "update_time")
-    private Date updateTime;
-
-    /**
-     * 创建人ID
-     */
-    @Column(value = "create_id")
-    private Long createId;
-
-    /**
-     * 更新人ID
-     */
-    @Column(value = "update_id")
-    private Long updateId;
+    private LocalDateTime updateTime;
 
     /**
      * 审核人ID

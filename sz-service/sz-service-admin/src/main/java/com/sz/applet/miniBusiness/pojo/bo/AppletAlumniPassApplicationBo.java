@@ -12,7 +12,9 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
-import java.util.Date;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 /**
  * 校友通行证申请表 实体类。
@@ -79,6 +81,14 @@ public class AppletAlumniPassApplicationBo extends PageQuery {
      * 预计返校时间
      */
     @Schema(description = "预计返校时间")
-    private Date expectedTime;
+    private Instant expectedTime;
+    
+    // 如果需要作为LocalDateTime使用，可以添加一个转换方法
+    public LocalDateTime getExpectedTimeAsLocalDateTime() {
+        return expectedTime != null ? expectedTime.atZone(ZoneId.systemDefault()).toLocalDateTime() : null;
+    }
+
+
+    private String status;
 
 }

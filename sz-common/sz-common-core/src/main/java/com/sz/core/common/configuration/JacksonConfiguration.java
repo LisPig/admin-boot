@@ -82,9 +82,16 @@ public class JacksonConfiguration extends JsonSerializer<LocalDateTime> {
                     return null;
                 }
                 try {
-                    return LocalDateTime.parse(source);
+                    // 首先尝试解析ISO 8601格式
+                    return LocalDateTime.parse(source, DateTimeFormatter.ISO_INSTANT.withZone(java.time.ZoneId.of("UTC")));
                 } catch (Exception e) {
-                    return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
+                    try {
+                        // 如果失败，尝试解析标准格式
+                        return LocalDateTime.parse(source);
+                    } catch (Exception ex) {
+                        // 最后尝试解析自定义格式
+                        return LocalDateTime.parse(source, DateTimeFormatter.ofPattern(DATE_TIME_PATTERN));
+                    }
                 }
             }
         };
@@ -93,11 +100,15 @@ public class JacksonConfiguration extends JsonSerializer<LocalDateTime> {
     @Bean
     public Jackson2ObjectMapperBuilderCustomizer jsonCustomizer() {
         JavaTimeModule javaTimeModule = new JavaTimeModule();
+        // 添加对ISO 8601格式的支持
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_INSTANT.withZone(java.time.ZoneId.of("UTC"))));
+        javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ISO_DATE_TIME));
         javaTimeModule.addDeserializer(LocalDateTime.class, new LocalDateTimeDeserializer(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)));
         return builder -> {
             builder.modules(javaTimeModule);
             builder.simpleDateFormat(DATE_TIME_PATTERN);
             builder.serializers(new LocalDateSerializer(DateTimeFormatter.ofPattern(DATE_PATTERN)));
+            builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ISO_DATE_TIME));
             builder.serializers(new LocalDateTimeSerializer(DateTimeFormatter.ofPattern(DATE_TIME_PATTERN)));
         };
     }

@@ -1,5 +1,6 @@
 package com.sz.wechat;
 
+import com.sz.wechat.payment.WechatPayProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -20,6 +21,9 @@ public class WechatProperties {
 
     @Schema(description = "企业微信开发者配置")
     private WorkProgramProperties work;
+    
+    @Schema(description = "微信支付配置")
+    private WechatPayProperties pay;
 
     @Data
     public static class MiniProgramProperties {

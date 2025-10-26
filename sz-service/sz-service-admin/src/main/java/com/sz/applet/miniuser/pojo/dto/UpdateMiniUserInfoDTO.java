@@ -1,22 +1,17 @@
-package com.sz.applet.miniuser.pojo.vo;
+package com.sz.applet.miniuser.pojo.dto;
 
-import com.sz.applet.miniuser.pojo.po.MiniUser;
-import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 /**
- * <p>
- * MiniUser查询返回
- * </p>
- *
+ * MiniLoginDTO
+ * 
  * @author sz
- * @since 2024-04-26
+ * @since 2024/4/26 14:25
+ * @version 1.0
  */
 @Data
-@Schema(description = "MiniUser返回vo")
-@AutoMapper(target = MiniUser.class)
-public class MiniUserVO {
+public class UpdateMiniUserInfoDTO {
 
     @Schema(description = "用户ID")
     private Long id;

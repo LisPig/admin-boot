@@ -38,4 +38,9 @@ public class MiniLoginUser {
 
     private String avatarUrl;
 
+    private Integer authStatus;
+
+
+
+
 }

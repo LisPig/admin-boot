@@ -104,7 +104,7 @@ public class AppletAlumniPassApplicationController {
 
     @Operation(summary = "小程序-用户通行证列表")
     @GetMapping("/list")
-    public ApiResult<List<AppletAlumniPassApplicationVO>> list(AppletAlumniPassApplicationListDTO dto) {
+    public ApiResult<PageResult<AppletAlumniPassApplicationVO>> list(AppletAlumniPassApplicationListDTO dto) {
         return ApiResult.success(appletAlumniPassApplicationService.list(dto));
     }
 

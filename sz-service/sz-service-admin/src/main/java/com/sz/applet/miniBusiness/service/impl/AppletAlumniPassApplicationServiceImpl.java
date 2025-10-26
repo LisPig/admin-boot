@@ -1,6 +1,7 @@
 package com.sz.applet.miniBusiness.service.impl;
 
 
+import cn.hutool.core.util.ObjectUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.sz.applet.miniBusiness.pojo.bo.AppletAlumniPassApplicationBo;
 import com.sz.applet.miniBusiness.pojo.dto.AppletAlumniPassApplicationCreateDTO;
@@ -20,6 +21,7 @@ import com.sz.applet.miniBusiness.mapper.AppletAlumniPassApplicationMapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -53,10 +55,10 @@ public class AppletAlumniPassApplicationServiceImpl extends ServiceImpl<AppletAl
     }
 
     @Override
-    public List<AppletAlumniPassApplicationVO> list(AppletAlumniPassApplicationListDTO dto){
+    public PageResult<AppletAlumniPassApplicationVO> list(AppletAlumniPassApplicationListDTO dto){
         QueryWrapper queryWrapper = buildQueryWrapper(dto);
         queryWrapper.eq(AppletAlumniPassApplication::getUserId, Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
-        return listAs(queryWrapper, AppletAlumniPassApplicationVO.class);
+        return PageUtils.getPageResult(pageAs(PageUtils.getPage(dto), queryWrapper, AppletAlumniPassApplicationVO.class));
     }
 
     @Override
@@ -83,7 +85,7 @@ public class AppletAlumniPassApplicationServiceImpl extends ServiceImpl<AppletAl
         AppletAlumniPassApplication appletAlumniPassApplication = new AppletAlumniPassApplication();
         appletAlumniPassApplication.setId(dto.getId());
         appletAlumniPassApplication.setStatus(dto.getStatus());
-        appletAlumniPassApplication.setApproveTime(new Date());
+        appletAlumniPassApplication.setApproveTime(LocalDateTime.now());
         appletAlumniPassApplication.setApproveRemark(dto.getApproveRemark());
         updateById(appletAlumniPassApplication);
     }
@@ -92,12 +94,13 @@ public class AppletAlumniPassApplicationServiceImpl extends ServiceImpl<AppletAl
     private QueryWrapper buildQueryWrapper(AppletAlumniPassApplicationBo bo) {
         QueryWrapper queryWrapper = new QueryWrapper();
 
-        queryWrapper.eq(AppletAlumniPassApplication::getId, bo.getId());
-        queryWrapper.eq(AppletAlumniPassApplication::getUserId, bo.getUserId());
-        queryWrapper.eq(AppletAlumniPassApplication::getName, bo.getName());
-        queryWrapper.eq(AppletAlumniPassApplication::getPhone, bo.getPhone());
-        queryWrapper.eq(AppletAlumniPassApplication::getYear, bo.getYear())
-                .eq(AppletAlumniPassApplication::getClassNo, bo.getClassNo());
+        queryWrapper.eq(AppletAlumniPassApplication::getId, bo.getId(), ObjectUtil.isNotNull(bo.getId()));
+        queryWrapper.eq(AppletAlumniPassApplication::getUserId, bo.getUserId(), ObjectUtil.isNotNull(bo.getUserId()));
+        queryWrapper.eq(AppletAlumniPassApplication::getName, bo.getName(), ObjectUtil.isNotNull(bo.getName()));
+        queryWrapper.eq(AppletAlumniPassApplication::getPhone, bo.getPhone(), ObjectUtil.isNotNull(bo.getPhone()));
+        queryWrapper.eq(AppletAlumniPassApplication::getYear, bo.getYear(), ObjectUtil.isNotNull(bo.getYear()))
+                .eq(AppletAlumniPassApplication::getClassNo, bo.getClassNo(), ObjectUtil.isNotNull(bo.getClassNo()))
+                .eq(AppletAlumniPassApplication::getStatus,bo.getStatus(), ObjectUtil.isNotNull(bo.getStatus()));
 
         return queryWrapper ;
 
