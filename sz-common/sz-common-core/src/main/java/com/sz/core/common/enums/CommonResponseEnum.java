@@ -35,7 +35,11 @@ public enum CommonResponseEnum implements ResponseEnumTemplate<CommonResponseEnu
     BACKGROUND_NOT_EXISTS(1014, "背景图片不存在"),
 
     PARAM_EXCEPT(1015,"为选中数据"),
-    UNKNOWN(9999, "运行时发生异常"),NOT_FOUND(1016,"未找到");
+
+
+    UNKNOWN(9999, "运行时发生异常"),
+    NOT_FOUND(1016,"未找到"),
+    PARAM_ERROR(1016,"内容错误");
 
     // @formatter:on
 
