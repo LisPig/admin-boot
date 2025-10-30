@@ -39,7 +39,7 @@ public enum CommonResponseEnum implements ResponseEnumTemplate<CommonResponseEnu
 
     UNKNOWN(9999, "运行时发生异常"),
     NOT_FOUND(1016,"未找到"),
-    PARAM_ERROR(1016,"内容错误");
+    PARAM_ERROR(1017,"内容错误"),FAILURE(1018,"失败");
 
     // @formatter:on
 

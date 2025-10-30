@@ -8,6 +8,7 @@ import com.sz.applet.miniBusiness.service.AppletSquareFollowsService;
 import com.sz.security.core.util.LoginUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 import static com.sz.applet.miniBusiness.pojo.po.table.AppletSquareFollowsTableDef.APPLET_SQUARE_FOLLOWS;
@@ -44,5 +45,11 @@ public class AppletSquareFollowsServiceImpl extends ServiceImpl<AppletSquareFoll
             this.save(follow);
             return true; // 关注成功
         }
+    }
+
+    @Override
+    public List<AppletSquareFollows> getFollowList(Long userId) {
+
+        return null;
     }
 }

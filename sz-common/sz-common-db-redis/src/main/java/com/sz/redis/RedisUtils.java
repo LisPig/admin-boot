@@ -18,6 +18,7 @@ public class RedisUtils {
         throw new IllegalStateException("Utility class");
     }
 
+   // private static final RedissonClient CLIENT = SpringApplicationContextUtils.getInstance().getBean(RedissonClient.class);
     private static final RedisTemplate<Object, Object> TEMPLATE = SpringApplicationContextUtils.getInstance().getBean(RedisTemplateClient.class).getTemplate();
 
     public static String getKey(String constant, String... value) {
@@ -71,5 +72,12 @@ public class RedisUtils {
     public static RedisTemplate<Object, Object> getRestTemplate() {
         return TEMPLATE;
     }
+
+    /**
+     * 获取客户端实例
+     */
+    /*public static RedissonClient getClient() {
+        return CLIENT;
+    }*/
 
 }

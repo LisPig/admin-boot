@@ -5,7 +5,10 @@ CREATE TABLE applet_square_memos
     user_id    BIGINT NOT NULL COMMENT '发布用户ID',
     content    TEXT COMMENT '动态内容',
     imgs       TEXT COMMENT '图片链接，逗号分隔',
+    tag_id      BIGINT COMMENT '话题标签ID',
     tag_name    VARCHAR(50) COMMENT '话题标签',
+    like_count BIGINT DEFAULT 0 COMMENT '点赞数',
+    comment_count BIGINT DEFAULT 0 COMMENT '评论数',
     `create_time` datetime     DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
     `update_time` datetime     DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
     FOREIGN KEY (user_id) REFERENCES mini_user (id) ON DELETE CASCADE

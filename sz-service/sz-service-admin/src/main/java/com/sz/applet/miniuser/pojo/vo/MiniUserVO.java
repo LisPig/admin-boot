@@ -1,9 +1,13 @@
 package com.sz.applet.miniuser.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+
+import java.io.Serializable;
 
 /**
  * <p>
@@ -16,7 +20,10 @@ import lombok.Data;
 @Data
 @Schema(description = "MiniUser返回vo")
 @AutoMapper(target = MiniUser.class)
-public class MiniUserVO {
+//过滤null值和空字符
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class MiniUserVO implements Serializable {
 
     @Schema(description = "用户ID")
     private Long id;
