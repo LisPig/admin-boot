@@ -31,6 +31,11 @@
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
+        <!--<dependency>
+            <groupId>org.redisson</groupId>
+            <artifactId>redisson-spring-boot-starter</artifactId>
+            <version>3.24.3</version> &lt;!&ndash; 请根据需要选择最新版本 &ndash;&gt;
+        </dependency>-->
 
     </dependencies>
 

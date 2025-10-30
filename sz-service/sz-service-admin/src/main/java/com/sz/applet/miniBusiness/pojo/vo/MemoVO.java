@@ -1,5 +1,8 @@
 package com.sz.applet.miniBusiness.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -16,6 +19,8 @@ import java.util.List;
  */
 @Data
 @Schema(description = "动态VO")
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MemoVO {
 
     @Schema(description = "动态ID")
@@ -47,5 +52,17 @@ public class MemoVO {
 
     @Schema(description = "是否已点赞")
     private Boolean isLiked;
+
+    @Schema(description = "是否已关注")
+    private Boolean isFollowed;
+
+    @Schema(description = "点赞用户列表")
+    private List<MiniUserVO> likers;
+
+    @Schema(description = "关注用户列表")
+    private List<UserFollowVO> followers;
+    
+    @Schema(description = "评论列表")
+    private List<CommentVO> comments;
 
 }

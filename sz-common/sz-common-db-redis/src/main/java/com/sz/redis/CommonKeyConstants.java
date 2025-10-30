@@ -11,6 +11,10 @@ package com.sz.redis;
  */
 public class CommonKeyConstants {
 
+    public static final String MEMO_LIKE_LOCK = "wechat_square_memo";
+
+    public static final String MEMO_COMMENT_LOCK = "wechat_square_memo_comment";
+
     private CommonKeyConstants() {
         throw new IllegalStateException("Utility class");
     }

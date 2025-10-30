@@ -3,6 +3,8 @@ package com.sz.applet.miniBusiness.service;
 import com.mybatisflex.core.service.IService;
 import com.sz.applet.miniBusiness.pojo.po.AppletSquareFollows;
 
+import java.util.List;
+
 /**
  * 关注表 服务层。
  *
@@ -17,4 +19,11 @@ public interface AppletSquareFollowsService extends IService<AppletSquareFollows
      * @return true表示关注成功，false表示取消关注成功
      */
     boolean followUser(Long followedUserId);
+
+    /**
+     * 获取用户关注列表
+     * @param userId 用户ID
+     * @return 关注列表
+     */
+    List<AppletSquareFollows> getFollowList(Long userId);
 }
