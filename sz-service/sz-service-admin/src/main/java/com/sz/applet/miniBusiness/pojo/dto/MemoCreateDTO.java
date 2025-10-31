@@ -27,4 +27,8 @@ public class MemoCreateDTO {
     @Schema(description = "话题标签")
     private String tagName;
 
+
+    @Schema(description = "位置")
+    private String position;
+
 }

@@ -8,6 +8,7 @@ import com.sz.core.common.entity.PageResult;
 import com.sz.oss.UploadResult;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -37,6 +38,23 @@ public interface SysFileService extends IService<SysFile> {
      * @return {@link ApiResult}
      */
     UploadResult uploadFile(MultipartFile file, String dirTag);
+
+    /**
+     * 批量上传文件
+     *
+     * @param files
+     *            文件数组
+     * @param dirTag
+     *            目录标签
+     * @return {@link List}<{@link UploadResult}>
+     */
+    default List<UploadResult> uploadBatchFile(MultipartFile[] files, String dirTag) {
+        List<UploadResult> results = new ArrayList<>(files.length);
+        for (MultipartFile file : files) {
+            results.add(uploadFile(file, dirTag));
+        }
+        return results;
+    }
 
     Long fileLog(UploadResult uploadResult);
 }

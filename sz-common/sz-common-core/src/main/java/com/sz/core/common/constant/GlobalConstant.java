@@ -40,4 +40,7 @@ public class GlobalConstant {
      */
     public static final String DYNAMIC_DICT_PREFIX = "dynamic_";
 
+
+    public static final String NORMAL_STATUS = "status";
+
 }

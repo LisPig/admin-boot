@@ -79,4 +79,11 @@ public class SysDictTypeController {
         return ApiResult.success(sysDictTypeService.selectDictTypeOptions());
     }
 
+
+   /* @Operation(summary = "根据字典类型查询子项数据")
+    @GetMapping("selectDictDataByType")
+    public ApiResult<List<DictTypeVO>> selectDictDataByType(@RequestParam String dictType) {
+        return ApiResult.success(sysDictTypeService.selectDictDataByType(dictType));
+    }*/
+
 }

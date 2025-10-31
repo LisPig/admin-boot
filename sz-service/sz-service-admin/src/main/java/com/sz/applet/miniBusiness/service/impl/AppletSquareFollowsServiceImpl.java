@@ -25,7 +25,7 @@ public class AppletSquareFollowsServiceImpl extends ServiceImpl<AppletSquareFoll
     @Override
     public boolean followUser(Long followedUserId) {
         // 获取当前登录用户ID
-        Long userId = Objects.requireNonNull(LoginUtils.getLoginUser()).getUserInfo().getId();
+        Long userId = Objects.requireNonNull(LoginUtils.getMiniLoginUser().getUserId());
 
         // 检查是否已经关注该用户
         QueryWrapper queryWrapper = new QueryWrapper();

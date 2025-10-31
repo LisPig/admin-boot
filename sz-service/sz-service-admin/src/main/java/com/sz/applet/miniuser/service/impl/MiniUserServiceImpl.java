@@ -64,6 +64,7 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
             miniUser = new MiniUser();
             miniUser.setOpenid(openId);
             miniUser.setUnionid(unionid);
+
             save(miniUser);
         }
         
@@ -78,6 +79,7 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
             loginUser.setOpenid(miniUser.getOpenid());
             loginUser.setNickname(miniUser.getNickname());
             loginUser.setPhone(miniUser.getPhone());
+            loginUser.setUsername(miniUser.getUsername());
             loginUser.setAvatarUrl(miniUser.getAvatarUrl());
             return loginUser;
         }

@@ -19,6 +19,7 @@ import com.sz.applet.miniBusiness.service.AppletSquareMemosService;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.core.common.entity.MiniLoginUserDTO;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.common.exception.common.BusinessException;
@@ -81,6 +82,7 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
         memo.setContent(dto.getContent());
         memo.setImgs(dto.getImgs());
         memo.setTagName(dto.getTagName());
+        memo.setPosition(dto.getPosition());
         this.save(memo);
     }
 
@@ -94,7 +96,9 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
 
         // 添加排序条件
         queryWrapper.orderBy(APPLET_SQUARE_MEMOS.CREATE_TIME, false);
+        // 先分页获取实体对象数据集
         //PageResult<AppletSquareMemos> pageResult = PageUtils.getPageResult(page(PageUtils.getPage(bo), queryWrapper));
+        //然后再转为VO
         //PageResult<MemoVO> pageResultVO = PageUtils.getPageResult(pageResult, MemoVO.class);
         // 分页查询
         PageResult<MemoVO> pageResult = PageUtils.getPageResult(pageAs(PageUtils.getPage(bo), queryWrapper, MemoVO.class));
@@ -102,15 +106,19 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
             // 获取点赞用户列表
             List<AppletSquareLikes> appletSquareLikes = appletSquareLikesService.list(new QueryWrapper().eq(AppletSquareLikes::getMemoId, memoVO.getId()));
             // 提取appletSquareLikes里的userId为数组
-            List<Long> userIds = appletSquareLikes.stream().map(AppletSquareLikes::getUserId).toList();
-            List<MiniUser> miniUsers = miniUserService.list(new QueryWrapper().create().select(MiniUser::getId, MiniUser::getName, MiniUser::getAvatarUrl).in(MiniUser::getId, userIds));
-            memoVO.setLikers(miniUsers.stream().map(user -> {
-                MiniUserVO vo = new MiniUserVO();
-                vo.setId(user.getId());
-                vo.setName(user.getName());
-                vo.setAvatarUrl(user.getAvatarUrl());
-                return vo;
-            }).toList());
+            if(ObjectUtil.isNotEmpty(appletSquareLikes)) {
+                List<Long> userIds = appletSquareLikes.stream().map(AppletSquareLikes::getUserId).toList();
+                List<MiniUser> miniUsers = miniUserService.list(new QueryWrapper().select(MiniUser::getId, MiniUser::getUsername, MiniUser::getAvatarUrl).in(MiniUser::getId, userIds, ObjectUtil.isNotEmpty(userIds)));
+                memoVO.setLikers(miniUsers.stream().map(user -> {
+                    MiniUserVO vo = new MiniUserVO();
+                    vo.setId(user.getId());
+                    vo.setName(user.getUsername());
+                    vo.setAvatarUrl(user.getAvatarUrl());
+                    return vo;
+                }).toList());
+            }
+            MiniUser miniUser = miniUserService.getOne(new QueryWrapper().select(MiniUser::getUsername).eq(MiniUser::getId, memoVO.getUserId()));
+            memoVO.setUsername(miniUser.getUsername());
 
             // 获取关注用户列表
             memoVO.setFollowers(appletSquareFollowsService.listAs(new QueryWrapper().select(AppletSquareFollows::getUserId).eq(AppletSquareFollows::getFollowedUserId, memoVO.getUserId()), UserFollowVO.class));
@@ -125,9 +133,10 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
             AppletSquareLikes userLike = appletSquareLikesService.getOne(likeQuery);
             memoVO.setIsLiked(userLike != null);
 
-            // 获取是否关注该用户
+            // 获取是否已关注该用户
             QueryWrapper flowerQuery = new QueryWrapper();
-            flowerQuery.eq(AppletSquareFollows::getUserId, memoVO.getUserId());
+            flowerQuery.eq(AppletSquareFollows::getFollowedUserId, memoVO.getUserId())
+                    .eq(AppletSquareFollows::getUserId, userId);
             AppletSquareFollows flower = appletSquareFollowsService.getOne(flowerQuery);
             memoVO.setIsFollowed(flower != null);
         }
@@ -186,8 +195,9 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
     @Transactional
     public void saveComment(CommentSaveDTO dto) {
         // 获取当前登录用户信息
+        MiniLoginUserDTO loginUser = LoginUtils.getMiniLoginUser();
         Long userId = Objects.requireNonNull(LoginUtils.getMiniLoginUser().getUserId());
-        String username = Objects.requireNonNull(LoginUtils.getMiniLoginUser().getNickname());
+        String username = Objects.requireNonNull(LoginUtils.getMiniLoginUser().getUsername());
 
         // 检查评论内容是否包含敏感词
         if (SensitiveWordUtils.containsSensitiveWord(dto.getContent())) {
