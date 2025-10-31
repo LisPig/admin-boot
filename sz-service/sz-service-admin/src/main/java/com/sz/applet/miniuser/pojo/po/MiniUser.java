@@ -44,7 +44,7 @@ public class MiniUser implements Serializable {
     private String nickname;
 
     @Schema(description = "真实姓名")
-    private String name;
+    private String username;
 
     @Schema(description = "手机号")
     private String phone;

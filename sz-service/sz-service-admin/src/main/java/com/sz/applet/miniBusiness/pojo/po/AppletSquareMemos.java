@@ -64,6 +64,14 @@ public class AppletSquareMemos implements Serializable {
     @Schema(description = "话题标签")
     private String tagName;
 
+
+    /**
+     * 位置
+     */
+    @Column(value = "position")
+    @Schema(description = "位置")
+    private String position;
+
     /**
      * 点赞数
      */

@@ -1,5 +1,6 @@
 package com.sz.admin.system.controller;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import com.sz.admin.system.pojo.dto.sysfile.SysFileListDTO;
 import com.sz.admin.system.pojo.po.SysFile;
 import com.sz.admin.system.service.SysFileService;
@@ -13,6 +14,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * <p>
@@ -41,6 +45,14 @@ public class SysFileController {
     @PostMapping("/upload")
     public ApiResult<UploadResult> upload(@RequestParam MultipartFile file, @RequestParam(value = "dirTag") String dirTag) {
         return ApiResult.success(sysFileService.uploadFile(file, dirTag));
+    }
+
+    @DebounceIgnore
+    @SaIgnore
+    @Operation(summary = "批量上传文件")
+    @PostMapping("/uploadBatch")
+    public ApiResult<List<UploadResult>> uploadBatch(@RequestParam MultipartFile[] files, @RequestParam(value = "dirTag") String dirTag) {
+        return ApiResult.success(sysFileService.uploadBatchFile(files, dirTag));
     }
 
 }

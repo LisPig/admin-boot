@@ -98,6 +98,7 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
             MiniUser miniUser = new MiniUser();
             miniUser.setId(bo.getUserId());
             miniUser.setAuthStatus(1); // 认证通过
+            miniUser.setUsername(bo.getName());
             miniUserService.updateById(miniUser);
             SchoolUserBinding schoolUserBinding = new SchoolUserBinding();
             schoolUserBinding.setSchoolUserId(bo.getId());
@@ -146,7 +147,7 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
                 ApplyAuth applyAuth = this.getOne(new QueryWrapper()
                         .eq(ApplyAuth::getId, schoolUserBinding.getSchoolUserId()));
                 miniUser.setPhone(applyAuth.getPhone());
-                miniUser.setName(applyAuth.getName());
+                miniUser.setUsername(applyAuth.getName());
             }
         }
         return BeanCopyUtils.copy(miniUser, MiniUserVO.class);
