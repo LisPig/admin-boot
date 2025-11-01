@@ -136,4 +136,33 @@ public class BeanCopyUtils {
         return sourceList.stream().map(source -> modelMapper.map(source, targetClass)).collect(Collectors.toList());
     }
 
+    /**
+     * 使用 ModelMapper 将源列表中的每个对象复制为目标类型的对象列表，并可选择是否忽略null值字段。
+     * <p>
+     * 此方法通过流操作，将源列表中的每个对象映射为目标类型的新实例。适用于需要批量转换对象类型的场景。
+     * 当skipNull为true时，源对象中的null值不会覆盖目标对象中已有的值。
+     * </p>
+     *
+     * @param <Source>
+     *            源列表中对象的类型
+     * @param <Target>
+     *            目标列表中对象的类型
+     * @param sourceList
+     *            源对象列表，包含需要转换的对象
+     * @param targetClass
+     *            目标对象的类类型，用于指定转换的目标类型
+     * @param skipNull
+     *            是否忽略null值字段，true表示忽略，false表示不忽略
+     * @return 转换后的目标对象列表，每个对象都是 `targetClass` 类型的新实例
+     */
+    public static <Source, Target> List<Target> copyList(List<Source> sourceList, Class<Target> targetClass, boolean skipNull) {
+        boolean originalSkipNullSetting = modelMapper.getConfiguration().isSkipNullEnabled();
+        modelMapper.getConfiguration().setSkipNullEnabled(skipNull);
+        try {
+            return sourceList.stream().map(source -> modelMapper.map(source, targetClass)).collect(Collectors.toList());
+        } finally {
+            modelMapper.getConfiguration().setSkipNullEnabled(originalSkipNullSetting);
+        }
+    }
+
 }

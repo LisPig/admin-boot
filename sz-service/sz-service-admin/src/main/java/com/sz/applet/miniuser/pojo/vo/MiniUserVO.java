@@ -20,8 +20,7 @@ import java.io.Serializable;
 @Data
 @Schema(description = "MiniUser返回vo")
 @AutoMapper(target = MiniUser.class)
-//过滤null值和空字符
-@JsonInclude(JsonInclude.Include.NON_EMPTY)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MiniUserVO implements Serializable {
 
@@ -34,7 +33,7 @@ public class MiniUserVO implements Serializable {
     @Schema(description = "用户在开放平台的唯一标识符")
     private String unionid;
 
-    private String name;
+    private String username;
 
     @Schema(description = "用户头像URL")
     private String avatarUrl;

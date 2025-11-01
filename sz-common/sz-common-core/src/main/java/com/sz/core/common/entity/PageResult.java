@@ -1,5 +1,6 @@
 package com.sz.core.common.entity;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
@@ -14,6 +15,7 @@ import java.util.List;
  * @since 2022/8/25 10:25
  */
 @Data
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class PageResult<T> implements Serializable {
 
     @Serial
