@@ -1,5 +1,6 @@
 package com.sz.applet.miniuser.pojo.po;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.mybatisflex.annotation.*;
 
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,6 +23,7 @@ import java.util.Date;
 @Data
 @Table(value = "mini_user", onInsert = EntityChangeListener.class, onUpdate = EntityChangeListener.class)
 @Schema(description = "小程序用户表")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MiniUser implements Serializable {
 
     @Serial

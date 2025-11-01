@@ -24,6 +24,7 @@ import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.common.sensitive.SensitiveWordUtils;
+import com.sz.core.common.translate.TranslateUtil;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.PageUtils;
 import com.sz.redis.CommonKeyConstants;
@@ -68,6 +69,9 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
     @Autowired
     private RedisLock redisLock;
 
+    @Autowired
+    private TranslateUtil translateUtil;
+
 
     @Override
     public void createMemo(MemoCreateDTO dto) {
@@ -103,20 +107,7 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
         // 分页查询
         PageResult<MemoVO> pageResult = PageUtils.getPageResult(pageAs(PageUtils.getPage(bo), queryWrapper, MemoVO.class));
         for(MemoVO memoVO : pageResult.getRows()){
-            // 获取点赞用户列表
-            List<AppletSquareLikes> appletSquareLikes = appletSquareLikesService.list(new QueryWrapper().eq(AppletSquareLikes::getMemoId, memoVO.getId()));
-            // 提取appletSquareLikes里的userId为数组
-            if(ObjectUtil.isNotEmpty(appletSquareLikes)) {
-                List<Long> userIds = appletSquareLikes.stream().map(AppletSquareLikes::getUserId).toList();
-                List<MiniUser> miniUsers = miniUserService.list(new QueryWrapper().select(MiniUser::getId, MiniUser::getUsername, MiniUser::getAvatarUrl).in(MiniUser::getId, userIds, ObjectUtil.isNotEmpty(userIds)));
-                memoVO.setLikers(miniUsers.stream().map(user -> {
-                    MiniUserVO vo = new MiniUserVO();
-                    vo.setId(user.getId());
-                    vo.setName(user.getUsername());
-                    vo.setAvatarUrl(user.getAvatarUrl());
-                    return vo;
-                }).toList());
-            }
+
             MiniUser miniUser = miniUserService.getOne(new QueryWrapper().select(MiniUser::getUsername).eq(MiniUser::getId, memoVO.getUserId()));
             memoVO.setUsername(miniUser.getUsername());
 
@@ -140,6 +131,7 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
             AppletSquareFollows flower = appletSquareFollowsService.getOne(flowerQuery);
             memoVO.setIsFollowed(flower != null);
         }
+        translateUtil.translate(pageResult.getRows());
         return pageResult;
     }
 
