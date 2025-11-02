@@ -1,15 +1,24 @@
 package com.sz.applet.miniBusiness.service.impl;
 
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.applet.miniBusiness.mapper.AppletSquareFollowsMapper;
+import com.sz.applet.miniBusiness.pojo.bo.UserFollowListBO;
 import com.sz.applet.miniBusiness.pojo.po.AppletSquareFollows;
+import com.sz.applet.miniBusiness.pojo.vo.UserFollowVO;
 import com.sz.applet.miniBusiness.service.AppletSquareFollowsService;
+import com.sz.applet.miniuser.mapper.MiniUserMapper;
+import com.sz.applet.miniuser.pojo.po.MiniUser;
+import com.sz.core.common.entity.PageResult;
+import com.sz.core.util.PageUtils;
 import com.sz.security.core.util.LoginUtils;
+import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static com.sz.applet.miniBusiness.pojo.po.table.AppletSquareFollowsTableDef.APPLET_SQUARE_FOLLOWS;
 
@@ -21,6 +30,12 @@ import static com.sz.applet.miniBusiness.pojo.po.table.AppletSquareFollowsTableD
  */
 @Service
 public class AppletSquareFollowsServiceImpl extends ServiceImpl<AppletSquareFollowsMapper, AppletSquareFollows> implements AppletSquareFollowsService {
+
+    private final MiniUserMapper miniUserMapper;
+
+    public AppletSquareFollowsServiceImpl(MiniUserMapper miniUserMapper) {
+        this.miniUserMapper = miniUserMapper;
+    }
 
     @Override
     public boolean followUser(Long followedUserId) {
@@ -48,8 +63,32 @@ public class AppletSquareFollowsServiceImpl extends ServiceImpl<AppletSquareFoll
     }
 
     @Override
-    public List<AppletSquareFollows> getFollowList(Long userId) {
+    public PageResult<UserFollowVO> getFollowList(UserFollowListBO bo) {
+        Long userId = Objects.requireNonNull(LoginUtils.getMiniLoginUser().getUserId());
+        bo.setUserId(userId);
+        QueryWrapper queryWrapper = new QueryWrapper();
+        queryWrapper.eq(AppletSquareFollows::getUserId, userId);
+        // 构建分页对象
+        PageResult<AppletSquareFollows> page = PageUtils.getPageResult(page(PageUtils.getPage(bo), queryWrapper));
 
-        return null;
+        
+        // 转换为VO对象
+        List<UserFollowVO> voList = page.getRows().stream().map(follow -> {
+            UserFollowVO vo = new UserFollowVO();
+            BeanUtils.copyProperties(follow, vo);
+            
+            // 查询被关注用户的信息
+            MiniUser followedUser = miniUserMapper.selectOneById(follow.getFollowedUserId());
+            if (followedUser != null) {
+                vo.setUserId(followedUser.getId());
+                vo.setFollowedUserNickname(followedUser.getNickname());
+                vo.setFollowedUserAvatar(followedUser.getAvatarUrl());
+            }
+            
+            return vo;
+        }).collect(Collectors.toList());
+        PageResult<UserFollowVO> result = new PageResult<>(page.getCurrent(), page.getTotal(), page.getTotalPage(), page.getLimit(),  voList);
+        
+        return result;
     }
 }

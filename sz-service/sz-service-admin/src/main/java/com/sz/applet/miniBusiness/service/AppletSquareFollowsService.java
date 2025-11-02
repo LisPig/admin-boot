@@ -1,7 +1,10 @@
 package com.sz.applet.miniBusiness.service;
 
 import com.mybatisflex.core.service.IService;
+import com.sz.applet.miniBusiness.pojo.bo.UserFollowListBO;
 import com.sz.applet.miniBusiness.pojo.po.AppletSquareFollows;
+import com.sz.core.common.entity.PageResult;
+import com.sz.applet.miniBusiness.pojo.vo.UserFollowVO;
 
 import java.util.List;
 
@@ -21,9 +24,9 @@ public interface AppletSquareFollowsService extends IService<AppletSquareFollows
     boolean followUser(Long followedUserId);
 
     /**
-     * 获取用户关注列表
-     * @param userId 用户ID
+     * 获取当前用户关注列表
+     * @param bo 查询参数
      * @return 关注列表
      */
-    List<AppletSquareFollows> getFollowList(Long userId);
+    PageResult<UserFollowVO> getFollowList(UserFollowListBO bo);
 }

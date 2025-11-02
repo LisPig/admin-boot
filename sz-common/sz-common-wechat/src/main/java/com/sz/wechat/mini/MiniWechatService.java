@@ -3,6 +3,8 @@ package com.sz.wechat.mini;
 import com.sz.core.util.JsonUtils;
 import com.sz.redis.RedisUtils;
 import com.sz.wechat.WechatProperties;
+import com.sz.wechat.mini.pojo.dto.SubscribeMessageSendDTO;
+import com.sz.wechat.mini.pojo.vo.SubscribeMessageSendVO;
 import com.sz.wechat.pojo.AccessTokenResult;
 import com.sz.wechat.pojo.ErrorMessage;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +16,7 @@ import org.springframework.web.client.RestClient;
 import java.util.concurrent.TimeUnit;
 
 import static com.sz.wechat.WechatApiConstant.WECHAT_MINI_LOGIN_URL;
+import static com.sz.wechat.WechatApiConstant.WECHAT_MINI_SUBSCRIBE_MESSAGE_SEND_URL;
 import static com.sz.wechat.WechatApiConstant.WECHAT_TOKEN_URL;
 
 /**
@@ -70,6 +73,22 @@ public class MiniWechatService {
                 .uri(WECHAT_MINI_LOGIN_URL, wechatProperties.getMini().getAppId(), wechatProperties.getMini().getAppSecret(), code, accessToken).retrieve()
                 .toEntity(String.class);
         return JsonUtils.parseObject(entity.getBody(), LoginInfoResult.class);
+    }
+
+    /**
+     * 发送订阅消息
+     *
+     * @param accessToken accessToken
+     * @param dto 消息内容
+     * @return 发送结果
+     */
+    public SubscribeMessageSendVO sendSubscribeMessage(String accessToken, SubscribeMessageSendDTO dto) {
+        ResponseEntity<SubscribeMessageSendVO> entity = RestClient.create().post()
+                .uri(WECHAT_MINI_SUBSCRIBE_MESSAGE_SEND_URL, accessToken)
+                .body(dto)
+                .retrieve()
+                .toEntity(SubscribeMessageSendVO.class);
+        return entity.getBody();
     }
 
     /**
