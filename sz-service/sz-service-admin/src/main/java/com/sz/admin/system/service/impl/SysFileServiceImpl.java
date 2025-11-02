@@ -10,6 +10,7 @@ import com.sz.admin.system.pojo.po.table.SysFileTableDef;
 import com.sz.admin.system.service.SysFileService;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.enums.CommonResponseEnum;
+import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.PageUtils;
 import com.sz.core.util.Utils;
@@ -20,6 +21,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * <p>
@@ -83,7 +88,8 @@ public class SysFileServiceImpl extends ServiceImpl<CommonFileMapper, SysFile> i
             uploadResult.setFileId(fileId);
         } catch (Exception e) {
             log.error(" sysFile upload error", e);
-            CommonResponseEnum.FILE_UPLOAD_ERROR.assertTrue(true);
+           // CommonResponseEnum.FILE_UPLOAD_ERROR.assertTrue(true);
+            throw new BusinessException(CommonResponseEnum.FILE_UPLOAD_ERROR,null,e.getMessage());
         }
         return uploadResult;
     }
@@ -93,5 +99,44 @@ public class SysFileServiceImpl extends ServiceImpl<CommonFileMapper, SysFile> i
         SysFile sysFile = BeanCopyUtils.copy(uploadResult, SysFile.class);
         this.save(sysFile);
         return sysFile.getId();
+    }
+    
+    @Override
+    public Boolean deleteFile(Long fileId) {
+        SysFile sysFile = this.getById(fileId);
+        if (sysFile == null) {
+            return false;
+        }
+        
+        // 删除实际文件（本地和OSS）
+        try {
+            // 删除OSS文件
+            //if (!"local".equals(activeProfile)) {
+                // 从objectName中提取实际的对象键
+                String objectName = sysFile.getObjectName();
+                // 注意：这里可能需要根据具体实现调整对象键的构造方式
+                ossClient.delete(objectName);
+            //}
+            
+   /*         // 删除本地文件（如果是local环境或者也保存了本地文件）
+            // 根据LocalFileUploadService的实现，文件保存在项目目录外的uploads文件夹中
+            String userDir = System.getProperty("user.dir");
+            Path projectDir = Paths.get(userDir);
+            Path parentDir = projectDir.getParent();
+            Path localFilePath = parentDir.resolve("uploads").resolve(sysFile.getObjectName());
+            
+            if (Files.exists(localFilePath)) {
+                Files.delete(localFilePath);
+                log.info("本地文件删除成功: {}", localFilePath.toString());
+            }*/
+        } catch (Exception e) {
+            log.error("删除文件失败，fileId: {}", fileId, e);
+            // 即使物理文件删除失败，也继续删除数据库记录
+        }
+        
+        // 删除文件记录
+        this.removeById(fileId);
+        
+        return true;
     }
 }

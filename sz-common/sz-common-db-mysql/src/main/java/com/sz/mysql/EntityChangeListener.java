@@ -6,6 +6,7 @@ import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.SetListener;
 import com.mybatisflex.annotation.UpdateListener;
 import com.sz.core.common.entity.LoginUser;
+import com.sz.core.common.entity.MiniLoginUserDTO;
 import com.sz.security.core.util.LoginUtils;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,11 +41,22 @@ public class EntityChangeListener implements InsertListener, UpdateListener, Set
         }
         setPropertyIfPresent(o, "createId", StpUtil.getLoginIdAsLong());
         setPropertyIfPresent(o, "updateId", StpUtil.getLoginIdAsLong());
-        LoginUser loginUser = LoginUtils.getLoginUser();
-        List<Long> deptOptions = loginUser.getDepts();
-        if (deptOptions.isEmpty())
-            return;
-        setPropertyIfPresent(o, "deptScope", deptOptions);
+        
+        // 兼容两种登录用户类型：LoginUser 和 MiniLoginUserDTO
+        List<Long> deptOptions = null;
+        try {
+            LoginUser loginUser = LoginUtils.getLoginUser();
+            if (loginUser != null) {
+                deptOptions = loginUser.getDepts();
+            }
+        } catch (ClassCastException e) {
+            // 如果是MiniLoginUserDTO类型，则忽略部门范围设置
+            log.debug("Current user is MiniLoginUserDTO, skip deptScope setting");
+        }
+        
+        if (deptOptions != null && !deptOptions.isEmpty()) {
+            setPropertyIfPresent(o, "deptScope", deptOptions);
+        }
     }
 
     @Override

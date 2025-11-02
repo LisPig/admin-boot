@@ -1,5 +1,6 @@
 package com.sz.applet.miniBusiness.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.sz.applet.miniBusiness.pojo.dto.LikesDto;
@@ -37,10 +38,13 @@ public class MemoVO {
     @Schema(description = "发布者用户名")
     private String username;
 
+    private String avatar_url;
+
     @Schema(description = "动态内容")
     private String content;
 
     @Schema(description = "图片链接")
+    @JsonIgnore
     private String imgs;
 
     @Schema(description = "图片链接列表")
@@ -74,5 +78,8 @@ public class MemoVO {
     
     @Schema(description = "评论列表")
     private List<CommentVO> comments;
+
+    @Schema(description = "位置")
+    private String position;
 
 }

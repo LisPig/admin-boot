@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 /**
@@ -91,13 +92,13 @@ public class AppletSquareMemos implements Serializable {
      */
     @Column(value = "create_time")
     @Schema(description = "创建时间")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
     @Column(value = "update_time")
     @Schema(description = "更新时间")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
 }

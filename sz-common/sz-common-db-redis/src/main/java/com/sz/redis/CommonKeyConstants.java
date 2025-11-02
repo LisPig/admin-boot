@@ -15,6 +15,16 @@ public class CommonKeyConstants {
 
     public static final String MEMO_COMMENT_LOCK = "wechat_square_memo_comment";
 
+    /**
+     * 用户未读点赞提醒数
+     */
+    public static final String USER_UNREAD_LIKES = "user_unread_likes:${userId}";
+
+    /**
+     * 用户未读评论提醒数
+     */
+    public static final String USER_UNREAD_COMMENTS = "user_unread_comments:${userId}";
+
     private CommonKeyConstants() {
         throw new IllegalStateException("Utility class");
     }

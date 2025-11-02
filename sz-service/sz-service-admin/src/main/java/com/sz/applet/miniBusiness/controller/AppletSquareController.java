@@ -1,10 +1,14 @@
 package com.sz.applet.miniBusiness.controller;
 
 import com.mybatisflex.core.paginate.Page;
+import com.sz.applet.miniBusiness.pojo.bo.ClearNoticeBO;
+import com.sz.applet.miniBusiness.pojo.bo.UserFollowListBO;
 import com.sz.applet.miniBusiness.pojo.dto.*;
 import com.sz.applet.miniBusiness.pojo.bo.MemoListBO;
 import com.sz.applet.miniBusiness.pojo.vo.CommentVO;
 import com.sz.applet.miniBusiness.pojo.vo.MemoVO;
+import com.sz.applet.miniBusiness.pojo.vo.UnreadNoticeVO;
+import com.sz.applet.miniBusiness.pojo.vo.UserFollowVO;
 import com.sz.applet.miniBusiness.service.AppletSquareCommentsService;
 import com.sz.applet.miniBusiness.service.AppletSquareFollowsService;
 import com.sz.applet.miniBusiness.service.AppletSquareLikesService;
@@ -84,6 +88,28 @@ public class AppletSquareController {
         // 实现关注/取消关注逻辑
         boolean result = appletSquareFollowsService.followUser(dto.getFollowedUserId());
         return ApiResult.success(result);
+    }
+
+
+    @Operation(summary = "获取用户关注列表")
+    @GetMapping("/user/followList")
+    public ApiResult<PageResult<UserFollowVO>> getUserFollowList(UserFollowListBO bo) {
+        PageResult<UserFollowVO> page = appletSquareFollowsService.getFollowList(bo);
+        return ApiResult.success(page);
+    }
+    
+    @Operation(summary = "获取未读提醒数")
+    @GetMapping("/user/unread")
+    public ApiResult<UnreadNoticeVO> getUnreadNotice() {
+        UnreadNoticeVO unreadNotice = appletSquareMemosService.getUnreadNotice();
+        return ApiResult.success(unreadNotice);
+    }
+    
+    @Operation(summary = "清除未读提醒数")
+    @PostMapping("/user/clearUnread")
+    public ApiResult<Void> clearUnreadNotice(@RequestBody ClearNoticeBO bo) {
+        appletSquareMemosService.clearUnreadNotice(bo.getType());
+        return ApiResult.success();
     }
 
 }

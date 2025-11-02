@@ -8,6 +8,7 @@ import com.sz.applet.miniBusiness.pojo.dto.MemoCreateDTO;
 import com.sz.applet.miniBusiness.pojo.dto.MemoLikeDTO;
 import com.sz.applet.miniBusiness.pojo.po.*;
 import com.sz.applet.miniBusiness.pojo.vo.MemoVO;
+import com.sz.applet.miniBusiness.pojo.vo.UnreadNoticeVO;
 import com.sz.core.common.entity.PageResult;
 
 /**
@@ -25,4 +26,16 @@ public interface AppletSquareMemosService extends IService<AppletSquareMemos> {
     void likeMemo(MemoLikeDTO dto);
     
     void saveComment(CommentSaveDTO dto);
+    
+    /**
+     * 获取用户未读提醒数
+     * @return 未读提醒VO
+     */
+    UnreadNoticeVO getUnreadNotice();
+    
+    /**
+     * 清除用户未读提醒数
+     * @param type 提醒类型 1-点赞 2-评论
+     */
+    void clearUnreadNotice(Integer type);
 }

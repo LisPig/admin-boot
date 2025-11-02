@@ -11,6 +11,7 @@ import software.amazon.awssdk.core.async.AsyncResponseTransformer;
 import software.amazon.awssdk.core.async.BlockingInputStreamAsyncRequestBody;
 import software.amazon.awssdk.services.s3.S3AsyncClient;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.DeleteObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.transfer.s3.S3TransferManager;
@@ -122,6 +123,24 @@ public class OssClient {
                     .contextType(contextType).size(size).eTag(eTag).build();
         } catch (Exception e) {
             throw new IllegalArgumentException("上传文件失败，Message:[" + e.getMessage() + "]");
+        }
+    }
+
+    /**
+     * 删除文件
+     *
+     * @param objectName
+     *            对象名（唯一，可包含路径）
+     */
+    public void delete(String objectName) {
+        try {
+            DeleteObjectRequest deleteObjectRequest = DeleteObjectRequest.builder()
+                    .bucket(properties.getBucketName())
+                    .key(objectName)
+                    .build();
+            s3Client.deleteObject(deleteObjectRequest);
+        } catch (Exception e) {
+            throw new IllegalArgumentException("删除文件失败，Message:[" + e.getMessage() + "]");
         }
     }
 

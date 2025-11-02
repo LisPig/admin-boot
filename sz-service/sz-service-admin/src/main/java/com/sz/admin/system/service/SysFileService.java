@@ -56,5 +56,14 @@ public interface SysFileService extends IService<SysFile> {
         return results;
     }
 
+    /**
+     * 删除文件
+     *
+     * @param fileId
+     *            文件ID
+     * @return 是否删除成功
+     */
+    Boolean deleteFile(Long fileId);
+
     Long fileLog(UploadResult uploadResult);
 }

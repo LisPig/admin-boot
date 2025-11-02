@@ -22,4 +22,7 @@ public class MemoListBO extends PageQuery {
     @Schema(description = "用户ID")
     private Long userId;
 
+    @Schema(description = "我的关注")
+    private Boolean myFocus;
+
 }

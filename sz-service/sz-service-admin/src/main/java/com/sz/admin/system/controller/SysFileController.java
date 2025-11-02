@@ -42,9 +42,20 @@ public class SysFileController {
 
     @DebounceIgnore
     @Operation(summary = "上传文件")
+    @SaIgnore
     @PostMapping("/upload")
     public ApiResult<UploadResult> upload(@RequestParam MultipartFile file, @RequestParam(value = "dirTag") String dirTag) {
         return ApiResult.success(sysFileService.uploadFile(file, dirTag));
+    }
+
+    @Operation(summary = "删除文件")
+    @SaIgnore
+    @PostMapping("/delete")
+    public ApiResult<Void> delete(@RequestBody List<Long> ids) {
+        for (Long id : ids) {
+            sysFileService.deleteFile(id);
+        }
+        return ApiResult.success();
     }
 
     @DebounceIgnore
