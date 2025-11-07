@@ -26,7 +26,7 @@ jobs:
             config_dir: /home/conf/sz-service-websocket
             jar_dir: ./sz-service/sz-service-websocket/target
     env:
-      ACR_DOMAIN: registry.cn-beijing.aliyuncs.com
+      ACR_DOMAIN: crpi-yd2jqoe6cpca81vo.cn-hangzhou.personal.cr.aliyuncs.com
       ACR_ZONE: sz-action
       VERSION: latest
       RUNNING_ACTIVE: preview
