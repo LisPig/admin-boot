@@ -20,7 +20,6 @@ import com.sz.applet.miniBusiness.service.AppletSquareLikesService;
 import com.sz.applet.miniBusiness.service.AppletSquareMemosService;
 import com.sz.applet.miniuser.mapper.MiniUserMapper;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
-import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.common.entity.MiniLoginUserDTO;
 import com.sz.core.common.entity.PageResult;
@@ -29,20 +28,17 @@ import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.common.sensitive.SensitiveWordUtils;
 import com.sz.core.common.service.ConfService;
 import com.sz.core.common.translate.TranslateUtil;
-import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.PageUtils;
 import com.sz.redis.CommonKeyConstants;
 import com.sz.redis.RedisLock;
 import com.sz.redis.RedisUtils;
 import com.sz.security.core.util.LoginUtils;
-import com.sz.utils.MapstructUtils;
 import com.sz.wechat.mini.MiniSubscribeTemplateConstants;
 import com.sz.wechat.mini.MiniWechatService;
 import com.sz.wechat.mini.pojo.dto.SubscribeMessageSendDTO;
 import com.sz.wechat.mini.pojo.vo.SubscribeMessageSendVO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,7 +46,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 import static com.sz.applet.miniBusiness.pojo.po.table.AppletSquareMemosTableDef.APPLET_SQUARE_MEMOS;
 
@@ -155,6 +150,30 @@ public class AppletSquareMemosServiceImpl extends ServiceImpl<AppletSquareMemosM
             memoVO.setIsFollowed(flower != null);
         }
         translateUtil.translate(pageResult.getRows());
+        return pageResult;
+    }
+
+    @Override
+    public PageResult<MemoVO> list(MemoListBO bo) {
+        // 构建查询条件
+        QueryWrapper queryWrapper = this.buildQueryWrapper(bo);
+
+        // 添加排序条件
+        queryWrapper.orderBy(APPLET_SQUARE_MEMOS.CREATE_TIME, false);
+        // 先分页获取实体对象数据集
+        //PageResult<AppletSquareMemos> pageResult = PageUtils.getPageResult(page(PageUtils.getPage(bo), queryWrapper));
+        //然后再转为VO
+        //PageResult<MemoVO> pageResultVO = PageUtils.getPageResult(pageResult, MemoVO.class);
+        // 分页查询
+        PageResult<MemoVO> pageResult = PageUtils.getPageResult(pageAs(PageUtils.getPage(bo), queryWrapper, MemoVO.class));
+        translateUtil.translate(pageResult.getRows());
+        for(MemoVO memoVO : pageResult.getRows()){
+            MiniUser miniUser = miniUserService.getOne(new QueryWrapper().select(MiniUser::getUsername, MiniUser::getAvatarUrl).eq(MiniUser::getId, memoVO.getUserId()));
+            memoVO.setUsername(miniUser.getUsername());
+            memoVO.setAvatar_url(miniUser.getAvatarUrl());
+            // 获取评论列表
+            memoVO.setComments(appletSquareCommentsService.listAs(new QueryWrapper().eq(AppletSquareComments::getMemoId, memoVO.getId()), CommentVO.class));
+        }
         return pageResult;
     }
 
