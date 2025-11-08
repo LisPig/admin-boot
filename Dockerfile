@@ -1,4 +1,4 @@
-FROM openjdk:21-jdk
+FROM bellsoft/liberica-openjre-debian:21.0.9
 LABEL authors="sz"
 
 COPY *.jar app.jar
