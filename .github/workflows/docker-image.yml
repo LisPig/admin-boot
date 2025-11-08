@@ -28,7 +28,7 @@ jobs:
       ACR_DOMAIN: crpi-yd2jqoe6cpca81vo.cn-hangzhou.personal.cr.aliyuncs.com
       ACR_ZONE: solooxy
       VERSION: latest
-      RUNNING_ACTIVE: main
+      RUNNING_ACTIVE: prod
       SHELL_RUN_DIR: /home/run
     steps:
       - name: Checkout code
