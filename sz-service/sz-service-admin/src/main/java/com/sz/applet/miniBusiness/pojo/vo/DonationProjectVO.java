@@ -1,5 +1,8 @@
 package com.sz.applet.miniBusiness.pojo.vo;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.sz.applet.miniBusiness.translation.DistanceEndDaysTranslationImpl;
+import com.sz.core.common.translate.Translate;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -38,6 +41,22 @@ public class DonationProjectVO {
     @Schema(description =  "状态（1-待审核，2-审核通过，3-审核未通过）")
     private String status;
 
+    @Schema(description =  "参与人数")
+    private Integer joinNum;
+
+    @Schema(description =  "距离结束天数")
+    //@Translate(translator = DistanceEndDaysTranslationImpl.class, sourceField = "startAndEndTimeStr")
+    private Integer distanceEndDays;
+
+    @Schema(description =  "开始时间")
+    private LocalDateTime startTime;
+
+    @Schema(description =  "结束时间")
+    private LocalDateTime endTime;
+
+    @JsonIgnore
+    private String startAndEndTimeStr;
+
     @Schema(description =  "创建时间")
     private LocalDateTime createTime;
 
@@ -49,5 +68,9 @@ public class DonationProjectVO {
 
     @Schema(description =  "更新人ID")
     private Long updateId;
+
+    private String getStartAndEndTimeStr(){
+        return this.startTime + ","+ this.endTime;
+    }
 
 }

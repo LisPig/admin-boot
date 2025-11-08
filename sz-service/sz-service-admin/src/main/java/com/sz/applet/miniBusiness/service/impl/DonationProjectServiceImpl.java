@@ -75,6 +75,14 @@ public class DonationProjectServiceImpl extends ServiceImpl<DonationProjectMappe
         return BeanCopyUtils.copy(donationProject, DonationProjectVO.class);
     }
 
+    @Override
+    public PageResult<DonationProjectVO> miniPage(DonationProjectListDTO dto) {
+        QueryWrapper wrapper = this.buildQueryWrapper(dto);
+        wrapper.eq(DonationProject::getStatus, "2");
+        Page<DonationProjectVO> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), DonationProjectVO.class);
+        return PageUtils.getPageResult(page);
+    }
+
     private static QueryWrapper buildQueryWrapper(DonationProjectListDTO dto) {
         QueryWrapper wrapper = QueryWrapper.create().from(DonationProject.class);
         if (Utils.isNotNull(dto.getName())) {

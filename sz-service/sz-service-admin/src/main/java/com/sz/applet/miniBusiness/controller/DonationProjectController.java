@@ -70,4 +70,10 @@ public class DonationProjectController  {
     public ApiResult<DonationProjectVO> detail(@PathVariable Object id) {
         return ApiResult.success(donationProjectService.detail(id));
     }
+
+    @Operation(summary = "列表查询-小程序")
+    @GetMapping("/listByMini")
+    public ApiResult<PageResult<DonationProjectVO>> listByMini(DonationProjectListDTO dto) {
+        return ApiPageResult.success(donationProjectService.miniPage(dto));
+    }
 }

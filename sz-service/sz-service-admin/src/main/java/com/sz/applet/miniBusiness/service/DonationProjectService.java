@@ -1,5 +1,6 @@
 package com.sz.applet.miniBusiness.service;
 
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.service.IService;
 import com.sz.applet.miniBusiness.pojo.po.DonationProject;
 import com.sz.core.common.entity.SelectIdsDTO;
@@ -31,4 +32,6 @@ public interface DonationProjectService extends IService<DonationProject> {
     void remove(SelectIdsDTO dto);
 
     DonationProjectVO detail(Object id);
+
+    PageResult<DonationProjectVO> miniPage(DonationProjectListDTO dto);
 }
