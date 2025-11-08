@@ -46,6 +46,12 @@ public class DonationProject implements Serializable {
     @Schema(description ="状态（1-待审核，2-审核通过，3-审核未通过）")
     private String status;
 
+    @Schema(description ="开始时间")
+    private LocalDateTime startTime;
+
+    @Schema(description ="结束时间")
+    private LocalDateTime endTime;
+
     @Column(isLogicDelete = true)
     @Schema(description ="删除标识")
     private String delFlag;

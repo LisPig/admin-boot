@@ -5,6 +5,8 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
+
 import org.springframework.format.annotation.DateTimeFormat;
 
 /**
@@ -34,5 +36,11 @@ public class DonationProjectCreateDTO {
 
    @Schema(description =  "状态（1-待审核，2-审核通过，3-审核未通过）")
    private String status;
+
+   @Schema(description =  "开始时间")
+   private LocalDateTime startTime;
+
+   @Schema(description =  "结束时间")
+    private LocalDateTime endTime;
 
 }

@@ -1,4 +1,4 @@
-FROM openjdk:21
+FROM openjdk:21-jdk
 LABEL authors="sz"
 
 COPY *.jar app.jar
