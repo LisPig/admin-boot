@@ -44,13 +44,13 @@ public class AppletSquareManagerController {
     @GetMapping("/memo/list")
     public ApiResult<PageResult<MemoVO>> listMemos(MemoListBO bo) {
         // 实现获取动态列表逻辑
-        PageResult<MemoVO> page = appletSquareMemosService.listMemos(bo);
+        PageResult<MemoVO> page = appletSquareMemosService.list(bo);
         return ApiResult.success(page);
     }
 
     @Operation(summary = "删除动态")
     @SaCheckPermission("applet.square.memo.remove")
-    @PostMapping("/memo/remove")
+    @DeleteMapping("/memo/remove")
     public ApiResult<Void> removeMemo(@RequestBody SelectIdsDTO dto) {
         // 实现删除动态逻辑
         appletSquareMemosService.removeByIds(dto.getIds());

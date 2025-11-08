@@ -23,6 +23,8 @@ public interface AppletSquareMemosService extends IService<AppletSquareMemos> {
 
     PageResult<MemoVO> listMemos(MemoListBO bo);
 
+    PageResult<MemoVO> list(MemoListBO bo);
+
     void likeMemo(MemoLikeDTO dto);
     
     void saveComment(CommentSaveDTO dto);

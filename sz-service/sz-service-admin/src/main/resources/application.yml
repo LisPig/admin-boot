@@ -61,8 +61,8 @@ sz:
   wechat:
     # 小程序
     mini:
-      app-id:   wxf912cb0400975d41 #wxda066d2e8ee97c2e #wxe89097f03e90abe1
-      app-secret:   822e26bcdcb16f0ef7a3f067341ab69b #7977e8184146fcb4d07ea2770d2fbe8f
+      app-id: wxe89097f03e90abe1 #wxf912cb0400975d41 #wxda066d2e8ee97c2e #wxe89097f03e90abe1
+      app-secret:  43658aa83ff02eeeebfbb6806c2c5594 #822e26bcdcb16f0ef7a3f067341ab69b #7977e8184146fcb4d07ea2770d2fbe8f
   cors:
     # 定义允许跨域请求的源（Origin）。可以设置为特定的域名、IP 地址或通配符。
     allowed-origins:
