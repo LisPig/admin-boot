@@ -25,8 +25,8 @@ jobs:
             config_dir: /home/conf/sz-service-websocket
             jar_dir: ./sz-service/sz-service-websocket/target
     env:
-      ACR_DOMAIN: crpi-yd2jqoe6cpca81vo.cn-hangzhou.personal.cr.aliyuncs.com/solooxy/admin-boot
-      ACR_ZONE: sz-action
+      ACR_DOMAIN: crpi-yd2jqoe6cpca81vo.cn-hangzhou.personal.cr.aliyuncs.com
+      ACR_ZONE: solooxy
       VERSION: latest
       RUNNING_ACTIVE: main
       SHELL_RUN_DIR: /home/run
