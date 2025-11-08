@@ -9,7 +9,7 @@ on:
 jobs:
   build-and-deploy:
     name: Build & Deploy ${{ matrix.app_name }}
-    runs-on: ubuntu-latest
+    runs-on: debian-latest
     strategy:
       max-parallel: 1 # 串行执行
       matrix:
