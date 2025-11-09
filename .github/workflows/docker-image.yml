@@ -73,7 +73,6 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.REMOTE_PASSWORD }}
           script: |
-             # 确保网络存在
             docker network create qg-network || true
             docker pull ${{ env.ACR_DOMAIN }}/${{ env.ACR_ZONE }}/${{ matrix.app_name }}:${{ env.VERSION }}
 
