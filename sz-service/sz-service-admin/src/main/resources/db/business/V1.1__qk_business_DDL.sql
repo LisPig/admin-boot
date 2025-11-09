@@ -380,6 +380,25 @@ CREATE TABLE `school_user_binding`
     KEY              `idx_status` (`status`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='学校用户绑定小程序用户';
 
+-- `qk-school`.applet_square_memos definition
+DROP TABLE IF EXISTS `applet_square_memos`;
+CREATE TABLE `applet_square_memos`
+(
+    `id`            bigint NOT NULL AUTO_INCREMENT COMMENT '动态ID',
+    `user_id`       bigint NOT NULL COMMENT '发布用户ID',
+    `content`       text COLLATE utf8mb4_general_ci COMMENT '动态内容',
+    `imgs`          text COLLATE utf8mb4_general_ci COMMENT '图片链接，逗号分隔',
+    `tag_name`      varchar(50) COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '话题标签',
+    `create_time`   datetime                                DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
+    `update_time`   datetime                                DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
+    `like_count`    bigint                                  DEFAULT '0' COMMENT '点赞总数',
+    `comment_count` bigint                                  DEFAULT '0' COMMENT '评论总数',
+    `tag_id`        bigint                                  DEFAULT NULL COMMENT '标签id',
+    `position`      varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '位置',
+    PRIMARY KEY (`id`),
+    KEY             `user_id` (`user_id`),
+    CONSTRAINT `applet_square_memos_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `mini_user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='动态表';
 
 -- `qk-school`.applet_square_comments definition
 DROP TABLE IF EXISTS `applet_square_comments`;
@@ -434,22 +453,3 @@ CREATE TABLE `applet_square_likes`
 ) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='点赞表';
 
 
--- `qk-school`.applet_square_memos definition
-DROP TABLE IF EXISTS `applet_square_memos`;
-CREATE TABLE `applet_square_memos`
-(
-    `id`            bigint NOT NULL AUTO_INCREMENT COMMENT '动态ID',
-    `user_id`       bigint NOT NULL COMMENT '发布用户ID',
-    `content`       text COLLATE utf8mb4_general_ci COMMENT '动态内容',
-    `imgs`          text COLLATE utf8mb4_general_ci COMMENT '图片链接，逗号分隔',
-    `tag_name`      varchar(50) COLLATE utf8mb4_general_ci  DEFAULT NULL COMMENT '话题标签',
-    `create_time`   datetime                                DEFAULT CURRENT_TIMESTAMP COMMENT '创建时间',
-    `update_time`   datetime                                DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
-    `like_count`    bigint                                  DEFAULT '0' COMMENT '点赞总数',
-    `comment_count` bigint                                  DEFAULT '0' COMMENT '评论总数',
-    `tag_id`        bigint                                  DEFAULT NULL COMMENT '标签id',
-    `position`      varchar(100) COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '位置',
-    PRIMARY KEY (`id`),
-    KEY             `user_id` (`user_id`),
-    CONSTRAINT `applet_square_memos_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `mini_user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='动态表';
