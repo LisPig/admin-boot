@@ -73,6 +73,8 @@ jobs:
           username: ${{ secrets.REMOTE_USER }}
           password: ${{ secrets.REMOTE_PASSWORD }}
           script: |
+             # 确保网络存在
+            docker network create qg-network || true
             docker pull ${{ env.ACR_DOMAIN }}/${{ env.ACR_ZONE }}/${{ matrix.app_name }}:${{ env.VERSION }}
 
             echo "==================== 生成启动命令脚本 ===================="
@@ -92,6 +94,7 @@ jobs:
               -p ${{ matrix.service_port }}:${{ matrix.service_port }} \\
               -v ${{ matrix.log_dir }}:/logs \\
               -v ${{ matrix.config_dir }}:/config \\
+              --network qg-network \\
               -e "SPRING_PROFILES_ACTIVE=${{ env.RUNNING_ACTIVE }}" \\
               ${{ env.ACR_DOMAIN }}/${{ env.ACR_ZONE }}/${{ matrix.app_name }}:${{ env.VERSION }}
             EOL
