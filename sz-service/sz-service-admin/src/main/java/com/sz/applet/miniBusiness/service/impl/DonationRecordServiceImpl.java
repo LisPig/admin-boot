@@ -113,17 +113,6 @@ public class DonationRecordServiceImpl extends ServiceImpl<DonationRecordMapper,
 
     @Override
     public String createWechatPay(DonationPayDTO dto) {
-        // 获取捐赠记录
-        DonationRecord donationRecord = getById(dto.getDonationRecordId());
-        if (donationRecord == null) {
-            throw new RuntimeException("捐赠记录不存在");
-        }
-        
-        // 更新捐赠记录状态为"处理中"
-        donationRecord.setStatus("2"); // 2-处理中
-        donationRecord.setUpdateTime(LocalDateTime.now());
-        updateById(donationRecord);
-        
         // 生成商户订单号
         String outTradeNo = "DONATION_" + System.currentTimeMillis() + "_" + UUID.randomUUID().toString().replace("-", "").substring(0, 8);
         
@@ -133,7 +122,7 @@ public class DonationRecordServiceImpl extends ServiceImpl<DonationRecordMapper,
                 dto.getAmount(),
                 "捐款-" + dto.getProjectName(),
                 dto.getOpenid(),
-                "donationId=" + dto.getDonationRecordId()
+                "projectId=" + dto.getProjectId()
         );
         
         // 返回调起支付所需的参数

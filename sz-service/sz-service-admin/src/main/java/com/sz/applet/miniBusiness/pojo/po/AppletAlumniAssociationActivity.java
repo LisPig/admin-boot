@@ -1,5 +1,7 @@
 package com.sz.applet.miniBusiness.pojo.po;
 
+import com.sz.mysql.EntityChangeListener;
+import com.sz.mysql.WeChatEntityChangeListener;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import com.mybatisflex.annotation.Column;
@@ -7,7 +9,10 @@ import com.mybatisflex.annotation.Id;
 import com.mybatisflex.annotation.KeyType;
 import com.mybatisflex.annotation.Table;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.lang.Long;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.lang.Object;
 import java.lang.String;
@@ -20,8 +25,11 @@ import java.lang.String;
  */
 @Accessors(chain = true)
 @Data
-@Table(value = "applet_alumni_association_activity")
-public class AppletAlumniAssociationActivity {
+@Table(value = "applet_alumni_association_activity", onInsert = WeChatEntityChangeListener.class, onUpdate = EntityChangeListener.class)
+public class AppletAlumniAssociationActivity implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * ID
@@ -78,13 +86,13 @@ public class AppletAlumniAssociationActivity {
      * 创建时间
      */
     @Column(value = "create_time")
-    private Date createTime;
+    private LocalDateTime createTime;
 
     /**
      * 更新时间
      */
     @Column(value = "update_time")
-    private Date updateTime;
+    private LocalDateTime updateTime;
 
     /**
      * 创建人ID

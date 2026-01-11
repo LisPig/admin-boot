@@ -18,7 +18,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * 校友申请认证表 控制层。
+ * (已过时)校友申请认证表 控制层。业务在MiniUserAuthController
  *
  * @author LisPig
  * @since 1.0

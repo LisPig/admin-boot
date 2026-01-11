@@ -72,6 +72,15 @@ public class MiniUser implements Serializable {
     @Schema(description = "职务")
     private String job;
 
+    @Schema(description = "我的荣誉")
+    private String honor;
+
+    @Schema(description = "我的钱高回忆")
+    private String memory;
+
+    @Schema(description = "我的建议")
+    private String mySuggestion;
+
     @Schema(description = "创建时间")
     private LocalDateTime createTime;
 

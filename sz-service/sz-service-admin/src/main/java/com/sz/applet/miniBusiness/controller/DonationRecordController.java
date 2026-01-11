@@ -30,7 +30,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * @author LisPig
  * @since 2025-10-26
  */
-@Tag(name =  "捐款记录")
+@Deprecated
+@Tag(name =  "捐款记录(废弃)")
 @RestController
 @RequestMapping("donation-record")
 @RequiredArgsConstructor

@@ -19,13 +19,23 @@ import com.sz.core.common.entity.PageResult;
  */
 public interface ApplyAuthService extends IService<ApplyAuth> {
 
-    Boolean applyAuth(ApplyAuthBo bo);
+    String applyAuth(ApplyAuthBo bo);
 
     PageResult<ApplyAuthVo> page(ApplyAuthListBo bo);
+
+    /**
+     * 校友认证审核
+     * @param bo
+     * @return
+     */
     Boolean review(ApplyAuthBo bo);
 
     ApplyAutoDetailVo detail(Long id);
 
+    /**
+     * 检查用户是否通过认证
+     * @return
+     */
     Object checkIsPassAuth();
 
     MiniUserVO getUserInfo(String openId, String o);

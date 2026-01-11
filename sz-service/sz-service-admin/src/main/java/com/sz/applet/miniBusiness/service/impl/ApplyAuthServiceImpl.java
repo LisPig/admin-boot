@@ -3,6 +3,8 @@ package com.sz.applet.miniBusiness.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.mybatisflex.core.query.QueryWrapper;
+import com.sz.admin.system.pojo.po.SysUser;
+import com.sz.admin.system.service.SysUserService;
 import com.sz.applet.miniBusiness.pojo.bo.ApplyAuthBo;
 import com.sz.applet.miniBusiness.pojo.bo.ApplyAuthListBo;
 import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBo;
@@ -14,12 +16,15 @@ import com.sz.applet.miniBusiness.service.SchoolUserBindingService;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.applet.miniuser.service.impl.SubscribeMessageService;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.PageUtils;
 import com.sz.security.core.util.LoginUtils;
+import com.sz.wechat.WechatProperties;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import com.sz.applet.miniBusiness.service.ApplyAuthService;
 import com.sz.applet.miniBusiness.pojo.po.ApplyAuth;
@@ -30,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 import static com.sz.applet.miniuser.pojo.po.table.MiniUserTableDef.MINI_USER;
@@ -44,19 +50,22 @@ import static com.sz.applet.miniuser.pojo.po.table.MiniUserTableDef.MINI_USER;
 @RequiredArgsConstructor
 public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth> implements ApplyAuthService {
 
-    private final MiniUserService miniUserService;
 
+    private final MiniUserService miniUserService;
     private final SchoolUserBindingService schoolUserBindingService;
+    private final SysUserService sysUserService;
+    private final SubscribeMessageService subscribeMessageService;
+    private final WechatProperties wechatProperties;
 
 
     @Override
-    public Boolean applyAuth(ApplyAuthBo bo) {
+    public String applyAuth(ApplyAuthBo bo) {
         bo.setUserId(Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
         // 检查是否存在完全相同的申请（包括未通过的）
         ApplyAuth existingApply = this.getOne(new QueryWrapper()
                 //.eq(ApplyAuth::getIdentity, bo.getIdentity(), ObjectUtil.isNotNull(bo.getIdentity()))
                 .eq(ApplyAuth::getUserId, bo.getUserId())); // 包含待审核、已拒绝、已通过状态
-
+        String templateId = wechatProperties.getMini().getTemplateId("CHECK_RESULT");
         if (ObjectUtil.isNotNull(existingApply)) {
             // 根据现有申请状态做不同处理
             if (existingApply.getStatus().equals("2")) {
@@ -66,17 +75,22 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
                 schoolUserBinding.setSchoolUserId(existingApply.getId());
                 schoolUserBinding.setBindType(1);
                 schoolUserBinding.setStatus(1);
-                return schoolUserBindingService.save(schoolUserBinding);
+                schoolUserBindingService.save(schoolUserBinding);
+
+                return templateId;
             } else {
                 // 其他状态，更新申请信息而非创建新记录
                 ApplyAuth updateApply = BeanCopyUtils.copy(bo, ApplyAuth.class);
                 updateApply.setId(existingApply.getId());
                 updateApply.setStatus("1"); // 重置为待审核状态
                 updateApply.setCreateTime(LocalDateTime.now());
-                return this.updateById(updateApply);
+                this.updateById(updateApply);
+                return templateId;
             }
         } else {
-           return this.save(BeanCopyUtils.copy(bo, ApplyAuth.class));
+            //sendMsgForAssessor(BeanCopyUtils.copy(bo, ApplyAuth.class));
+           this.save(BeanCopyUtils.copy(bo, ApplyAuth.class));
+           return templateId;
         }
     }
 
@@ -89,13 +103,14 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
     @Override
     @Transactional
     public Boolean review(ApplyAuthBo bo) {
-        ApplyAuth applyAuth = new ApplyAuth();
-        applyAuth.setId(bo.getId());
+        ApplyAuth applyAuth = this.getOne(new QueryWrapper().eq(ApplyAuth::getId, bo.getId()));
         applyAuth.setStatus(bo.getStatus());
         applyAuth.setApproveRemark(bo.getApproveRemark());
         applyAuth.setApproveTime(new Date());
+        MiniUser miniUser = miniUserService.getOne(new QueryWrapper()
+                .select(MINI_USER.ID, MINI_USER.OPENID, MINI_USER.UNIONID)
+                .eq(MiniUser::getId, bo.getUserId()));
         if (bo.getStatus().equals("2")) {
-            MiniUser miniUser = new MiniUser();
             miniUser.setId(bo.getUserId());
             miniUser.setAuthStatus(1); // 认证通过
             miniUser.setUsername(bo.getName());
@@ -106,6 +121,7 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
             schoolUserBinding.setMiniUserId(bo.getUserId());
             schoolUserBindingService.save(schoolUserBinding);
         }
+        subscribeMessageService.sendApplyAuthMsgForUser(miniUser.getOpenid(), applyAuth);
         return this.updateById(applyAuth);
     }
 
@@ -165,5 +181,21 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
                 .eq(ApplyAuth::getTeacherId, bo.getTeacherId(), ObjectUtil.isNotNull(bo.getTeacherId()))
                 .eq(ApplyAuth::getStatus, bo.getStatus(), ObjectUtil.isNotNull(bo.getStatus()));
         return queryWrapper;
+    }
+
+    @Async
+    public void sendMsgForAssessor(ApplyAuth applyAuth){
+        List<SysUser> sysUserList = sysUserService.getUserByRole("assessor");
+        if(!sysUserList.isEmpty()){
+            sysUserList.forEach(sysUser -> {
+                if(sysUser.getMiniUserId() != null){
+                    MiniUser miniUser = miniUserService.getOne(new QueryWrapper().eq(MiniUser::getId, sysUser.getMiniUserId()));
+                    if(miniUser != null){
+                        subscribeMessageService.sendApplyAuthMsg(miniUser.getOpenid(),applyAuth);
+                    }
+                }
+            });
+        }
+
     }
 }

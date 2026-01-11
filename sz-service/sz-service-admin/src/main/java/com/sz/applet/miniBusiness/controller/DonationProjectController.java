@@ -16,6 +16,13 @@ import com.sz.applet.miniBusiness.pojo.dto.DonationProjectCreateDTO;
 import com.sz.applet.miniBusiness.pojo.dto.DonationProjectUpdateDTO;
 import com.sz.applet.miniBusiness.pojo.dto.DonationProjectListDTO;
 import com.sz.applet.miniBusiness.pojo.vo.DonationProjectVO;
+import com.sz.applet.miniBusiness.pojo.dto.DonationPayDTO;
+import com.sz.applet.miniBusiness.service.DonationRecordService;
+import com.sz.applet.miniBusiness.pojo.po.DonationRecord;
+import com.sz.applet.miniBusiness.pojo.dto.DonationRecordCreateDTO;
+import com.sz.core.util.BeanCopyUtils;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -25,13 +32,15 @@ import com.sz.applet.miniBusiness.pojo.vo.DonationProjectVO;
  * @author LisPig
  * @since 2025-10-26
  */
-@Tag(name =  "捐款项目")
+@Deprecated
+@Tag(name =  "捐款项目(废弃)")
 @RestController
 @RequestMapping("donation-project")
 @RequiredArgsConstructor
 public class DonationProjectController  {
 
     private final DonationProjectService donationProjectService;
+    private final DonationRecordService donationRecordService;
 
     @Operation(summary = "新增")
     @SaCheckPermission(value = "donation.project.create")
@@ -75,5 +84,25 @@ public class DonationProjectController  {
     @GetMapping("/listByMini")
     public ApiResult<PageResult<DonationProjectVO>> listByMini(DonationProjectListDTO dto) {
         return ApiPageResult.success(donationProjectService.miniPage(dto));
+    }
+
+
+    @Operation(summary = "我要捐款")
+    @PostMapping("/donate")
+    public ApiResult<String> donate(@RequestBody DonationPayDTO dto) {
+        // 创建捐赠记录
+        DonationRecordCreateDTO recordDTO = new DonationRecordCreateDTO();
+        recordDTO.setUserId(1L); // 这里应该从token中获取用户ID
+        recordDTO.setProjectId(dto.getProjectId()); // 这里实际应该是项目ID，暂时用传入的ID代替
+        recordDTO.setAmount(dto.getAmount());
+        recordDTO.setStatus("1"); // 1-待处理
+        
+        // 保存捐赠记录
+        donationRecordService.create(recordDTO);
+        
+        // 创建微信支付订单
+        String packageVal = donationRecordService.createWechatPay(dto);
+        
+        return ApiResult.success(packageVal);
     }
 }

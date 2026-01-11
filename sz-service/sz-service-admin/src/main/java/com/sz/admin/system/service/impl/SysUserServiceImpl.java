@@ -549,4 +549,33 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return PageUtils.getPageResult(page);
     }
 
+    @Override
+    public Boolean bindWxUserId(SysUserBindWxUserDTO dto) {
+        SysUser sysUser = new SysUser().setId(dto.getSysUserId()).setMiniUserId(dto.getWxUserId());
+        return updateById(sysUser);
+    }
+
+    @Override
+    public List<SysUser> getUserByRole(String rolePermission){
+        SysRole sysRole = sysRoleMapper.selectOneByQuery(new QueryWrapper().eq(SysRole::getPermissions, rolePermission));
+        if(sysRole!=null){
+            List<SysUserRole> sysUserRoles = sysUserRoleMapper.selectListByQuery(new QueryWrapper().eq(SysUserRole::getRoleId, sysRole.getId()));
+            List<SysUser> sysUsers = this.list(
+                    new QueryWrapper().in(SysUser::getId,sysUserRoles.stream().map(SysUserRole::getUserId).collect(Collectors.toList())));
+            return sysUsers;
+
+        }
+        return null;
+    }
+
+
+    public void sendMsgForAssessor(){
+        List<SysUser> sysUsers = getUserByRole("assessor");
+        if(!sysUsers.isEmpty()){
+            sysUsers.forEach(sysUser -> {
+
+            });
+        }
+
+    }
 }

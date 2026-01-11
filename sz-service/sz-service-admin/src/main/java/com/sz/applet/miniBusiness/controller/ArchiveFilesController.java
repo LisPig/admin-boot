@@ -25,7 +25,8 @@ import com.sz.applet.miniBusiness.pojo.vo.ArchiveFilesVO;
  * @author LisPig
  * @since 2025-10-25
  */
-@Tag(name =  "档案申请记录表")
+@Deprecated
+@Tag(name =  "档案申请记录表(废弃)")
 @RestController
 @RequestMapping("archive-files")
 @RequiredArgsConstructor

@@ -3,6 +3,7 @@ package com.sz.wechat.payment;
 import com.wechat.pay.java.core.notification.NotificationConfig;
 import com.wechat.pay.java.core.notification.NotificationParser;
 import com.wechat.pay.java.core.notification.RequestParam;
+import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.service.payments.jsapi.JsapiService;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import jakarta.servlet.http.HttpServletRequest;
@@ -55,12 +56,12 @@ public class PayCallbackController {
 
             // 验证签名并解密
             // 注意：这里需要根据实际配置初始化NotificationConfig
-            // NotificationConfig config = ...;
-            // NotificationParser parser = new NotificationParser(config);
-            // Transaction transaction = parser.parse(requestParam, Transaction.class);
+            NotificationConfig config = createNotificationConfig();
+            NotificationParser parser = new NotificationParser(config);
+            Transaction transaction = parser.parse(requestParam, Transaction.class);
             
-            // 模拟处理支付结果
-            // processPayResult(transaction);
+            // 处理支付结果
+            processPayResult(transaction);
             
             // 返回成功响应
             return "{\n" +
@@ -74,6 +75,20 @@ public class PayCallbackController {
                     "  \"message\": \"" + e.getMessage() + "\"\n" +
                     "}";
         }
+    }
+
+    /**
+     * 创建通知配置
+     * 
+     * @return NotificationConfig
+     */
+    private NotificationConfig createNotificationConfig() {
+        return new RSAAutoCertificateConfig.Builder()
+                .merchantId(wechatPayProperties.getMchId())
+                .privateKeyFromPath(wechatPayProperties.getPrivateKeyPath())
+                .merchantSerialNumber(wechatPayProperties.getMchSerialNo())
+                .apiV3Key(wechatPayProperties.getApiV3Key())
+                .build();
     }
 
     /**

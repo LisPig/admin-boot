@@ -4,6 +4,8 @@ package com.sz.applet.miniBusiness.service;
 import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociationUser;
 import com.mybatisflex.core.service.IService;
 
+import java.util.List;
+
 /**
  * 校友会用户表 服务层。
  *
@@ -13,4 +15,5 @@ import com.mybatisflex.core.service.IService;
 public interface AppletAlumniAssociationUserService extends IService<AppletAlumniAssociationUser> {
 
     boolean join(AppletAlumniAssociationUser appletAlumniAssociationUser);
+
 }

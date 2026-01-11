@@ -42,13 +42,19 @@ public class AppletAlumniAssociationUser {
     private Long alumniAssociationId;
 
     /**
+     * 身份（1-普通成员，2-管理员）
+     */
+    @Column(value = "identity")
+    private String identity;
+
+    /**
      * 状态（1-正常，2-禁用）
      */
     @Column(value = "status")
     private String status;
 
-    @Column(value = "del_flag")
-    private Object delFlag;
+    @Column(value = "del_flag", isLogicDelete = true)
+    private String delFlag;
 
     /**
      * 创建时间

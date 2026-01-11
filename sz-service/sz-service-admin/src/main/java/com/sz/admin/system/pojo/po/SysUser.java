@@ -7,6 +7,7 @@ import com.mybatisflex.annotation.Table;
 import com.sz.platform.listener.TableSysUserListener;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
+import lombok.experimental.Accessors;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
  * @since 2023-08-24
  */
 @Data
+@Accessors(chain = true)
 @Table(value = "sys_user", onInsert = TableSysUserListener.class, onUpdate = TableSysUserListener.class)
 @Schema(description = "系统用户表")
 public class SysUser implements Serializable {
@@ -31,6 +33,9 @@ public class SysUser implements Serializable {
     @Id(keyType = KeyType.Auto)
     @Schema(description = "id")
     private Long id;
+
+    @Schema(description = "小程序用户id")
+    private Long miniUserId;
 
     @Schema(description = "用户名")
     private String username;

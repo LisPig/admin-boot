@@ -4,6 +4,7 @@ import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.admin.system.mapper.SysUserRoleMapper;
 import com.sz.admin.system.pojo.po.SysUserRole;
+import com.sz.admin.system.service.SysRoleService;
 import com.sz.admin.system.service.SysUserRoleService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ import static com.sz.admin.system.pojo.po.table.SysUserRoleTableDef.SYS_USER_ROL
 @RequiredArgsConstructor
 public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUserRole> implements SysUserRoleService {
 
+
     /**
      * 获取用户的角色
      * 
@@ -38,5 +40,7 @@ public class SysUserRoleServiceImpl extends ServiceImpl<SysUserRoleMapper, SysUs
         QueryWrapper queryWrapper = QueryWrapper.create().select(SYS_USER_ROLE.ROLE_ID).from(SYS_USER_ROLE).where(SYS_USER_ROLE.USER_ID.eq(userId));
         return listAs(queryWrapper, String.class);
     }
+
+
 
 }

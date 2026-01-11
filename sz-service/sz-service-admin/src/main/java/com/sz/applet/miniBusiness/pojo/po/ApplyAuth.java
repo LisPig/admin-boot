@@ -2,6 +2,7 @@ package com.sz.applet.miniBusiness.pojo.po;
 
 import com.sz.mysql.EntityChangeListener;
 import com.sz.mysql.WeChatEntityChangeListener;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import com.mybatisflex.annotation.Column;
@@ -140,4 +141,19 @@ public class ApplyAuth implements Serializable {
     private Long approveId;
 
 
+    @Schema(description = "毕业信息")
+    @Column(value = "graduate_info")
+    private String graduateInfo;
+
+    @Schema(description = "工作单位")
+    @Column(value = "work_unit")
+    private String workUnit;
+
+    @Schema(description = "职务信息")
+    @Column(value = "job_info")
+    private String jobInfo;
+
+    @Schema(description = "在本校工作时间")
+    @Column(value = "work_time")
+    private String workTime;
 }
