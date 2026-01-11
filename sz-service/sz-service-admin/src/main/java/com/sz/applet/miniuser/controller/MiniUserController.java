@@ -1,10 +1,13 @@
 package com.sz.applet.miniuser.controller;
 
 import com.sz.applet.miniuser.pojo.dto.MiniLoginDTO;
+import com.sz.applet.miniuser.pojo.dto.MiniUserDTO;
 import com.sz.applet.miniuser.pojo.dto.UpdateMiniUserInfoDTO;
+import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.common.entity.ApiResult;
+import com.sz.core.common.entity.PageResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -43,6 +46,12 @@ public class MiniUserController {
     @PostMapping("/update")
     public ApiResult<Boolean> updateInfo(@RequestBody UpdateMiniUserInfoDTO dto) {
         return ApiResult.success(miniUserService.updateInfo(dto));
+    }
+
+    @Operation(summary = "小程序用户列表-PC")
+    @GetMapping("/list")
+    public ApiResult<PageResult<MiniUserVO>> list(@RequestBody MiniUserDTO dto) {
+        return ApiResult.success(miniUserService.page(dto));
     }
 
 }

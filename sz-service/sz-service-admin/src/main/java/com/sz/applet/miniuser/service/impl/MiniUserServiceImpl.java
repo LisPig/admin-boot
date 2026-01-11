@@ -1,6 +1,7 @@
 package com.sz.applet.miniuser.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
+import com.mybatisflex.core.paginate.Page;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import com.sz.applet.miniBusiness.pojo.po.ApplyAuth;
@@ -10,13 +11,16 @@ import com.sz.applet.miniBusiness.service.ApplyAuthService;
 import com.sz.applet.miniBusiness.service.SchoolUserBindingService;
 import com.sz.applet.miniuser.mapper.MiniUserMapper;
 import com.sz.applet.miniuser.pojo.dto.MiniLoginDTO;
+import com.sz.applet.miniuser.pojo.dto.MiniUserDTO;
 import com.sz.applet.miniuser.pojo.dto.UpdateMiniUserInfoDTO;
 import com.sz.applet.miniuser.pojo.po.MiniLoginUser;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.core.common.entity.PageResult;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.JsonUtils;
+import com.sz.core.util.PageUtils;
 import com.sz.core.util.Utils;
 import com.sz.utils.MapstructUtils;
 import com.sz.wechat.mini.MiniWechatService;
@@ -124,6 +128,42 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
         miniUser.setJob(dto.getJob());
         miniUser.setAvatarUrl(dto.getAvatarUrl());
         return this.updateById(miniUser);
+    }
+
+    @Override
+    public PageResult<MiniUserVO> page(MiniUserDTO dto) {
+        Page<MiniUserVO> pageResult = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), MiniUserVO.class);
+        return PageUtils.getPageResult(pageResult);
+    }
+
+
+    private QueryWrapper buildQueryWrapper(MiniUserDTO dto) {
+        QueryWrapper wrapper = QueryWrapper.create();
+        if (Utils.isNotNull(dto.getId())) {
+            wrapper.eq(String.valueOf(MINI_USER.ID), dto.getId());
+        }
+        if (Utils.isNotNull(dto.getOpenid())) {
+            wrapper.eq(String.valueOf(MINI_USER.OPENID), dto.getOpenid());
+        }
+        if (Utils.isNotNull(dto.getUnionid())) {
+            wrapper.eq(MiniUser::getUnionid, dto.getUnionid());
+        }
+        if (Utils.isNotNull(dto.getNickname())) {
+            wrapper.like(MiniUser::getNickname, dto.getNickname());
+        }
+        if (Utils.isNotNull(dto.getUsername())) {
+            wrapper.like(MiniUser::getUsername, dto.getUsername());
+        }
+        if (Utils.isNotNull(dto.getPhone())) {
+            wrapper.like(MiniUser::getPhone, dto.getPhone());
+        }
+        if (Utils.isNotNull(dto.getAuthStatus())) {
+            wrapper.eq(MiniUser::getAuthStatus, dto.getAuthStatus());
+        }
+        if (Utils.isNotNull(dto.getWorkUnit())) {
+            wrapper.like(MiniUser::getWorkUnit, dto.getWorkUnit());
+        }
+        return wrapper;
     }
 
 }

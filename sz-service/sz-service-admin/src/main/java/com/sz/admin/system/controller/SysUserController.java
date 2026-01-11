@@ -11,6 +11,7 @@ import com.sz.admin.system.pojo.vo.sysuser.UserOptionVO;
 import com.sz.admin.system.service.SysDeptService;
 import com.sz.admin.system.service.SysUserDataRoleService;
 import com.sz.admin.system.service.SysUserService;
+import com.sz.applet.miniuser.pojo.dto.MiniUserDTO;
 import com.sz.core.common.constant.GlobalConstant;
 import com.sz.core.common.entity.*;
 import com.sz.core.common.valid.annotation.NotZero;
@@ -160,6 +161,12 @@ public class SysUserController {
     public ApiResult<Void> changeDataUserRole(@Valid @RequestBody SysUserRoleDTO dto) {
         sysUserDataRoleService.changeRole(dto);
         return ApiResult.success();
+    }
+
+    @Operation(summary = "关联小程序用户id")
+    @PostMapping("/bind/wxuserId")
+    public ApiResult<Boolean> bindWxUserId(@RequestBody SysUserBindWxUserDTO dto) {
+        return ApiResult.success(sysUserService.bindWxUserId(dto));
     }
 
 }

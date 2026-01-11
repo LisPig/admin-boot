@@ -4,7 +4,11 @@ import com.sz.wechat.payment.WechatPayProperties;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @author sz
@@ -33,6 +37,14 @@ public class WechatProperties {
 
         @Schema(description = "小程序应用密钥")
         private String appSecret;
+
+        // 模板ID配置
+        @NestedConfigurationProperty
+        private Map<String, String> templates = new HashMap<>();
+
+        public String getTemplateId(String templateKey) {
+            return templates.get(templateKey);
+        }
     }
 
     @Data

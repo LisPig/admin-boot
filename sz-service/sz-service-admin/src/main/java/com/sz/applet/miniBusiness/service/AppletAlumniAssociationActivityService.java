@@ -20,7 +20,7 @@ import com.sz.applet.miniBusiness.pojo.vo.AppletAlumniAssociationActivityVO;
  */
 public interface AppletAlumniAssociationActivityService extends IService<AppletAlumniAssociationActivity> {
 
-    void create(AppletAlumniAssociationActivityCreateDTO dto);
+    String create(AppletAlumniAssociationActivityCreateDTO dto);
 
     void update(AppletAlumniAssociationActivityUpdateDTO dto);
 
@@ -31,4 +31,11 @@ public interface AppletAlumniAssociationActivityService extends IService<AppletA
     void remove(SelectIdsDTO dto);
 
     AppletAlumniAssociationActivityVO detail(Object id);
+
+    /**
+     * 活动审批
+     * @param id
+     * @return
+     */
+    Boolean approve(AppletAlumniAssociationActivityUpdateDTO dto);
 }

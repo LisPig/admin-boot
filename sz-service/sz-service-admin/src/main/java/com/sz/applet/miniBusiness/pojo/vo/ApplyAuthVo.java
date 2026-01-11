@@ -105,6 +105,18 @@ public class ApplyAuthVo {
     @Schema(description = "二维码地址")
     private String qrCode;
 
+    @Schema(description = "毕业信息")
+    private String graduateInfo;
+
+    @Schema(description = "工作单位")
+    private String workUnit;
+
+    @Schema(description = "职务信息")
+    private String jobInfo;
+
+    @Schema(description = "在本校工作时间")
+    private String workTime;
+
     /**
      * 删除标识
      */

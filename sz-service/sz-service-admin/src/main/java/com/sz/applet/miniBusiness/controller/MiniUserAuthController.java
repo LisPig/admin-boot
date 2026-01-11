@@ -3,6 +3,9 @@ package com.sz.applet.miniBusiness.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.StpUtil;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.sz.admin.system.pojo.po.SysUser;
+import com.sz.admin.system.service.SysUserService;
 import com.sz.applet.miniBusiness.pojo.bo.AppletAlumniPassApplicationBo;
 import com.sz.applet.miniBusiness.pojo.bo.ApplyAuthBo;
 import com.sz.applet.miniBusiness.pojo.bo.ApplyAuthListBo;
@@ -15,7 +18,10 @@ import com.sz.applet.miniBusiness.service.ApplyAuthService;
 import com.sz.applet.miniBusiness.service.MiniUserAuthService;
 import com.sz.applet.miniBusiness.service.AppletAlumniPassApplicationService;
 import com.sz.applet.miniuser.pojo.dto.UpdateMiniUserInfoDTO;
+import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
+import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.applet.miniuser.service.impl.SubscribeMessageService;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.MiniLoginUserDTO;
 import com.sz.core.common.entity.PageResult;
@@ -24,8 +30,10 @@ import com.sz.security.core.util.LoginUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -40,28 +48,13 @@ public class MiniUserAuthController {
     private final MiniUserAuthService adminAuthService;
     private final ApplyAuthService applyAuthService;
 
+
     /**
      * 申请认证
      */
     @Operation(summary = "申请校友认证")
     @PostMapping("/apply")
-    public ApiResult<Boolean> applyAuth(@RequestBody ApplyAuthBo bo) {
-        /*SaSession session = StpUtil.getTokenSession();
-        com.sz.applet.miniuser.pojo.po.MiniLoginUser loginUser = null;
-        if (session != null) {
-            Object obj = session.get(LoginUtils.USER_KEY);
-            if (obj instanceof com.sz.applet.miniuser.pojo.po.MiniLoginUser) {
-                loginUser = (com.sz.applet.miniuser.pojo.po.MiniLoginUser) obj;
-            }
-        }
-
-        if (loginUser == null) {
-            throw new RuntimeException("未找到登录用户信息");
-        }*/
-
-       // bo.setUserId(Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId());
-        // 先校验认证的资料是否已存在 已存在则不需要重新认证，直接通过认证，并更新绑定关系
-
+    public ApiResult<String> applyAuth(@RequestBody ApplyAuthBo bo) {
         return ApiResult.success(applyAuthService.applyAuth( bo));
     }
 
@@ -110,6 +103,5 @@ public class MiniUserAuthController {
         MiniUserVO user = applyAuthService.getUserInfo(openId, null);
         return ApiResult.success(user);
     }
-
 
 }

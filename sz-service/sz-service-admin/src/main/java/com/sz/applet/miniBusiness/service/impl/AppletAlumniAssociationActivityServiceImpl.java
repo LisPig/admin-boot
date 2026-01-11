@@ -1,6 +1,22 @@
 package com.sz.applet.miniBusiness.service.impl;
 
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.applet.miniBusiness.mapper.AppletAlumniAssociationMapper;
+import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociation;
+import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociationActivityUser;
+import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociationUser;
+import com.sz.applet.miniBusiness.service.AppletAlumniAssociationActivityUserService;
+import com.sz.applet.miniBusiness.service.AppletAlumniAssociationService;
+import com.sz.applet.miniBusiness.service.AppletAlumniAssociationUserService;
+import com.sz.applet.miniuser.pojo.po.MiniUser;
+import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.applet.miniuser.service.impl.SubscribeMessageService;
+import com.sz.core.common.exception.common.BusinessException;
+import com.sz.core.common.translate.Translate;
+import com.sz.core.common.translate.TranslateUtil;
+import com.sz.security.core.util.LoginUtils;
+import com.sz.utils.MapstructUtils;
+import com.sz.wechat.WechatProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.sz.applet.miniBusiness.service.AppletAlumniAssociationActivityService;
@@ -21,6 +37,7 @@ import com.sz.applet.miniBusiness.pojo.dto.AppletAlumniAssociationActivityCreate
 import com.sz.applet.miniBusiness.pojo.dto.AppletAlumniAssociationActivityUpdateDTO;
 import com.sz.applet.miniBusiness.pojo.dto.AppletAlumniAssociationActivityListDTO;
 import com.sz.applet.miniBusiness.pojo.vo.AppletAlumniAssociationActivityVO;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <p>
@@ -33,10 +50,35 @@ import com.sz.applet.miniBusiness.pojo.vo.AppletAlumniAssociationActivityVO;
 @Service
 @RequiredArgsConstructor
 public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<AppletAlumniAssociationActivityMapper, AppletAlumniAssociationActivity> implements AppletAlumniAssociationActivityService {
+
+    private final AppletAlumniAssociationUserService appletAlumniAssociationUserService;
+    private final AppletAlumniAssociationMapper appletAlumniAssociationMapper;
+    private final WechatProperties wechatProperties;
+    private final SubscribeMessageService subscribeMessageService;
+    private final MiniUserService miniUserService;
+    private final AppletAlumniAssociationActivityUserService appletAlumniAssociationActivityUserService;
+    private final TranslateUtil translateUtil;
+
+
     @Override
-    public void create(AppletAlumniAssociationActivityCreateDTO dto){
+    public String create(AppletAlumniAssociationActivityCreateDTO dto){
+        // 判断是否是会长，仅会长才能发布活动
+        AppletAlumniAssociation appletAlumniAssociation = appletAlumniAssociationMapper.selectOneById(dto.getAlumniAssociationId());
+        if(!appletAlumniAssociation.getCreateId().equals(LoginUtils.getMiniLoginUser().getUserId())){
+            throw new BusinessException(CommonResponseEnum.NO_PERMISSION,null,"您不是会长，暂无发布活动权限");
+        }
+       /* AppletAlumniAssociationUser appletAlumniAssociationUser = appletAlumniAssociationUserService.getOne(QueryChain.create()
+            .eq(AppletAlumniAssociationUser::getUserId, LoginUtils.getMiniLoginUser().getUserId())
+            .eq(AppletAlumniAssociationUser::getAlumniAssociationId, dto.getAlumniAssociationId())
+            .eq(AppletAlumniAssociationUser::getIdentity, "0"));
+        if(appletAlumniAssociationUser == null){
+            throw new RuntimeException("暂无权限发布活动");
+        }*/
         AppletAlumniAssociationActivity appletAlumniAssociationActivity = BeanCopyUtils.copy(dto, AppletAlumniAssociationActivity.class);
-        save(appletAlumniAssociationActivity);
+        if(save(appletAlumniAssociationActivity)){
+            return wechatProperties.getMini().getTemplateId("CHECK_RESULT");
+        }
+        return null;
     }
 
     @Override
@@ -72,7 +114,36 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
     public AppletAlumniAssociationActivityVO detail(Object id){
         AppletAlumniAssociationActivity appletAlumniAssociationActivity = getById((Serializable) id);
         CommonResponseEnum.INVALID_ID.assertNull(appletAlumniAssociationActivity);
-        return BeanCopyUtils.copy(appletAlumniAssociationActivity, AppletAlumniAssociationActivityVO.class);
+
+        AppletAlumniAssociationActivityVO appletAlumniAssociationActivityVO = new AppletAlumniAssociationActivityVO();
+        BeanCopyUtils.copy(appletAlumniAssociationActivity, AppletAlumniAssociationActivityVO.class);
+        if(appletAlumniAssociationActivityUserService.exists(new QueryWrapper()
+                .eq(AppletAlumniAssociationActivityUser::getAlumniAssociationActivityId, id)
+                .eq(AppletAlumniAssociationActivityUser::getUserId, LoginUtils.getMiniLoginUser().getUserId())
+                .eq(AppletAlumniAssociationActivityUser::getStatus, "1"))){
+            assert appletAlumniAssociationActivityVO != null;
+            appletAlumniAssociationActivityVO.setIsJoin( true);
+        } else {
+            assert appletAlumniAssociationActivityVO != null;
+            appletAlumniAssociationActivityVO.setIsJoin( false);
+        }
+        translateUtil.translate(appletAlumniAssociationActivityVO);
+        return appletAlumniAssociationActivityVO;
+    }
+
+    @Override
+    public Boolean approve(AppletAlumniAssociationActivityUpdateDTO dto) {
+        AppletAlumniAssociationActivity appletAlumniAssociationActivity = this.getById(dto.getId());
+        if (Utils.isNotNull(appletAlumniAssociationActivity)) {
+            appletAlumniAssociationActivity.setStatus(dto.getStatus());
+            updateById(appletAlumniAssociationActivity);
+            MiniUser miniUser = miniUserService.getOne(new QueryWrapper().eq(MiniUser::getId, appletAlumniAssociationActivity.getCreateId()));
+            if(miniUser != null && miniUser.getOpenid() != null) {
+                subscribeMessageService.sendAssociationActivityMsgForUser(miniUser.getOpenid(), appletAlumniAssociationActivity);
+            }
+            return true;
+        }
+        return false;
     }
 
     private static QueryWrapper buildQueryWrapper(AppletAlumniAssociationActivityListDTO dto) {
@@ -98,6 +169,7 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
         if (Utils.isNotNull(dto.getStatus())) {
             wrapper.eq(AppletAlumniAssociationActivity::getStatus, dto.getStatus());
         }
+        wrapper.orderBy(AppletAlumniAssociationActivity::getCreateTime, false);
         return wrapper;
     }
 }

@@ -15,8 +15,8 @@ import java.math.BigDecimal;
 @Schema(description = "捐赠支付DTO")
 public class DonationPayDTO {
 
-    @Schema(description = "捐赠记录ID")
-    private Long donationRecordId;
+    @Schema(description = "项目ID")
+    private Long projectId;
 
     @Schema(description = "用户openid")
     private String openid;

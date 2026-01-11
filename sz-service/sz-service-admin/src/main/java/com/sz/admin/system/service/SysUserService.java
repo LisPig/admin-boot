@@ -9,6 +9,7 @@ import com.sz.admin.system.pojo.vo.common.UserVO;
 import com.sz.admin.system.pojo.vo.sysuser.SysUserRoleVO;
 import com.sz.admin.system.pojo.vo.sysuser.SysUserVO;
 import com.sz.admin.system.pojo.vo.sysuser.UserOptionVO;
+import com.sz.applet.miniuser.pojo.dto.MiniUserDTO;
 import com.sz.core.common.entity.LoginUser;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
@@ -104,4 +105,18 @@ public interface SysUserService extends IService<SysUser> {
     List<UserOptionVO> getUserOptions();
 
     PageResult<UserVO> pageSelector(SelectorQueryDTO dto);
+
+    /**
+     * 绑定微信用户
+     * @param dto
+     * @return
+     */
+    Boolean bindWxUserId(SysUserBindWxUserDTO dto);
+
+    /**
+     * 根据角色查询用户
+     * @param rolePermission
+     * @return
+     */
+    List<SysUser> getUserByRole(String rolePermission);
 }

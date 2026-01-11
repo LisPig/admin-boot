@@ -27,7 +27,8 @@ import org.springframework.web.bind.annotation.*;
  * @author your-name
  * @since 2025-10-28
  */
-@Tag(name = "广场功能后台管理")
+@Deprecated
+@Tag(name = "广场功能后台管理(废弃)")
 @RestController
 @RequestMapping("/manager/square")
 @RequiredArgsConstructor

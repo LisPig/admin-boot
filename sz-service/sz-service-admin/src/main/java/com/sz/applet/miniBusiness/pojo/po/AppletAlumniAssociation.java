@@ -1,6 +1,7 @@
 package com.sz.applet.miniBusiness.pojo.po;
 
 import com.mybatisflex.annotation.*;
+import com.sz.mysql.WeChatEntityChangeListener;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -19,7 +20,7 @@ import java.time.LocalDateTime;
 */
 @Data
 @Accessors(chain = true)
-@Table(value = "applet_alumni_association", onInsert = EntityChangeListener.class, onUpdate = EntityChangeListener.class)
+@Table(value = "applet_alumni_association", onInsert = WeChatEntityChangeListener.class, onUpdate = EntityChangeListener.class)
 @Schema(description = "校友会表")
 public class AppletAlumniAssociation implements Serializable {
 

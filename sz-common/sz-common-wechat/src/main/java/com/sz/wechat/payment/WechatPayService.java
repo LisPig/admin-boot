@@ -3,6 +3,7 @@ package com.sz.wechat.payment;
 import com.wechat.pay.java.core.Config;
 import com.wechat.pay.java.core.RSAAutoCertificateConfig;
 import com.wechat.pay.java.service.payments.jsapi.JsapiService;
+import com.wechat.pay.java.service.payments.jsapi.JsapiServiceExtension;
 import com.wechat.pay.java.service.payments.jsapi.model.*;
 import com.wechat.pay.java.service.payments.model.Transaction;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,7 @@ public class WechatPayService {
      */
     public String createJsapiOrder(String outTradeNo, BigDecimal amount, String description, String openid, String attach) {
         JsapiService service = new JsapiService.Builder().config(createConfig()).build();
+        JsapiServiceExtension extension = new JsapiServiceExtension.Builder().config(createConfig()).build();
 
         // request.setXxx(val)设置所需参数，具体参数可见Request定义
         PrepayRequest request = new PrepayRequest();
@@ -68,24 +70,12 @@ public class WechatPayService {
         request.setAttach(attach);
 
         try {
-            PrepayWithRequestPaymentResponse response = null;//service.prepayWithRequestPayment(request);
-            return response.getPackageVal(); // 在0.2.17版本中，返回的是packageVal而不是prepayId
+            PrepayWithRequestPaymentResponse response = extension.prepayWithRequestPayment(request);
+            return response.getPackageVal();
         } catch (Exception e) {
-            //log.error("创建微信支付订单失败", e);
+            log.error("创建微信支付订单失败", e);
             throw new RuntimeException("创建微信支付订单失败: " + e.getMessage());
         }
-    }
-
-    /**
-     * 生成调起支付所需的参数 (已废弃，使用prepayWithRequestPayment方法替代)
-     *
-     * @param prepayId 预支付交易会话标识
-     * @return 调起支付所需的参数
-     */
-    @Deprecated
-    public Object generatePayInfo(String prepayId) {
-        // 在0.2.17版本中，这个方法已经不再需要，因为prepayWithRequestPayment已经返回了所有需要的参数
-        return null;
     }
 
     /**

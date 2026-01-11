@@ -13,6 +13,7 @@ import com.sz.applet.miniBusiness.service.AppletSquareCommentsService;
 import com.sz.applet.miniBusiness.service.AppletSquareFollowsService;
 import com.sz.applet.miniBusiness.service.AppletSquareLikesService;
 import com.sz.applet.miniBusiness.service.AppletSquareMemosService;
+import com.sz.core.common.annotation.Debounce;
 import com.sz.core.common.entity.ApiPageResult;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.PageResult;
@@ -31,7 +32,8 @@ import org.springframework.web.bind.annotation.*;
  * @author your-name
  * @since 2025-10-28
  */
-@Tag(name = "广场功能")
+@Deprecated
+@Tag(name = "广场功能(废弃)")
 @RestController
 @RequestMapping("/square")
 @RequiredArgsConstructor
@@ -43,6 +45,7 @@ public class AppletSquareController {
     private final AppletSquareFollowsService appletSquareFollowsService;
 
     @Operation(summary = "发布动态")
+    @Debounce(time = 500)
     @PostMapping("/memo/create")
     public ApiResult<Void> createMemo(@RequestBody MemoCreateDTO dto) {
         // 实现发布动态逻辑
@@ -67,6 +70,7 @@ public class AppletSquareController {
     }
 
     @Operation(summary = "点赞/取消点赞")
+    @Debounce(time = 500)
     @PostMapping("/memo/like")
     public ApiResult<Void> likeMemo(@RequestBody MemoLikeDTO dto) {
         // 实现点赞/取消点赞逻辑
@@ -83,6 +87,7 @@ public class AppletSquareController {
     }
 
     @Operation(summary = "关注/取消关注")
+    @Debounce(time = 500)
     @PostMapping("/user/follow")
     public ApiResult<Boolean> followUser(@RequestBody UserFollowDTO dto) {
         // 实现关注/取消关注逻辑

@@ -63,6 +63,18 @@ sz:
     mini:
       app-id: wxe89097f03e90abe1 #wxf912cb0400975d41 #wxda066d2e8ee97c2e #wxe89097f03e90abe1
       app-secret:  43658aa83ff02eeeebfbb6806c2c5594 #822e26bcdcb16f0ef7a3f067341ab69b #7977e8184146fcb4d07ea2770d2fbe8f
+      templates:
+        CHECK_RESULT: BDPxr-H7GoR74_HNaIyGUqGpdLHQzQib0npe6a9M4Jg #审核结果模板
+        ALUMNI_APPLY: bwxZPB1Ukj4SWOXTGfktgvbNz4DTjxJ03J3OXHhmDZI #校友申请消息通知模板
+#    pay:
+#      mchId:
+#      mchSerialNo:
+#      privateKeyPath:
+#      platformCertPath:
+#      apiV3Key:
+#      notifyUrl:
+#      domain:
+#      sandbox:
   cors:
     # 定义允许跨域请求的源（Origin）。可以设置为特定的域名、IP 地址或通配符。
     allowed-origins:

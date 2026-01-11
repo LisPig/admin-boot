@@ -1,12 +1,17 @@
 package com.sz.applet.miniBusiness.pojo.vo;
 
+import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociationUser;
+import com.sz.applet.miniBusiness.translation.AppletAlumniAssociationActivityTranslator;
+import com.sz.applet.miniBusiness.translation.AppletAlumniAssociationUserTranslator;
+import com.sz.applet.miniBusiness.translation.AssociationActivityCountTranslator;
+import com.sz.applet.miniBusiness.translation.AssociationMemberTotalTranslator;
+import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
+import com.sz.core.common.translate.Translate;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import java.time.LocalDateTime;
 import java.util.List;
-
-import org.springframework.format.annotation.DateTimeFormat;
 
 /**
  * <p>
@@ -43,10 +48,16 @@ public class AppletAlumniAssociationVO {
     private String status;
 
     @Schema(description =  "人数")
+    @Translate(translator = AssociationMemberTotalTranslator.class,sourceField = "id")
     private Long number;
 
     @Schema(description =  "活动数")
+    @Translate(translator = AssociationActivityCountTranslator.class,sourceField = "id")
     private Long activityNumber;
+
+    @Schema(description =  "当前用户是否是入会会员")
+    //@Translate(translator = AssociationMemberTotalTranslator.class,sourceField = "id")
+    private Boolean isMember;
 
     @Schema(description =  "创建时间")
     private LocalDateTime createTime;
@@ -60,6 +71,11 @@ public class AppletAlumniAssociationVO {
     @Schema(description =  "更新人ID")
     private Long updateId;
 
-
+    @Schema(description =  "活动列表")
+    @Translate(translator = AppletAlumniAssociationActivityTranslator.class,sourceField = "id")
     List<AppletAlumniAssociationActivityVO> activityList;
+
+    @Schema(description =  "成员列表")
+    @Translate(translator = AppletAlumniAssociationUserTranslator.class,sourceField = "id")
+    List<MiniUserVO> memberList;
 }

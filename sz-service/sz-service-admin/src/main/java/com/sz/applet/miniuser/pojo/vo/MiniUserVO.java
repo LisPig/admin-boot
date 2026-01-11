@@ -49,4 +49,13 @@ public class MiniUserVO implements Serializable {
 
     @Schema(description = "手机号")
     private String phone;
+
+    @Schema(description = "我的荣誉")
+    private String honor;
+
+    @Schema(description = "我的钱高回忆")
+    private String memory;
+
+    @Schema(description = "我的建议")
+    private String mySuggestion;
 }
