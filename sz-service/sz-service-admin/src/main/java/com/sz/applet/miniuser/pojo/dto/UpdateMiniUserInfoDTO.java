@@ -30,6 +30,9 @@ public class UpdateMiniUserInfoDTO {
     @Schema(description = "认证状态")
     private Integer authStatus;
 
+    @Schema(description = "是否显示")
+    private Integer isShow;
+
     @Schema(description = "工作单位")
     private String workUnit;
 
@@ -38,4 +41,13 @@ public class UpdateMiniUserInfoDTO {
 
     @Schema(description = "手机号")
     private String phone;
+
+    @Schema(description = "我的荣誉")
+    private String honor;
+
+    @Schema(description = "我的钱高回忆")
+    private String memory;
+
+    @Schema(description = "我的建议")
+    private String mySuggestion;
 }

@@ -42,7 +42,8 @@ public enum CommonResponseEnum implements ResponseEnumTemplate<CommonResponseEnu
     PARAM_ERROR(1017,"内容错误"),FAILURE(1018,"失败"),
 
     INVALID_WX_TOKEN(10000, "微信Token验证失败"),
-    SEND_MSG_FAIL(10001, "发送消息失败"),NO_PERMISSION(10002,"暂无权限");
+    SEND_MSG_FAIL(10001, "发送消息失败"),NO_PERMISSION(10002,"暂无权限"),
+    AssociationUserNotExist(10003,"您还不是会员，请先入会");
 
     // @formatter:on
 

@@ -1,6 +1,9 @@
 package com.sz.applet.miniBusiness.controller;
 
 import com.mybatisflex.core.paginate.Page;
+import com.sz.applet.miniuser.pojo.po.MiniUser;
+import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
+import com.sz.core.common.entity.ApiResult;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -79,8 +82,8 @@ public class AppletAlumniAssociationUserController {
      */
     @Operation(summary = "后台-查询所有校友会用户表")
     @GetMapping("/list")
-    public List<AppletAlumniAssociationUser> list() {
-        return appletAlumniAssociationUserService.list();
+    public ApiResult<List<AppletAlumniAssociationUser>> list() {
+        return ApiResult.success(appletAlumniAssociationUserService.list());
     }
 
 
@@ -92,8 +95,8 @@ public class AppletAlumniAssociationUserController {
      */
     @Operation(summary = "根据校友会用户表主键获取详细信息")
     @GetMapping("/getInfo/{id}")
-    public AppletAlumniAssociationUser getInfo(@PathVariable Serializable id) {
-        return appletAlumniAssociationUserService.getById(id);
+    public ApiResult<MiniUserVO> getInfo(@PathVariable Long id) {
+        return ApiResult.success(appletAlumniAssociationUserService.getUser(id));
     }
 
 
@@ -105,8 +108,8 @@ public class AppletAlumniAssociationUserController {
      */
     @Operation(summary = "分页查询校友会用户表")
     @GetMapping("/page")
-    public Page<AppletAlumniAssociationUser> page(Page<AppletAlumniAssociationUser> page) {
-        return appletAlumniAssociationUserService.page(page);
+    public ApiResult<Page<AppletAlumniAssociationUser>> page(Page<AppletAlumniAssociationUser> page) {
+        return ApiResult.success(appletAlumniAssociationUserService.page(page));
     }
 
 }

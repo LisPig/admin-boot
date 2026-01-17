@@ -67,13 +67,6 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
         if(!appletAlumniAssociation.getCreateId().equals(LoginUtils.getMiniLoginUser().getUserId())){
             throw new BusinessException(CommonResponseEnum.NO_PERMISSION,null,"您不是会长，暂无发布活动权限");
         }
-       /* AppletAlumniAssociationUser appletAlumniAssociationUser = appletAlumniAssociationUserService.getOne(QueryChain.create()
-            .eq(AppletAlumniAssociationUser::getUserId, LoginUtils.getMiniLoginUser().getUserId())
-            .eq(AppletAlumniAssociationUser::getAlumniAssociationId, dto.getAlumniAssociationId())
-            .eq(AppletAlumniAssociationUser::getIdentity, "0"));
-        if(appletAlumniAssociationUser == null){
-            throw new RuntimeException("暂无权限发布活动");
-        }*/
         AppletAlumniAssociationActivity appletAlumniAssociationActivity = BeanCopyUtils.copy(dto, AppletAlumniAssociationActivity.class);
         if(save(appletAlumniAssociationActivity)){
             return wechatProperties.getMini().getTemplateId("CHECK_RESULT");
@@ -116,7 +109,7 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
         CommonResponseEnum.INVALID_ID.assertNull(appletAlumniAssociationActivity);
 
         AppletAlumniAssociationActivityVO appletAlumniAssociationActivityVO = new AppletAlumniAssociationActivityVO();
-        BeanCopyUtils.copy(appletAlumniAssociationActivity, AppletAlumniAssociationActivityVO.class);
+        BeanCopyUtils.copy(appletAlumniAssociationActivity, appletAlumniAssociationActivityVO);
         if(appletAlumniAssociationActivityUserService.exists(new QueryWrapper()
                 .eq(AppletAlumniAssociationActivityUser::getAlumniAssociationActivityId, id)
                 .eq(AppletAlumniAssociationActivityUser::getUserId, LoginUtils.getMiniLoginUser().getUserId())

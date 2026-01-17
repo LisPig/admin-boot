@@ -32,6 +32,9 @@ public class AppletAlumniAssociationUserTranslator implements Translator<Long, L
         List<MiniUserVO> miniUsers =  miniUserService.listAs(new QueryWrapper()
                 .in(MiniUser::getId,appletAlumniAssociationUsers.stream().map(AppletAlumniAssociationUser::getUserId).toList())
                 .orderBy(MiniUser::getCreateTime,false), MiniUserVO.class);
+        miniUsers.forEach(miniUserVO -> {
+            miniUserVO.setIdentity(appletAlumniAssociationUsers.stream().filter(appletAlumniAssociationUser -> appletAlumniAssociationUser.getUserId().equals(miniUserVO.getId())).findFirst().get().getIdentity());
+        });
         return miniUsers;//MapstructUtils.convert(miniUsers, MiniUserVO.class);
     }
 }

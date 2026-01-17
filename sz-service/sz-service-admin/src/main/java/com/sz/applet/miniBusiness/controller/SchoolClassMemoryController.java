@@ -69,7 +69,7 @@ public class SchoolClassMemoryController  {
     }
 
     @Operation(summary = "详情")
-    @SaCheckPermission(value = "school.class.memory.query_table")
+    //@SaCheckPermission(value = "school.class.memory.query_table")
     @GetMapping("/{id}")
     public ApiResult<SchoolClassMemoryVO> detail(@PathVariable Object id) {
         return ApiResult.success(schoolClassMemoryService.detail(id));

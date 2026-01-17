@@ -2,6 +2,7 @@ package com.sz.applet.miniBusiness.pojo.po;
 
 import com.sz.mysql.EntityChangeListener;
 import com.sz.mysql.WeChatEntityChangeListener;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import com.mybatisflex.annotation.Column;
@@ -46,18 +47,21 @@ public class AppletAlumniAssociationActivity implements Serializable {
     /**
      * 标题
      */
+    @Schema(description = "标题")
     @Column(value = "title")
     private String title;
 
     /**
      * 头图
      */
+    @Schema(description = "头图")
     @Column(value = "avatar")
     private String avatar;
 
     /**
      * 内容
      */
+    @Schema(description = "内容")
     @Column(value = "content")
     private String content;
 
@@ -70,14 +74,24 @@ public class AppletAlumniAssociationActivity implements Serializable {
     /**
      * 地点
      */
+    @Schema(description = "地点")
     @Column(value = "location")
     private String location;
 
     /**
      * 状态（1-正常，2-禁用）
      */
+    @Schema(description = "状态")
     @Column(value = "status")
     private String status;
+
+    @Schema(description = "开始时间")
+    @Column(value = "start_time")
+    private LocalDateTime startTime;
+
+    @Schema(description = "结束时间")
+    @Column(value = "end_time")
+    private LocalDateTime endTime;
 
     @Column(value = "del_flag")
     private Object delFlag;

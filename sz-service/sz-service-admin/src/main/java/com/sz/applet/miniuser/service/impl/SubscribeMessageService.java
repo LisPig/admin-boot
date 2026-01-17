@@ -172,7 +172,7 @@ public class SubscribeMessageService {
         params.put("thing9", appletAlumniAssociation.getName()); //校会名称
         params.put("thing4", status.equals("1")?"通过":"未通过"); //审核结果
         params.put("date10", appletAlumniAssociation.getCreateTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))); // 申请时间
-        params.put("date7",formatDate(new Date(), "yyyy-MM-dd HH:mm"));// 审核时间
+        params.put("date7",formatDate(new Date(), "yyyy-MM-dd HH:mm:ss"));// 审核时间
         String pagePath = "pages/index/index";
 
         return sendSubscribeMessage(openid, "CHECK_RESULT", params, pagePath);
