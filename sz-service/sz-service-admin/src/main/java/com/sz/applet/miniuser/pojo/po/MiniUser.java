@@ -66,6 +66,9 @@ public class MiniUser implements Serializable {
     @Schema(description = "认证状态")
     private Integer authStatus;
 
+    @Schema(description = "是否显示")
+    private Integer isShow;
+
     @Schema(description = "工作单位")
     private String workUnit;
 

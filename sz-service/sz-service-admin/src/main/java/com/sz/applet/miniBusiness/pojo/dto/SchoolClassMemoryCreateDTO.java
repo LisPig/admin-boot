@@ -19,8 +19,14 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Schema(description = "SchoolClassMemory添加DTO")
 public class SchoolClassMemoryCreateDTO {
 
+   @Schema(description =  "标题")
+   private String title;
+
+   @Schema(description =  "封面")
+   private String cover;
+
    @Schema(description =  "届数")
-   private Integer year;
+   private String year;
 
    @Schema(description =  "班级编号")
    private String classNo;

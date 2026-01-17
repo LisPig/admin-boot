@@ -30,8 +30,16 @@ public class SchoolClassMemory implements Serializable {
     @Schema(description ="ID")
     private Long id;
 
+    @Schema(description ="标题")
+    @Column(value = "title")
+    private String title;
+
+    @Schema(description ="封面")
+    @Column(value = "cover")
+    private String cover;
+
     @Schema(description ="届数")
-    private Integer year;
+    private String year;
 
     @Schema(description ="班级编号")
     private String classNo;

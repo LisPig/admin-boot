@@ -20,7 +20,7 @@ import org.springframework.format.annotation.DateTimeFormat;
  */
 @Data
 @Accessors(chain = true)
-@AutoMapper(target = AppletAlumniAssociationActivity.class)
+//@AutoMapper(target = AppletAlumniAssociationActivity.class)
 @Schema(description = "AppletAlumniAssociationActivity返回vo")
 public class AppletAlumniAssociationActivityVO {
 
@@ -55,6 +55,12 @@ public class AppletAlumniAssociationActivityVO {
     @Schema(description =  "报名人数")
     @Translate(translator = AppletAlumniAssociationActivityUserTranslator.class,sourceField = "alumniAssociationId")
     private Long joinNum;
+
+    @Schema(description = "开始时间")
+    private LocalDateTime startTime;
+
+    @Schema(description = "结束时间")
+    private LocalDateTime endTime;
 
     @Schema(description =  "创建时间")
     private LocalDateTime createTime;

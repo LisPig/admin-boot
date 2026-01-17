@@ -123,10 +123,12 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
     @Override
     public Boolean updateInfo(UpdateMiniUserInfoDTO dto) {
         MiniUser miniUser = new MiniUser();
-        miniUser.setId(dto.getId());
+        BeanCopyUtils.copy(dto,miniUser);
+        /*miniUser.setId(dto.getId());
         miniUser.setWorkUnit(dto.getWorkUnit());
         miniUser.setJob(dto.getJob());
         miniUser.setAvatarUrl(dto.getAvatarUrl());
+        miniUser.setIsShow(dto.getIsShow());*/
         return this.updateById(miniUser);
     }
 

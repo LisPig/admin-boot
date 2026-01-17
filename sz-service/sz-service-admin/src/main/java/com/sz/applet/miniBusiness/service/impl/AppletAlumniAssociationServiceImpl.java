@@ -9,6 +9,7 @@ import com.sz.applet.miniBusiness.service.AppletAlumniAssociationUserService;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.applet.miniuser.service.impl.SubscribeMessageService;
+import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.common.translate.TranslateUtil;
 import com.sz.security.core.util.LoginUtils;
 import com.sz.wechat.WechatProperties;
@@ -60,9 +61,12 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
 
     @Override
     public String create(AppletAlumniAssociationCreateDTO dto){
+        if(this.exists(new QueryWrapper().eq(AppletAlumniAssociation::getName, dto.getName()))){
+            throw new BusinessException(CommonResponseEnum.EXISTS,null,"校友会名称已存在");
+        }
         AppletAlumniAssociation appletAlumniAssociation = BeanCopyUtils.copy(dto, AppletAlumniAssociation.class);
         appletAlumniAssociation.setStatus("0");
-        String templateId = wechatProperties.getMini().getTemplateId("ALUMNI_APPLY");
+        String templateId = wechatProperties.getMini().getTemplateId("CHECK_RESULT");
         if(this.save(appletAlumniAssociation)){
             return templateId;
         }
@@ -92,7 +96,19 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
         AppletAlumniAssociation appletAlumniAssociation = getById(dto.getId());
         MiniUser miniUser = miniUserService.getOne(new QueryWrapper().eq(MiniUser::getId, appletAlumniAssociation.getCreateId()));
         if(miniUser != null && miniUser.getOpenid() != null) {
+            appletAlumniAssociationUpdate.setCreateTime(appletAlumniAssociation.getCreateTime());
             subscribeMessageService.sendApproveAssociationMsg(miniUser.getOpenid(), appletAlumniAssociationUpdate);
+        }
+        if(saveOrUpdate(appletAlumniAssociationUpdate)){
+            if(dto.getStatus().equals("1")){ // 通过状态自动添加创建者为会长
+                AppletAlumniAssociationUser appletAlumniAssociationUser = new AppletAlumniAssociationUser();
+                appletAlumniAssociationUser.setUserId(appletAlumniAssociation.getCreateId());
+                appletAlumniAssociationUser.setAlumniAssociationId(appletAlumniAssociation.getId());
+                appletAlumniAssociationUser.setIdentity("2");
+                appletAlumniAssociationUser.setStatus("1");
+                appletAlumniAssociationUser.setCreateId(appletAlumniAssociation.getCreateId());
+                appletAlumniAssociationUserService.save(appletAlumniAssociationUser);
+            }
         }
         return saveOrUpdate(appletAlumniAssociationUpdate);
     }
@@ -143,6 +159,7 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
         AppletAlumniAssociationUser appletAlumniAssociationUser = new AppletAlumniAssociationUser();
         appletAlumniAssociationUser.setUserId(LoginUtils.getMiniLoginUser().getUserId());
         appletAlumniAssociationUser.setAlumniAssociationId(associationId);
+        appletAlumniAssociationUser.setIdentity("1");
         return appletAlumniAssociationUserService.save(appletAlumniAssociationUser);
     }
 
@@ -167,9 +184,11 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
                         .eq(AppletAlumniAssociationUser::getStatus,1)
         );
         if(!appletAlumniAssociationUsers.isEmpty()){
-            return listAs(new QueryWrapper()
-                    .in(AppletAlumniAssociationUser::getAlumniAssociationId,appletAlumniAssociationUsers.stream().map(AppletAlumniAssociationUser::getAlumniAssociationId).collect(Collectors.toList()))
-                    .eq(AppletAlumniAssociationUser::getStatus,1), AppletAlumniAssociationVO.class);
+            List<AppletAlumniAssociationVO> list = listAs(new QueryWrapper()
+                    .in(AppletAlumniAssociation::getId,appletAlumniAssociationUsers.stream().map(AppletAlumniAssociationUser::getAlumniAssociationId).collect(Collectors.toList()))
+                    .eq(AppletAlumniAssociation::getStatus,1), AppletAlumniAssociationVO.class);
+            translateUtil.translate( list);
+            return list;
         }
         return null;
     }

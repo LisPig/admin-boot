@@ -89,7 +89,9 @@ public class AppletAlumniAssociationActivityController  {
 
     @Operation(summary = "活动报名")
     @GetMapping("/apply/{id}")
-    public ApiResult<Boolean> apply(@PathVariable Long associationId) {
-        return ApiResult.success(appletAlumniAssociationActivityUserService.apply(associationId));
+    public ApiResult<Boolean> apply(@PathVariable Long id) {
+        return ApiResult.success(appletAlumniAssociationActivityUserService.apply(id));
     }
+
+    //@Operation(summary = "判断是否")
 }

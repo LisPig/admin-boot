@@ -4,6 +4,10 @@ package com.sz.applet.miniBusiness.service.impl;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociation;
 import com.sz.applet.miniBusiness.service.AppletAlumniAssociationService;
+import com.sz.applet.miniuser.pojo.po.MiniUser;
+import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
+import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.core.util.BeanCopyUtils;
 import com.sz.security.core.util.LoginUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +28,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AppletAlumniAssociationUserServiceImpl extends ServiceImpl<AppletAlumniAssociationUserMapper, AppletAlumniAssociationUser> implements AppletAlumniAssociationUserService {
 
+    private final MiniUserService miniUserService;
     @Override
     public boolean join(AppletAlumniAssociationUser appletAlumniAssociationUser) {
         // 先判断是否已经是会员
@@ -36,5 +41,14 @@ public class AppletAlumniAssociationUserServiceImpl extends ServiceImpl<AppletAl
             return this.save(appletAlumniAssociationUser);
         }
         return false;
+    }
+
+    @Override
+    public MiniUserVO getUser(Long userId) {
+        MiniUser miniUser = miniUserService.getById(userId);
+        MiniUserVO miniUserVO = new MiniUserVO();
+        BeanCopyUtils.copy(miniUser, miniUserVO);
+
+        return miniUserVO;
     }
 }

@@ -3,6 +3,8 @@ package com.sz.applet.miniBusiness.service;
 
 import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociationUser;
 import com.mybatisflex.core.service.IService;
+import com.sz.applet.miniuser.pojo.po.MiniUser;
+import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 
 import java.util.List;
 
@@ -15,5 +17,7 @@ import java.util.List;
 public interface AppletAlumniAssociationUserService extends IService<AppletAlumniAssociationUser> {
 
     boolean join(AppletAlumniAssociationUser appletAlumniAssociationUser);
+
+    MiniUserVO getUser(Long userId);
 
 }

@@ -26,9 +26,15 @@ public class SchoolClassMemoryVO {
     @Schema(description =  "ID")
     private Long id;
 
+    @Schema(description =  "标题")
+    private String title;
+
+    @Schema(description =  "封面")
+    private String cover;
+
     @ExcelProperty(value = "届数")
     @Schema(description =  "届数")
-    private Integer year;
+    private String year;
 
     @ExcelProperty(value = "班级编号")
     @Schema(description =  "班级编号")

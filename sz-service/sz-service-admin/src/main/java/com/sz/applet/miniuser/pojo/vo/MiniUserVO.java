@@ -41,6 +41,9 @@ public class MiniUserVO implements Serializable {
     @Schema(description = "认证状态")
     private Integer authStatus;
 
+    @Schema(description = "是否显示(0否1是)")
+    private Integer isShow;
+
     @Schema(description = "工作单位")
     private String workUnit;
 
@@ -58,4 +61,7 @@ public class MiniUserVO implements Serializable {
 
     @Schema(description = "我的建议")
     private String mySuggestion;
+
+    @Schema(description = "用户身份(1普通成员，2会长)")
+    private String identity;
 }

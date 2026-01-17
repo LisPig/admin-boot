@@ -3,6 +3,8 @@ package com.sz.applet.miniBusiness.pojo.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import lombok.experimental.Accessors;
+
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -17,7 +19,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 @Data
 @Accessors(chain = true)
 @Schema(description = "AppletAlumniAssociationActivity添加DTO")
-public class AppletAlumniAssociationActivityCreateDTO {
+public class AppletAlumniAssociationActivityCreateDTO implements Serializable {
 
    @Schema(description =  "校友会ID")
    private Long alumniAssociationId;
@@ -39,5 +41,13 @@ public class AppletAlumniAssociationActivityCreateDTO {
 
    @Schema(description =  "状态（1-正常，2-禁用）")
    private String status;
+
+   /*@Schema(description =  "开始时间")
+   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private Data startTime;
+
+   @Schema(description =  "结束时间")
+   @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss")
+   private Data endTime;*/
 
 }
