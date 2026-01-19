@@ -39,8 +39,7 @@ public class AppletAlumniAssociationActivityController  {
     //@SaCheckPermission(value = "applet.alumni.association.activity.create")
     @PostMapping
     public ApiResult<String> create(@RequestBody AppletAlumniAssociationActivityCreateDTO dto) {
-        appletAlumniAssociationActivityService.create(dto);
-        return ApiResult.success();
+        return ApiResult.success(appletAlumniAssociationActivityService.create(dto));
     }
 
     @Operation(summary = "修改")
