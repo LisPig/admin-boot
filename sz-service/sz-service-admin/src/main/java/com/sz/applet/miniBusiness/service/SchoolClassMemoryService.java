@@ -2,6 +2,7 @@ package com.sz.applet.miniBusiness.service;
 
 import com.mybatisflex.core.service.IService;
 import com.sz.applet.miniBusiness.pojo.po.SchoolClassMemory;
+import com.sz.applet.miniBusiness.pojo.vo.SchoolClassYearVO;
 import com.sz.core.common.entity.SelectIdsDTO;
 import com.sz.core.common.entity.PageResult;
 import java.util.List;
@@ -37,4 +38,6 @@ public interface SchoolClassMemoryService extends IService<SchoolClassMemory> {
     void importExcel(ImportExcelDTO dto);
 
     void exportExcel(SchoolClassMemoryListDTO dto, HttpServletResponse response);
+
+    List<SchoolClassYearVO> yearList(SchoolClassMemoryListDTO dto);
 }

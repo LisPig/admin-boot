@@ -1,5 +1,6 @@
 package com.sz.applet.miniBusiness.controller;
 
+import com.sz.applet.miniBusiness.pojo.vo.SchoolClassYearVO;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -20,6 +21,8 @@ import com.sz.applet.miniBusiness.pojo.dto.SchoolClassMemoryListDTO;
 import com.sz.applet.miniBusiness.pojo.vo.SchoolClassMemoryVO;
 import com.sz.core.common.entity.ImportExcelDTO;
 import jakarta.servlet.http.HttpServletResponse;
+
+import java.util.List;
 
 /**
  * <p>
@@ -80,5 +83,11 @@ public class SchoolClassMemoryController  {
     @GetMapping("/app/list")
     public ApiResult<PageResult<SchoolClassMemoryVO>> appList(SchoolClassMemoryListDTO dto) {
         return ApiPageResult.success(schoolClassMemoryService.page(dto));
+    }
+
+    @Operation(summary = "届数列表-小程序端")
+    @GetMapping("/yearList")
+    public ApiResult<List<SchoolClassYearVO>> yearList(SchoolClassMemoryListDTO dto) {
+        return ApiResult.success(schoolClassMemoryService.yearList(dto));
     }
 }

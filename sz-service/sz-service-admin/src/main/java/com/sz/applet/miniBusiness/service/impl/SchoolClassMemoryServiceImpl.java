@@ -1,6 +1,8 @@
 package com.sz.applet.miniBusiness.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
+import com.sz.applet.miniBusiness.pojo.vo.SchoolClassYearVO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import com.sz.applet.miniBusiness.service.SchoolClassMemoryService;
@@ -101,6 +103,16 @@ public class SchoolClassMemoryServiceImpl extends ServiceImpl<SchoolClassMemoryM
         String fileName = "班级记忆表模板";
         OutputStream os = FileUtils.getOutputStream(response, fileName + ".xlsx");
         ExcelUtils.exportExcel(list, "班级记忆表", SchoolClassMemoryVO.class, os);
+    }
+
+    @Override
+    public List<SchoolClassYearVO> yearList(SchoolClassMemoryListDTO dto) {
+        // 聚合查询 条件year
+        List<SchoolClassYearVO> list = this.listAs(new QueryWrapper()
+                .select(SchoolClassMemory::getYear)
+                .eq(SchoolClassMemory::getYear,dto.getYear(), ObjectUtil.isNotNull(dto.getYear()))
+                .groupBy(SchoolClassMemory::getYear), SchoolClassYearVO.class);
+        return list;
     }
 
     private static QueryWrapper buildQueryWrapper(SchoolClassMemoryListDTO dto) {
