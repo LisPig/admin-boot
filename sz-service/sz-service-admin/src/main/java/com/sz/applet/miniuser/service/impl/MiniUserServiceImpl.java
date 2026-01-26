@@ -124,6 +124,7 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
     public Boolean updateInfo(UpdateMiniUserInfoDTO dto) {
         MiniUser miniUser = new MiniUser();
         BeanCopyUtils.copy(dto,miniUser);
+        miniUser.setProfilePromptShown(1);
         /*miniUser.setId(dto.getId());
         miniUser.setWorkUnit(dto.getWorkUnit());
         miniUser.setJob(dto.getJob());

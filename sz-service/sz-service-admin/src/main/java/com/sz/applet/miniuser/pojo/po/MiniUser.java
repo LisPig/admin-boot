@@ -63,6 +63,9 @@ public class MiniUser implements Serializable {
     @Schema(description = "删除标识")
     private String delFlag;
 
+    @Schema(description = "是否提示")
+    private Integer profilePromptShown;
+
     @Schema(description = "认证状态")
     private Integer authStatus;
 

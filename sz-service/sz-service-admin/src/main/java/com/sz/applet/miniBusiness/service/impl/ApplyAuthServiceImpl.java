@@ -179,7 +179,8 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
                 .eq(ApplyAuth::getYear, bo.getYear(), ObjectUtil.isNotNull(bo.getYear()))
                 .eq(ApplyAuth::getClassNo, bo.getClassNo(), ObjectUtil.isNotNull(bo.getClassNo()))
                 .eq(ApplyAuth::getTeacherId, bo.getTeacherId(), ObjectUtil.isNotNull(bo.getTeacherId()))
-                .eq(ApplyAuth::getStatus, bo.getStatus(), ObjectUtil.isNotNull(bo.getStatus()));
+                .eq(ApplyAuth::getStatus, bo.getStatus(), ObjectUtil.isNotNull(bo.getStatus()))
+                .orderBy(ApplyAuth::getCreateTime, false);
         return queryWrapper;
     }
 
