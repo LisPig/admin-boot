@@ -112,4 +112,14 @@ public class AppletAlumniAssociationUserController {
         return ApiResult.success(appletAlumniAssociationUserService.page(page));
     }
 
+
+    /**
+     * 会长转让
+     */
+    @Operation(summary = "会长转让")
+    @PostMapping("/transfer")
+    public ApiResult<Boolean> transfer(@RequestBody AppletAlumniAssociationUser appletAlumniAssociationUser) {
+        return ApiResult.success(appletAlumniAssociationUserService.transfer(appletAlumniAssociationUser));
+    }
+
 }

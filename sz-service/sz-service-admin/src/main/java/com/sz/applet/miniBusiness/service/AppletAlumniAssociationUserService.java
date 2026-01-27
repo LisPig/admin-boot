@@ -20,4 +20,5 @@ public interface AppletAlumniAssociationUserService extends IService<AppletAlumn
 
     MiniUserVO getUser(Long userId);
 
+    boolean transfer(AppletAlumniAssociationUser appletAlumniAssociationUser);
 }

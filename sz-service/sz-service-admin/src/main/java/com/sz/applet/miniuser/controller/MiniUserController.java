@@ -49,11 +49,16 @@ public class MiniUserController {
     @Operation(summary = "检验是否需要完善资料")
     @GetMapping("/check/completeProfile")
     public ApiResult<Boolean> checkComplete() {
-        String openId = Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getOpenid();
-        if(miniUserService.checkAuthStatus(openId)){
-            if(miniUserService.exists(new QueryWrapper().eq(MiniUser::getOpenid,openId).eq(MiniUser::getProfilePromptShown,0))){
-                return ApiResult.success(true);
+        try {
+            String openId = Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getOpenid();
+            if (miniUserService.checkAuthStatus(openId)) {
+                if (miniUserService.exists(new QueryWrapper().eq(MiniUser::getOpenid, openId).eq(MiniUser::getProfilePromptShown, 0))) {
+                    return ApiResult.success(true);
+                }
             }
+        } catch (Exception e) {
+            //e.printStackTrace();
+            return ApiResult.success(false);
         }
         return ApiResult.success(false);
     }

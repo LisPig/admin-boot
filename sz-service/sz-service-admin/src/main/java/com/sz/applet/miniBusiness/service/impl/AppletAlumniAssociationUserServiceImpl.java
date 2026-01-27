@@ -7,6 +7,8 @@ import com.sz.applet.miniBusiness.service.AppletAlumniAssociationService;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.core.common.enums.CommonResponseEnum;
+import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.security.core.util.LoginUtils;
 import lombok.RequiredArgsConstructor;
@@ -50,5 +52,25 @@ public class AppletAlumniAssociationUserServiceImpl extends ServiceImpl<AppletAl
         BeanCopyUtils.copy(miniUser, miniUserVO);
 
         return miniUserVO;
+    }
+
+    @Override
+    public boolean transfer(AppletAlumniAssociationUser appletAlumniAssociationUser) {
+        AppletAlumniAssociationUser managerUser = this.getOne(new QueryWrapper()
+                .eq(AppletAlumniAssociationUser::getAlumniAssociationId,appletAlumniAssociationUser.getAlumniAssociationId())
+                .eq(AppletAlumniAssociationUser::getUserId, LoginUtils.getMiniLoginUser().getUserId())
+        );
+        if(managerUser != null && "2".equals(managerUser.getIdentity())){
+
+            AppletAlumniAssociationUser userToUpdate = this.getOne(new QueryWrapper()
+                    .eq(AppletAlumniAssociationUser::getAlumniAssociationId,appletAlumniAssociationUser.getAlumniAssociationId())
+                    .eq(AppletAlumniAssociationUser::getUserId, appletAlumniAssociationUser.getUserId())
+            );
+            userToUpdate.setIdentity("2");
+            managerUser.setIdentity("1");
+            return this.updateById(managerUser) && this.updateById(userToUpdate);
+
+        }
+        throw new BusinessException(CommonResponseEnum.FAILURE,null, "转让异常");
     }
 }
