@@ -27,7 +27,7 @@ public class AppletAlumniAssociationUserTranslator implements Translator<Long, L
                 .eq(AppletAlumniAssociationUser::getAlumniAssociationId, sourceValue)
                 .eq(AppletAlumniAssociationUser::getStatus, 1)
                 .orderBy(AppletAlumniAssociationUser::getIdentity, false) // 管理员身份优先（假设管理员值更大）
-                .orderBy(AppletAlumniAssociationUser::getCreateTime, false));
+                .orderBy(AppletAlumniAssociationUser::getCreateTime, true));
 
         if (appletAlumniAssociationUsers.isEmpty()) {
             return null;
@@ -64,11 +64,11 @@ public class AppletAlumniAssociationUserTranslator implements Translator<Long, L
             } else if (!isAAdmin && isBAdmin) {
                 return 1; // B是管理员，排在前面
             } else if (isAAdmin && isBAdmin) {
-                // 如果都是管理员，可以根据其他规则排序，或者继续比较创建时间
-                return b.getCreateTime().compareTo(a.getCreateTime()); // 创建时间倒序
+                // 如果都是管理员，按创建时间正序（先加入的排前面）
+                return a.getCreateTime().compareTo(b.getCreateTime()); // 时间正序
             } else {
-                // 如果都不是管理员，按创建时间排序
-                return b.getCreateTime().compareTo(a.getCreateTime()); // 创建时间倒序
+                // 如果都不是管理员，按创建时间正序（先加入的排前面）
+                return a.getCreateTime().compareTo(b.getCreateTime()); // 时间正序
             }
         });
 
