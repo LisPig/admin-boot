@@ -25,16 +25,63 @@ public class AppletAlumniAssociationUserTranslator implements Translator<Long, L
     public List<MiniUserVO> translate(Long sourceValue) {
         List<AppletAlumniAssociationUser> appletAlumniAssociationUsers = appletAlumniAssociationUserService.list(new QueryWrapper()
                 .eq(AppletAlumniAssociationUser::getAlumniAssociationId, sourceValue)
-                .eq(AppletAlumniAssociationUser::getStatus, 1));
-        if(appletAlumniAssociationUsers.isEmpty()){
+                .eq(AppletAlumniAssociationUser::getStatus, 1)
+                .orderBy(AppletAlumniAssociationUser::getIdentity, false) // 管理员身份优先（假设管理员值更大）
+                .orderBy(AppletAlumniAssociationUser::getCreateTime, false));
+
+        if (appletAlumniAssociationUsers.isEmpty()) {
             return null;
         }
-        List<MiniUserVO> miniUsers =  miniUserService.listAs(new QueryWrapper()
-                .in(MiniUser::getId,appletAlumniAssociationUsers.stream().map(AppletAlumniAssociationUser::getUserId).toList())
-                .orderBy(MiniUser::getCreateTime,false), MiniUserVO.class);
+
+        List<MiniUserVO> miniUsers = miniUserService.listAs(new QueryWrapper()
+                .in(MiniUser::getId, appletAlumniAssociationUsers.stream().map(AppletAlumniAssociationUser::getUserId).toList())
+                .orderBy(MiniUser::getCreateTime, false), MiniUserVO.class);
+
+        // 设置身份并保持正确的排序
         miniUsers.forEach(miniUserVO -> {
-            miniUserVO.setIdentity(appletAlumniAssociationUsers.stream().filter(appletAlumniAssociationUser -> appletAlumniAssociationUser.getUserId().equals(miniUserVO.getId())).findFirst().get().getIdentity());
+            AppletAlumniAssociationUser associationUser = appletAlumniAssociationUsers.stream()
+                    .filter(appletAlumniAssociationUser ->
+                            appletAlumniAssociationUser.getUserId().equals(miniUserVO.getId()))
+                    .findFirst()
+                    .orElse(null);
+
+            if (associationUser != null) {
+                miniUserVO.setIdentity(associationUser.getIdentity());
+            }
         });
-        return miniUsers;//MapstructUtils.convert(miniUsers, MiniUserVO.class);
+
+        // 最后再按身份和创建时间排序，确保管理员在前
+        // 按身份排序（管理员优先），再按创建时间排序
+        miniUsers.sort((a, b) -> {
+            // 假设 "admin" 或 "administrator" 代表管理员身份，具体值需根据实际业务确定
+            String adminRole = "2"; // 或者其他表示管理员的字符串值
+
+            boolean isAAdmin = isAdminRole(a.getIdentity(), adminRole);
+            boolean isBAdmin = isAdminRole(b.getIdentity(), adminRole);
+
+            if (isAAdmin && !isBAdmin) {
+                return -1; // A是管理员，排在前面
+            } else if (!isAAdmin && isBAdmin) {
+                return 1; // B是管理员，排在前面
+            } else if (isAAdmin && isBAdmin) {
+                // 如果都是管理员，可以根据其他规则排序，或者继续比较创建时间
+                return b.getCreateTime().compareTo(a.getCreateTime()); // 创建时间倒序
+            } else {
+                // 如果都不是管理员，按创建时间排序
+                return b.getCreateTime().compareTo(a.getCreateTime()); // 创建时间倒序
+            }
+        });
+
+        return miniUsers;
+    }
+
+    // 辅助方法：判断是否为管理员角色
+    private boolean isAdminRole(String identity, String adminRole) {
+        if (identity == null) {
+            return false;
+        }
+        // 可以扩展支持多种管理员角色标识
+        return identity.equalsIgnoreCase(adminRole) ||
+                identity.equalsIgnoreCase("2") ; // 根据实际业务需要调整
     }
 }

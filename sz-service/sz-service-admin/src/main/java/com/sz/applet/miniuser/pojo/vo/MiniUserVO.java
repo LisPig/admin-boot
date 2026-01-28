@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 
 /**
  * <p>
@@ -64,4 +65,10 @@ public class MiniUserVO implements Serializable {
 
     @Schema(description = "用户身份(1普通成员，2会长)")
     private String identity;
+
+    @Schema(description = "创建时间")
+    private LocalDateTime createTime;
+
+    @Schema(description = "更新时间")
+    private LocalDateTime updateTime;
 }

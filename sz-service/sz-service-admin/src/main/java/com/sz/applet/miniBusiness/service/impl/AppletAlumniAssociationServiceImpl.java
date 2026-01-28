@@ -28,6 +28,7 @@ import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.entity.SelectIdsDTO;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import com.sz.applet.miniBusiness.pojo.dto.AppletAlumniAssociationCreateDTO;
@@ -157,6 +158,10 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
     @Override
     public Boolean apply(Long associationId) {
         AppletAlumniAssociationUser appletAlumniAssociationUser = new AppletAlumniAssociationUser();
+        MiniUser miniUser = miniUserService.getOne(new QueryWrapper().eq(MiniUser::getId, Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId()));
+        if(miniUser.getAuthStatus() != 1){
+            throw new BusinessException(CommonResponseEnum.FAILURE,null, "请先完成校友认证");
+        }
         appletAlumniAssociationUser.setUserId(LoginUtils.getMiniLoginUser().getUserId());
         appletAlumniAssociationUser.setAlumniAssociationId(associationId);
         appletAlumniAssociationUser.setIdentity("1");
