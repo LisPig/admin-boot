@@ -156,6 +156,23 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
     }
 
     @Override
+    public AppletAlumniAssociationVO info(Long id){
+        AppletAlumniAssociation appletAlumniAssociation = getById((Serializable) id);
+        CommonResponseEnum.INVALID_ID.assertNull(appletAlumniAssociation);
+
+        List<AppletAlumniAssociationActivityVO> appletAlumniAssociationActivityList = appletAlumniAssociationActivityService.listAs(new QueryWrapper()
+                .eq("alumni_association_id", id), AppletAlumniAssociationActivityVO.class);
+        BeanCopyUtils.copy(appletAlumniAssociationActivityList, AppletAlumniAssociationActivityVO.class);
+
+        AppletAlumniAssociationVO appletAlumniAssociationVO = new AppletAlumniAssociationVO();
+        BeanCopyUtils.copy(appletAlumniAssociation, appletAlumniAssociationVO);
+        appletAlumniAssociationVO.setActivityList(appletAlumniAssociationActivityList);
+        //appletAlumniAssociationVO.setIsMember(isMember(appletAlumniAssociationVO.getId()));
+        translateUtil.translate(appletAlumniAssociationVO);
+        return appletAlumniAssociationVO;
+    }
+
+    @Override
     public Boolean apply(Long associationId) {
         AppletAlumniAssociationUser appletAlumniAssociationUser = new AppletAlumniAssociationUser();
         MiniUser miniUser = miniUserService.getOne(new QueryWrapper().eq(MiniUser::getId, Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId()));
@@ -234,9 +251,10 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
     }
 
     private Boolean isMember(Long associationId) {
-        AppletAlumniAssociationUser appletAlumniAssociationUser = appletAlumniAssociationUserService.getOne(
-                new QueryWrapper().eq(AppletAlumniAssociationUser::getUserId, LoginUtils.getMiniLoginUser().getUserId())
-                        .eq(AppletAlumniAssociationUser::getAlumniAssociationId, associationId));
-        return appletAlumniAssociationUser != null;
+            AppletAlumniAssociationUser appletAlumniAssociationUser = appletAlumniAssociationUserService.getOne(
+                    new QueryWrapper().eq(AppletAlumniAssociationUser::getUserId, Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId())
+                            .eq(AppletAlumniAssociationUser::getAlumniAssociationId, associationId));
+            return appletAlumniAssociationUser != null;
+
     }
 }

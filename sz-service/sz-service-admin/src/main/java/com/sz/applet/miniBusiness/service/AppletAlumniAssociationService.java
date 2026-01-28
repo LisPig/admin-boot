@@ -40,6 +40,8 @@ public interface AppletAlumniAssociationService extends IService<AppletAlumniAss
 
     AppletAlumniAssociationVO detail(Object id);
 
+    AppletAlumniAssociationVO info(Long id);
+
     // 入会申请
     Boolean apply(Long associationId);
 

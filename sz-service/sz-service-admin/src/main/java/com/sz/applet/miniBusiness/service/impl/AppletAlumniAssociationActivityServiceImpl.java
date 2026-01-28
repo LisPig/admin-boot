@@ -89,6 +89,7 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
     @Override
     public PageResult<AppletAlumniAssociationActivityVO> page(AppletAlumniAssociationActivityListDTO dto){
         Page<AppletAlumniAssociationActivityVO> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), AppletAlumniAssociationActivityVO.class);
+        translateUtil.translate(page.getRecords());
         return PageUtils.getPageResult(page);
     }
 

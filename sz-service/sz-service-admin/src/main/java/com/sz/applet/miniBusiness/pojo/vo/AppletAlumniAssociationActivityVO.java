@@ -2,6 +2,7 @@ package com.sz.applet.miniBusiness.pojo.vo;
 
 import com.sz.applet.miniBusiness.pojo.po.AppletAlumniAssociationActivity;
 import com.sz.applet.miniBusiness.translation.AppletAlumniAssociationActivityUserTranslator;
+import com.sz.applet.miniBusiness.translation.AppletAlumniAssociationNameTranslator;
 import com.sz.core.common.translate.Translate;
 import io.github.linpeilie.annotations.AutoMapper;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -29,6 +30,10 @@ public class AppletAlumniAssociationActivityVO {
 
     @Schema(description =  "校友会ID")
     private Long alumniAssociationId;
+
+    @Schema(description = "校友会名称")
+    @Translate(translator = AppletAlumniAssociationNameTranslator.class,sourceField = "alumniAssociationId")
+    private String alumniAssociationName;
 
     @Schema(description =  "标题")
     private String title;

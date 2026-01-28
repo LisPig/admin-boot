@@ -81,6 +81,13 @@ public class AppletAlumniAssociationController  {
         return ApiResult.success(appletAlumniAssociationService.detail(id));
     }
 
+    @Operation(summary = "详情")
+    @SaCheckPermission(value = "applet.alumni.association.query_table")
+    @GetMapping("/info/{id}")
+    public ApiResult<AppletAlumniAssociationVO> info(@PathVariable Long id) {
+        return ApiResult.success(appletAlumniAssociationService.info(id));
+    }
+
     @Operation(summary = "PC-审核")
     @PostMapping("/approve")
     public ApiResult<Void> approve(@RequestBody AppletAlumniAssociationUpdateDTO dto) {
