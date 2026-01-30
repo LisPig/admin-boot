@@ -34,11 +34,6 @@ sa-token:
 # 接口白名单
 router:
   whitelist:
-    - "/v3/api-docs/**"
-    - "/doc.html"
-    - "/webjars/**"
-    - "/swagger-resources"
     - "/favicon.ico"
-    - "/swagger-ui.html"
     - "/www/**"
     - "/wechat/**"

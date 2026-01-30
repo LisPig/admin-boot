@@ -17,17 +17,23 @@ import com.sz.applet.miniuser.pojo.po.MiniLoginUser;
 import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
+import com.sz.core.common.entity.LoginUser;
 import com.sz.core.common.entity.PageResult;
+import com.sz.core.common.enums.CommonResponseEnum;
+import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.JsonUtils;
 import com.sz.core.util.PageUtils;
 import com.sz.core.util.Utils;
+import com.sz.security.core.util.LoginUtils;
 import com.sz.utils.MapstructUtils;
 import com.sz.wechat.mini.MiniWechatService;
 import com.sz.wechat.mini.LoginInfoResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+
+import java.util.Objects;
 
 import static com.sz.applet.miniuser.pojo.po.table.MiniUserTableDef.MINI_USER;
 
@@ -123,6 +129,12 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
     @Override
     public Boolean updateInfo(UpdateMiniUserInfoDTO dto) {
         MiniUser miniUser = new MiniUser();
+        if(!this.exists(new QueryWrapper().eq(MiniUser::getId,dto.getId()))){
+            throw new BusinessException(CommonResponseEnum.NOT_EXISTS,null,"用户不存在");
+        }
+        if(!Objects.equals(dto.getId(), Objects.requireNonNull(LoginUtils.getMiniLoginUser()).getUserId())){
+            throw new BusinessException(CommonResponseEnum.NO_PERMISSION,null,"您没有权限修改该用户信息");
+        }
         BeanCopyUtils.copy(dto,miniUser);
         miniUser.setProfilePromptShown(1);
         /*miniUser.setId(dto.getId());
