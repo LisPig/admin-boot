@@ -18,7 +18,7 @@ sa-token:
   # 是否输出操作日志
   is-log: true
   # jwt秘钥
-  jwt-secret-key: abcdefghijklmnopqrstuvwxyz
+  jwt-secret-key: "X9zB3vK7mPqwRtY2nE5uI8sOcF6aHjL4pWxQzNmKbVrTdSgHyJfCcAeZ1UiOpL3n"
   # 允许动态设置 token 有效期
   dynamic-active-timeout: true
   # 允许从 请求参数 读取 token
