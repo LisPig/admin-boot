@@ -62,5 +62,5 @@ public interface ArticleService extends IService<Article> {
 
     void check(ArticleBo bo);
 
-    List<ArticleVO> miniList(ArticleListBo bo);
+    PageResult<ArticleVO> miniList(ArticleListBo bo);
 }

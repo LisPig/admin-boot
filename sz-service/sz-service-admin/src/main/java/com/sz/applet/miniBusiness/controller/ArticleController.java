@@ -79,7 +79,7 @@ public class ArticleController {
 
     @Operation(summary = "文章列表-小程序")
     @GetMapping("/listByMini")
-    public ApiResult<List<ArticleVO>> listByMini(ArticleListBo bo) {
+    public ApiResult<PageResult<ArticleVO>> listByMini(ArticleListBo bo) {
         return ApiResult.success(articleService.miniList(bo));
     }
 }

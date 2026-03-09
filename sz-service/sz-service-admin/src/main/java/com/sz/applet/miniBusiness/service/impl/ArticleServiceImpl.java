@@ -103,11 +103,10 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
     }
 
     @Override
-    public List<ArticleVO> miniList(ArticleListBo bo) {
+    public PageResult<ArticleVO> miniList(ArticleListBo bo) {
         QueryWrapper queryWrapper = buildQueryWrapper(bo);
         queryWrapper.eq(Article::getStatus,"1");
-        List<Article> list = list(queryWrapper);
-        return list.stream().map(this::convertToVO).toList();
+        return PageUtils.getPageResult(pageAs(PageUtils.getPage( bo), queryWrapper, ArticleVO.class));
     }
 
     /**
