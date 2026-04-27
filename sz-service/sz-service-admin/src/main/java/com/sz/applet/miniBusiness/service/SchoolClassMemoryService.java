@@ -39,5 +39,5 @@ public interface SchoolClassMemoryService extends IService<SchoolClassMemory> {
 
     void exportExcel(SchoolClassMemoryListDTO dto, HttpServletResponse response);
 
-    List<SchoolClassYearVO> yearList(SchoolClassMemoryListDTO dto);
+    PageResult<SchoolClassYearVO> yearList(SchoolClassMemoryListDTO dto);
 }

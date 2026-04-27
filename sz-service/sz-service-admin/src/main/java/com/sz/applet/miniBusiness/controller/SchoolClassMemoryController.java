@@ -87,7 +87,7 @@ public class SchoolClassMemoryController  {
 
     @Operation(summary = "届数列表-小程序端")
     @GetMapping("/yearList")
-    public ApiResult<List<SchoolClassYearVO>> yearList(SchoolClassMemoryListDTO dto) {
+    public ApiResult<PageResult<SchoolClassYearVO>> yearList(SchoolClassMemoryListDTO dto) {
         return ApiResult.success(schoolClassMemoryService.yearList(dto));
     }
 }

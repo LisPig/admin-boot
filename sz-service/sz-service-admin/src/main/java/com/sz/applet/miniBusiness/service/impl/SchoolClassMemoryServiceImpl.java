@@ -106,13 +106,13 @@ public class SchoolClassMemoryServiceImpl extends ServiceImpl<SchoolClassMemoryM
     }
 
     @Override
-    public List<SchoolClassYearVO> yearList(SchoolClassMemoryListDTO dto) {
-        // 聚合查询 条件year
-        List<SchoolClassYearVO> list = this.listAs(new QueryWrapper()
+    public PageResult<SchoolClassYearVO> yearList(SchoolClassMemoryListDTO dto) {
+        Page<SchoolClassYearVO> page = this.pageAs(PageUtils.getPage(dto),
+                new QueryWrapper()
                 .select(SchoolClassMemory::getYear)
-                .eq(SchoolClassMemory::getYear,dto.getYear(), ObjectUtil.isNotNull(dto.getYear()))
+                .eq(SchoolClassMemory::getYear, dto.getYear(), ObjectUtil.isNotNull(dto.getYear()))
                 .groupBy(SchoolClassMemory::getYear), SchoolClassYearVO.class);
-        return list;
+        return PageUtils.getPageResult(page);
     }
 
     private static QueryWrapper buildQueryWrapper(SchoolClassMemoryListDTO dto) {
