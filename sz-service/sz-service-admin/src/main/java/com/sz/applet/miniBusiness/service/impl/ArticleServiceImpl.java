@@ -109,6 +109,21 @@ public class ArticleServiceImpl extends ServiceImpl<ArticleMapper, Article> impl
         return PageUtils.getPageResult(pageAs(PageUtils.getPage( bo), queryWrapper, ArticleVO.class));
     }
 
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void retract(SelectIdsDTO dto) {
+        QueryWrapper wrapper = QueryWrapper.create()
+                .in(Article::getId, dto.getIds())
+                .eq(Article::getStatus, "1");
+        long count = count(wrapper);
+        if (count < dto.getIds().size()) {
+            throw new IllegalArgumentException("只能撤稿已发布的文章");
+        }
+        Article article = new Article();
+        article.setStatus("0");
+        update(article, QueryWrapper.create().in(Article::getId, dto.getIds()));
+    }
+
     /**
      * 构建查询条件
      *

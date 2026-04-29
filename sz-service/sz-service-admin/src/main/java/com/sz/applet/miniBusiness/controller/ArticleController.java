@@ -1,5 +1,6 @@
 package com.sz.applet.miniBusiness.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.mybatisflex.core.paginate.Page;
 import com.sz.applet.miniBusiness.pojo.bo.ArticleBo;
 import com.sz.applet.miniBusiness.pojo.bo.ArticleListBo;
@@ -39,9 +40,18 @@ public class ArticleController {
     }
 
     @Operation(summary = "审核文章")
+    @SaCheckPermission("sys.article.apply_btn")
     @PostMapping("/check")
     public ApiResult<Void> check(@RequestBody ArticleBo bo) {
         articleService.check(bo);
+        return ApiResult.success();
+    }
+
+    @Operation(summary = "撤稿")
+    @SaCheckPermission("sys.article.retract_btn")
+    @PostMapping("/retract")
+    public ApiResult<Void> retract(@RequestBody SelectIdsDTO dto) {
+        articleService.retract(dto);
         return ApiResult.success();
     }
 

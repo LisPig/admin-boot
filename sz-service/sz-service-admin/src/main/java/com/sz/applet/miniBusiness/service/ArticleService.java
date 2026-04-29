@@ -63,4 +63,10 @@ public interface ArticleService extends IService<Article> {
     void check(ArticleBo bo);
 
     PageResult<ArticleVO> miniList(ArticleListBo bo);
+
+    /**
+     * 撤稿
+     * @param dto 要撤稿的文章ID列表
+     */
+    void retract(SelectIdsDTO dto);
 }
