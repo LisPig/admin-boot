@@ -126,6 +126,41 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
     }
 
     @Override
+    @Transactional
+    public void batchReview(List<Long> ids, String status, String remark) {
+        for (Long id : ids) {
+            ApplyAuth applyAuth = this.getOne(new QueryWrapper()
+                    .eq(ApplyAuth::getId, id)
+                    .eq(ApplyAuth::getStatus, "1"));
+            if (applyAuth == null) {
+                continue;
+            }
+            applyAuth.setStatus(status);
+            applyAuth.setApproveRemark(remark);
+            applyAuth.setApproveTime(new Date());
+
+            if ("2".equals(status)) {
+                MiniUser miniUser = miniUserService.getOne(new QueryWrapper()
+                        .select(MINI_USER.ID, MINI_USER.OPENID, MINI_USER.UNIONID)
+                        .eq(MiniUser::getId, applyAuth.getUserId()));
+                if (miniUser != null) {
+                    miniUser.setId(applyAuth.getUserId());
+                    miniUser.setAuthStatus(1);
+                    miniUser.setUsername(applyAuth.getName());
+                    miniUserService.updateById(miniUser);
+                    subscribeMessageService.sendApplyAuthMsgForUser(miniUser.getOpenid(), applyAuth);
+                }
+                SchoolUserBinding schoolUserBinding = new SchoolUserBinding();
+                schoolUserBinding.setSchoolUserId(id);
+                schoolUserBinding.setBindType(1);
+                schoolUserBinding.setMiniUserId(applyAuth.getUserId());
+                schoolUserBindingService.save(schoolUserBinding);
+            }
+            this.updateById(applyAuth);
+        }
+    }
+
+    @Override
     public ApplyAutoDetailVo detail(Long id) {
         ApplyAutoDetailVo applyAutoDetailVo = new ApplyAutoDetailVo();
         ApplyAuth applyAuth = this.getById(id);

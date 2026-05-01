@@ -10,6 +10,7 @@ import lombok.Data;
 import lombok.experimental.Accessors;
 
 import java.util.Date;
+import java.util.List;
 
 /**
  * 校友申请认证表 实体类。
@@ -25,6 +26,12 @@ public class ApplyAuthBo {
      * ID
      */
     private Long id;
+
+    /**
+     * 批量审核ID列表
+     */
+    @Schema(description = "批量审核ID列表")
+    private List<Long> ids;
 
     /**
      * 用户ID

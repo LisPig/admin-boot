@@ -11,6 +11,8 @@ import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.core.common.entity.ApiResult;
 import com.sz.core.common.entity.PageResult;
 
+import java.util.List;
+
 /**
  * 校友申请认证表 服务层。
  *
@@ -39,4 +41,12 @@ public interface ApplyAuthService extends IService<ApplyAuth> {
     Object checkIsPassAuth();
 
     MiniUserVO getUserInfo(String openId, String o);
+
+    /**
+     * 批量审核认证申请
+     * @param ids 申请ID列表
+     * @param status 审核状态（2-通过，3-拒绝）
+     * @param remark 审核备注
+     */
+    void batchReview(List<Long> ids, String status, String remark);
 }

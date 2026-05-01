@@ -87,6 +87,17 @@ public class MiniUserAuthController {
     }
 
     /**
+     * 批量审核认证申请
+     */
+    @Operation(summary = "批量审核认证申请")
+    @SaCheckPermission("miniUser:auth:review")
+    @PostMapping("/batch-review")
+    public ApiResult<Void> batchReviewAuthApplication(@RequestBody ApplyAuthBo bo) {
+        applyAuthService.batchReview(bo.getIds(), bo.getStatus(), bo.getApproveRemark());
+        return ApiResult.success();
+    }
+
+    /**
      * 检查是否已认证
      */
     @Operation(summary = "检查是否已认证")
