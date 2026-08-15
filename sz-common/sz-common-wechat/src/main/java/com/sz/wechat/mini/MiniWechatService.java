@@ -7,14 +7,19 @@ import com.sz.wechat.mini.pojo.dto.SubscribeMessageSendDTO;
 import com.sz.wechat.mini.pojo.vo.SubscribeMessageSendVO;
 import com.sz.wechat.pojo.AccessTokenResult;
 import com.sz.wechat.pojo.ErrorMessage;
+import com.sz.wechat.pojo.MediaCheckAsyncResult;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static com.sz.wechat.WechatApiConstant.WECHAT_MEDIA_CHECK_ASYNC_URL;
 import static com.sz.wechat.WechatApiConstant.WECHAT_MINI_LOGIN_URL;
 import static com.sz.wechat.WechatApiConstant.WECHAT_MINI_SUBSCRIBE_MESSAGE_SEND_URL;
 import static com.sz.wechat.WechatApiConstant.WECHAT_TOKEN_URL;
@@ -100,6 +105,27 @@ public class MiniWechatService {
      */
     public boolean validSuccess(ErrorMessage errorMessage) {
         return errorMessage.getErrcode() == null || errorMessage.getErrcode() == 0;
+    }
+
+    /**
+     * 图片内容安全异步校验(media_check_async)
+     *
+     * @param accessToken accessToken
+     * @param mediaUrl    待校验图片URL
+     * @return 提交结果(含trace_id)
+     */
+    public MediaCheckAsyncResult mediaCheckAsync(String accessToken, String mediaUrl) {
+        Map<String, Object> body = new HashMap<>();
+        body.put("media_url", mediaUrl);
+        body.put("media_type", 2);
+        body.put("version", 2);
+        ResponseEntity<MediaCheckAsyncResult> entity = RestClient.create().post()
+                .uri(WECHAT_MEDIA_CHECK_ASYNC_URL, accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(body)
+                .retrieve()
+                .toEntity(MediaCheckAsyncResult.class);
+        return entity.getBody();
     }
 
 }

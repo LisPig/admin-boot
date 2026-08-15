@@ -7,6 +7,7 @@ import com.sz.applet.miniuser.pojo.po.MiniUser;
 import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.common.translate.Translator;
+import com.sz.admin.system.service.MediaCheckService;
 import com.sz.utils.MapstructUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,7 @@ import java.util.List;
 public class AppletAlumniAssociationUserTranslator implements Translator<Long, List<MiniUserVO>> {
     private final AppletAlumniAssociationUserService appletAlumniAssociationUserService;
     private final MiniUserService  miniUserService;
+    private final MediaCheckService mediaCheckService;
     @Override
     public List<MiniUserVO> translate(Long sourceValue) {
         List<AppletAlumniAssociationUser> appletAlumniAssociationUsers = appletAlumniAssociationUserService.list(new QueryWrapper()
@@ -48,6 +50,8 @@ public class AppletAlumniAssociationUserTranslator implements Translator<Long, L
             if (associationUser != null) {
                 miniUserVO.setIdentity(associationUser.getIdentity());
             }
+            // 违规头像替换为空串(前端回退占位图)
+            miniUserVO.setAvatarUrl(mediaCheckService.resolveAvatarUrl(miniUserVO.getAvatarUrl()));
         });
 
         // 最后再按身份和创建时间排序，确保管理员在前

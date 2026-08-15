@@ -21,6 +21,7 @@ import com.sz.core.common.entity.LoginUser;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.common.exception.common.BusinessException;
+import com.sz.admin.system.service.MediaCheckService;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.core.util.JsonUtils;
 import com.sz.core.util.PageUtils;
@@ -52,6 +53,8 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
 
     private final MiniWechatService miniWechatService;
 
+    private final MediaCheckService mediaCheckService;
+
     @Override
     public MiniUserVO doLogin(MiniLoginDTO dto) {
         String accessToken = miniWechatService.getAccessToken();
@@ -81,7 +84,11 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
         // 如果绑定了sys_user账户
         if (Utils.isNotNull(miniUser.getSysUserId())) {
             // 返回包含完整登录信息的对象
-            return MapstructUtils.convert(miniUser, MiniLoginUser.class);
+            MiniLoginUser loginUser = MapstructUtils.convert(miniUser, MiniLoginUser.class);
+            if (loginUser != null) {
+                loginUser.setAvatarUrl(mediaCheckService.resolveAvatarUrl(loginUser.getAvatarUrl()));
+            }
+            return loginUser;
         } else {
             // 未绑定sys_user账户，但仍需返回MiniLoginUser对象
             MiniLoginUser loginUser = new MiniLoginUser();
@@ -90,7 +97,7 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
             loginUser.setNickname(miniUser.getNickname());
             loginUser.setPhone(miniUser.getPhone());
             loginUser.setUsername(miniUser.getUsername());
-            loginUser.setAvatarUrl(miniUser.getAvatarUrl());
+            loginUser.setAvatarUrl(mediaCheckService.resolveAvatarUrl(miniUser.getAvatarUrl()));
             return loginUser;
         }
     }
@@ -148,6 +155,7 @@ public class MiniUserServiceImpl extends ServiceImpl<MiniUserMapper, MiniUser> i
     @Override
     public PageResult<MiniUserVO> page(MiniUserDTO dto) {
         Page<MiniUserVO> pageResult = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), MiniUserVO.class);
+        pageResult.getRecords().forEach(vo -> vo.setAvatarUrl(mediaCheckService.resolveAvatarUrl(vo.getAvatarUrl())));
         return PageUtils.getPageResult(pageResult);
     }
 

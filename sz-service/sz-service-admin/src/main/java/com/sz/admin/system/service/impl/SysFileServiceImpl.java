@@ -8,6 +8,7 @@ import com.sz.admin.system.pojo.dto.sysfile.SysFileListDTO;
 import com.sz.admin.system.pojo.po.SysFile;
 import com.sz.admin.system.pojo.po.table.SysFileTableDef;
 import com.sz.admin.system.service.SysFileService;
+import com.sz.admin.system.service.MediaCheckService;
 import com.sz.core.common.entity.PageResult;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.common.exception.common.BusinessException;
@@ -52,8 +53,10 @@ public class SysFileServiceImpl extends ServiceImpl<CommonFileMapper, SysFile> i
     private static final float JPEG_QUALITY = 0.70f;
 
     private final OssClient ossClient;
-    
+
     private final LocalFileUploadService localFileUploadService;
+
+    private final MediaCheckService mediaCheckService;
     
     @Value("${spring.profiles.active:dev}")
     private String activeProfile;
@@ -93,6 +96,10 @@ public class SysFileServiceImpl extends ServiceImpl<CommonFileMapper, SysFile> i
             uploadResult = ossClient.upload(uploadFile, dirTag);
             Long fileId = fileLog(uploadResult);
             uploadResult.setFileId(fileId);
+            // 图片内容安全校验(异步提交微信media_check_async,不阻塞上传响应)
+            if (mediaCheckService.shouldCheck(dirTag, uploadFile.getContentType(), uploadResult.getUrl())) {
+                mediaCheckService.submitAsyncCheck(fileId, uploadResult.getUrl());
+            }
         } catch (Exception e) {
             log.error(" sysFile upload error", e);
             throw new BusinessException(CommonResponseEnum.FILE_UPLOAD_ERROR,null,e.getMessage());

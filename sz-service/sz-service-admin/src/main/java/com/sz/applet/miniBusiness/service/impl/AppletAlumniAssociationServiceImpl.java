@@ -11,6 +11,7 @@ import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.applet.miniuser.service.impl.SubscribeMessageService;
 import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.common.translate.TranslateUtil;
+import com.sz.admin.system.service.MediaCheckService;
 import com.sz.security.core.util.LoginUtils;
 import com.sz.wechat.WechatProperties;
 import lombok.RequiredArgsConstructor;
@@ -59,6 +60,8 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
     private final MiniUserService miniUserService;
 
     private final WechatProperties wechatProperties;
+
+    private final MediaCheckService mediaCheckService;
 
     @Override
     public String create(AppletAlumniAssociationCreateDTO dto){
@@ -117,6 +120,7 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
     @Override
     public PageResult<AppletAlumniAssociationVO> page(AppletAlumniAssociationListDTO dto){
         Page<AppletAlumniAssociationVO> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), AppletAlumniAssociationVO.class);
+        page.getRecords().forEach(vo -> vo.setAvatar(mediaCheckService.resolveAvatarUrl(vo.getAvatar())));
         translateUtil.translate(page.getRecords());
         return PageUtils.getPageResult(page);
     }
@@ -127,6 +131,8 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
         for(AppletAlumniAssociationListVO appletAlumniAssociationVO: list){
             // 查找当前用户是否已是会员
             appletAlumniAssociationVO.setIsMember(isMember(appletAlumniAssociationVO.getId()));
+            // 违规头像替换为空串(前端回退占位图)
+            appletAlumniAssociationVO.setAvatar(mediaCheckService.resolveAvatarUrl(appletAlumniAssociationVO.getAvatar()));
         }
         translateUtil.translate(list);
         return list;
@@ -151,6 +157,7 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
         BeanCopyUtils.copy(appletAlumniAssociation, appletAlumniAssociationVO);
         appletAlumniAssociationVO.setActivityList(appletAlumniAssociationActivityList);
         appletAlumniAssociationVO.setIsMember(isMember(appletAlumniAssociationVO.getId()));
+        appletAlumniAssociationVO.setAvatar(mediaCheckService.resolveAvatarUrl(appletAlumniAssociationVO.getAvatar()));
         translateUtil.translate(appletAlumniAssociationVO);
         return appletAlumniAssociationVO;
     }
@@ -167,6 +174,7 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
         AppletAlumniAssociationVO appletAlumniAssociationVO = new AppletAlumniAssociationVO();
         BeanCopyUtils.copy(appletAlumniAssociation, appletAlumniAssociationVO);
         appletAlumniAssociationVO.setActivityList(appletAlumniAssociationActivityList);
+        appletAlumniAssociationVO.setAvatar(mediaCheckService.resolveAvatarUrl(appletAlumniAssociationVO.getAvatar()));
         //appletAlumniAssociationVO.setIsMember(isMember(appletAlumniAssociationVO.getId()));
         translateUtil.translate(appletAlumniAssociationVO);
         return appletAlumniAssociationVO;
@@ -209,6 +217,7 @@ public class AppletAlumniAssociationServiceImpl extends ServiceImpl<AppletAlumni
             List<AppletAlumniAssociationVO> list = listAs(new QueryWrapper()
                     .in(AppletAlumniAssociation::getId,appletAlumniAssociationUsers.stream().map(AppletAlumniAssociationUser::getAlumniAssociationId).collect(Collectors.toList()))
                     .eq(AppletAlumniAssociation::getStatus,1), AppletAlumniAssociationVO.class);
+            list.forEach(vo -> vo.setAvatar(mediaCheckService.resolveAvatarUrl(vo.getAvatar())));
             translateUtil.translate( list);
             return list;
         }

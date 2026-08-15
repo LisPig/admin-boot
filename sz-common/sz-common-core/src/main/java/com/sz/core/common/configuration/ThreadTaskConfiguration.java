@@ -50,4 +50,22 @@ public class ThreadTaskConfiguration {
         return executor;
     }
 
+    /**
+     * 微信图片内容安全校验专用线程池(独立于业务任务,避免相互挤占)
+     */
+    @Bean
+    public Executor mediaCheckExecutor() {
+        ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
+        executor.setCorePoolSize(2);
+        executor.setMaxPoolSize(8);
+        executor.setQueueCapacity(500);
+        executor.setKeepAliveSeconds(60);
+        executor.setThreadNamePrefix("sz-media-check_");
+        // 队列满时由调用者线程执行,防止校验任务丢失
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        executor.setWaitForTasksToCompleteOnShutdown(true);
+        executor.setAwaitTerminationSeconds(60);
+        return executor;
+    }
+
 }

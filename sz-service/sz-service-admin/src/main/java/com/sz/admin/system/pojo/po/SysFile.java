@@ -57,6 +57,18 @@ public class SysFile implements Serializable {
     @Schema(description = "eTag标识")
     private String eTag;
 
+    @Schema(description = "微信内容安全校验 trace_id")
+    private String checkTraceId;
+
+    @Schema(description = "校验状态(PENDING/PASS/REVIEW/RISKY/ERROR)")
+    private String checkStatus;
+
+    @Schema(description = "违规标签label")
+    private Integer checkLabel;
+
+    @Schema(description = "校验结果回传时间")
+    private LocalDateTime checkTime;
+
     @Schema(description = "创建人")
     private Long createId;
 

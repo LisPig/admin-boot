@@ -14,6 +14,7 @@ import com.sz.applet.miniuser.service.impl.SubscribeMessageService;
 import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.common.translate.Translate;
 import com.sz.core.common.translate.TranslateUtil;
+import com.sz.admin.system.service.MediaCheckService;
 import com.sz.security.core.util.LoginUtils;
 import com.sz.utils.MapstructUtils;
 import com.sz.wechat.WechatProperties;
@@ -59,6 +60,8 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
     private final AppletAlumniAssociationActivityUserService appletAlumniAssociationActivityUserService;
     private final TranslateUtil translateUtil;
 
+    private final MediaCheckService mediaCheckService;
+
 
     @Override
     public String create(AppletAlumniAssociationActivityCreateDTO dto){
@@ -89,13 +92,16 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
     @Override
     public PageResult<AppletAlumniAssociationActivityVO> page(AppletAlumniAssociationActivityListDTO dto){
         Page<AppletAlumniAssociationActivityVO> page = pageAs(PageUtils.getPage(dto), buildQueryWrapper(dto), AppletAlumniAssociationActivityVO.class);
+        page.getRecords().forEach(vo -> vo.setAvatar(mediaCheckService.resolveAvatarUrl(vo.getAvatar())));
         translateUtil.translate(page.getRecords());
         return PageUtils.getPageResult(page);
     }
 
     @Override
     public List<AppletAlumniAssociationActivityVO> list(AppletAlumniAssociationActivityListDTO dto){
-        return listAs(buildQueryWrapper(dto), AppletAlumniAssociationActivityVO.class);
+        List<AppletAlumniAssociationActivityVO> list = listAs(buildQueryWrapper(dto), AppletAlumniAssociationActivityVO.class);
+        list.forEach(vo -> vo.setAvatar(mediaCheckService.resolveAvatarUrl(vo.getAvatar())));
+        return list;
     }
 
     @Override
@@ -111,6 +117,7 @@ public class AppletAlumniAssociationActivityServiceImpl extends ServiceImpl<Appl
 
         AppletAlumniAssociationActivityVO appletAlumniAssociationActivityVO = new AppletAlumniAssociationActivityVO();
         BeanCopyUtils.copy(appletAlumniAssociationActivity, appletAlumniAssociationActivityVO);
+        appletAlumniAssociationActivityVO.setAvatar(mediaCheckService.resolveAvatarUrl(appletAlumniAssociationActivityVO.getAvatar()));
         if(appletAlumniAssociationActivityUserService.exists(new QueryWrapper()
                 .eq(AppletAlumniAssociationActivityUser::getAlumniAssociationActivityId, id)
                 .eq(AppletAlumniAssociationActivityUser::getUserId, LoginUtils.getMiniLoginUser().getUserId())

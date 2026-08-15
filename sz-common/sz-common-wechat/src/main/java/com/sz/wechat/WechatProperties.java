@@ -8,6 +8,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -28,6 +29,12 @@ public class WechatProperties {
     
     @Schema(description = "微信支付配置")
     private WechatPayProperties pay;
+
+    @Schema(description = "消息推送配置")
+    private MessagePushProperties messagePush;
+
+    @Schema(description = "媒体内容安全校验配置")
+    private MediaCheckProperties mediaCheck;
 
     @Data
     public static class MiniProgramProperties {
@@ -59,5 +66,28 @@ public class WechatProperties {
         @Schema(description = "企业微信应用凭证; 同上述corpSecret，位于“应用”secret属性的下方; 文档：https://developer.work.weixin.qq.com/document/path/90665#agentid")
         private Integer agentId;
 
+    }
+
+    @Data
+    public static class MessagePushProperties {
+
+        @Schema(description = "消息推送Token(与小程序后台一致)")
+        private String token;
+
+        @Schema(description = "EncodingAESKey(安全模式必填,明文留空)")
+        private String aesKey;
+    }
+
+    @Data
+    public static class MediaCheckProperties {
+
+        @Schema(description = "是否启用图片内容安全校验")
+        private Boolean enabled = true;
+
+        @Schema(description = "参与校验的dirTag集合")
+        private List<String> dirTags = List.of("avatar", "files");
+
+        @Schema(description = "REVIEW结果是否也隐藏(默认false,仅RISKY隐藏)")
+        private Boolean hideOnReview = false;
     }
 }

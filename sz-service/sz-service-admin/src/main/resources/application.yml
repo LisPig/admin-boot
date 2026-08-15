@@ -66,6 +66,17 @@ sz:
       templates:
         CHECK_RESULT: BDPxr-H7GoR74_HNaIyGUqGpdLHQzQib0npe6a9M4Jg #审核结果模板
         ALUMNI_APPLY: bwxZPB1Ukj4SWOXTGfktgvbNz4DTjxJ03J3OXHhmDZI #校友申请消息通知模板
+    # 消息推送(回调接收)配置
+    message-push:
+      token: qiankugaojizhongxue # 与小程序后台「消息推送」Token 一致
+      aes-key: ""
+    # 图片内容安全校验配置
+    media-check:
+      enabled: true
+      dir-tags:
+        - avatar
+        - files
+      hide-on-review: false
 #    pay:
 #      mchId:
 #      mchSerialNo:

@@ -9,6 +9,7 @@ import com.sz.applet.miniuser.pojo.vo.MiniUserVO;
 import com.sz.applet.miniuser.service.MiniUserService;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.common.exception.common.BusinessException;
+import com.sz.admin.system.service.MediaCheckService;
 import com.sz.core.util.BeanCopyUtils;
 import com.sz.security.core.util.LoginUtils;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,9 @@ import java.util.List;
 public class AppletAlumniAssociationUserServiceImpl extends ServiceImpl<AppletAlumniAssociationUserMapper, AppletAlumniAssociationUser> implements AppletAlumniAssociationUserService {
 
     private final MiniUserService miniUserService;
+
+    private final MediaCheckService mediaCheckService;
+
     @Override
     public boolean join(AppletAlumniAssociationUser appletAlumniAssociationUser) {
         // 先判断是否已经是会员
@@ -50,6 +54,7 @@ public class AppletAlumniAssociationUserServiceImpl extends ServiceImpl<AppletAl
         MiniUser miniUser = miniUserService.getById(userId);
         MiniUserVO miniUserVO = new MiniUserVO();
         BeanCopyUtils.copy(miniUser, miniUserVO);
+        miniUserVO.setAvatarUrl(mediaCheckService.resolveAvatarUrl(miniUserVO.getAvatarUrl()));
 
         return miniUserVO;
     }

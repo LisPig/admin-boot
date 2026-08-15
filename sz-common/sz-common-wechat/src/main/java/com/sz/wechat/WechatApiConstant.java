@@ -25,6 +25,9 @@ public class WechatApiConstant {
     // 小程序订阅消息发送
     public static final String WECHAT_MINI_SUBSCRIBE_MESSAGE_SEND_URL = WECHAT_API_BASE_URL + "/cgi-bin/message/subscribe/send?access_token={ACCESS_TOKEN}";
 
+    // 小程序图片/音频内容安全异步校验
+    public static final String WECHAT_MEDIA_CHECK_ASYNC_URL = WECHAT_API_BASE_URL + "/wxa/media_check_async?access_token={ACCESS_TOKEN}";
+
     // ----------------------- 企业微信 ---------------------------
     private static final String WORK_WECHAT_API_BASE_URL = "https://qyapi.weixin.qq.com";
 
