@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.sz.admin.system.pojo.po.SysUser;
 import com.sz.admin.system.service.SysUserService;
+import com.sz.admin.system.service.MediaCheckService;
 import com.sz.applet.miniBusiness.pojo.bo.ApplyAuthBo;
 import com.sz.applet.miniBusiness.pojo.bo.ApplyAuthListBo;
 import com.sz.applet.miniBusiness.pojo.bo.SchoolUserBindingUpdateBo;
@@ -56,6 +57,8 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
     private final SysUserService sysUserService;
     private final SubscribeMessageService subscribeMessageService;
     private final WechatProperties wechatProperties;
+
+    private final MediaCheckService mediaCheckService;
 
 
     @Override
@@ -201,7 +204,12 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
                 miniUser.setUsername(applyAuth.getName());
             }
         }
-        return BeanCopyUtils.copy(miniUser, MiniUserVO.class);
+        MiniUserVO vo = BeanCopyUtils.copy(miniUser, MiniUserVO.class);
+        if (vo != null) {
+            // 违规头像替换为空串(前端回退占位图)
+            vo.setAvatarUrl(mediaCheckService.resolveAvatarUrl(vo.getAvatarUrl()));
+        }
+        return vo;
     }
 
 
