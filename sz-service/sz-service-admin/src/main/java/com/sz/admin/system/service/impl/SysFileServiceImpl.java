@@ -10,6 +10,7 @@ import com.sz.admin.system.pojo.po.table.SysFileTableDef;
 import com.sz.admin.system.service.SysFileService;
 import com.sz.admin.system.service.MediaCheckService;
 import com.sz.core.common.entity.PageResult;
+import com.sz.core.common.entity.MiniLoginUserDTO;
 import com.sz.core.common.enums.CommonResponseEnum;
 import com.sz.core.common.exception.common.BusinessException;
 import com.sz.core.util.BeanCopyUtils;
@@ -17,6 +18,7 @@ import com.sz.core.util.PageUtils;
 import com.sz.core.util.Utils;
 import com.sz.oss.OssClient;
 import com.sz.oss.UploadResult;
+import com.sz.security.core.util.LoginUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -98,13 +100,26 @@ public class SysFileServiceImpl extends ServiceImpl<CommonFileMapper, SysFile> i
             uploadResult.setFileId(fileId);
             // 图片内容安全校验(异步提交微信media_check_async,不阻塞上传响应)
             if (mediaCheckService.shouldCheck(dirTag, uploadFile.getContentType(), uploadResult.getUrl())) {
-                mediaCheckService.submitAsyncCheck(fileId, uploadResult.getUrl());
+                mediaCheckService.submitAsyncCheck(fileId, uploadResult.getUrl(), currentOpenid());
             }
         } catch (Exception e) {
             log.error(" sysFile upload error", e);
             throw new BusinessException(CommonResponseEnum.FILE_UPLOAD_ERROR,null,e.getMessage());
         }
         return uploadResult;
+    }
+
+    /**
+     * 捕获当前小程序用户openid,供微信内容安全校验结合用户违规历史评估。
+     * 非小程序登录态(后台管理员/匿名)返回 null。
+     */
+    private String currentOpenid() {
+        try {
+            MiniLoginUserDTO miniUser = LoginUtils.getMiniLoginUser();
+            return miniUser != null ? miniUser.getOpenid() : null;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.sz.mysql;
 
-import cn.dev33.satoken.exception.NotWebContextException;
+import cn.dev33.satoken.exception.SaTokenContextException;
 import cn.dev33.satoken.stp.StpUtil;
 import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.SetListener;
@@ -102,8 +102,8 @@ public class EntityChangeListener implements InsertListener, UpdateListener, Set
     private boolean isNotLogin() {
         try {
             return !StpUtil.isLogin();
-        } catch (NotWebContextException e) {
-            // 处理非 Web 环境异常，返回未登录
+        } catch (SaTokenContextException e) {
+            // 非 Web 环境/工作线程无 Sa-Token 上下文,视为未登录
             return true;
         } catch (Exception e) {
             // 记录所有其他异常，并返回未登录

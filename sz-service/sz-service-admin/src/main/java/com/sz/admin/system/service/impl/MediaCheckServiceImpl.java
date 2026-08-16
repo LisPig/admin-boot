@@ -1,6 +1,7 @@
 package com.sz.admin.system.service.impl;
 
 import cn.hutool.core.util.StrUtil;
+import cn.hutool.crypto.SecureUtil;
 import com.mybatisflex.core.query.QueryWrapper;
 import com.sz.admin.system.mapper.CommonFileMapper;
 import com.sz.admin.system.pojo.po.SysFile;
@@ -38,6 +39,14 @@ public class MediaCheckServiceImpl implements MediaCheckService {
     private static final String RISKY_KEY = "wechat:media:risky";
     /** 当日配额超限标志 */
     private static final String QUOTA_EXCEED_KEY = "wechat:media:quota_exceed_today";
+    /** 读路径复查防抖前缀 */
+    private static final String RECHECK_DEDUP_PREFIX = "wechat:media:recheck:";
+    /** 结果过期重查阈值(小时) */
+    private static final long RECHECK_TTL_HOURS = 24;
+    /** PENDING 疑似丢失(回调应在30分钟内回传,超过40分钟视为丢失) */
+    private static final long PENDING_TIMEOUT_MINUTES = 40;
+    /** 同一URL复查防抖窗口(分钟) */
+    private static final long RECHECK_DEDUP_MINUTES = 10;
     /** 微信「今日接口流量耗尽」错误码 */
     private static final Integer ERRCODE_QUOTA = 45009;
 
@@ -63,12 +72,17 @@ public class MediaCheckServiceImpl implements MediaCheckService {
         return true;
     }
 
-    @Async("mediaCheckExecutor")
+    //@Async("mediaCheckExecutor")
     @Override
-    public void submitAsyncCheck(Long fileId, String mediaUrl) {
+    public void submitAsyncCheck(Long fileId, String mediaUrl, String openid) {
         try {
             if (Boolean.TRUE.equals(RedisUtils.hasKey(QUOTA_EXCEED_KEY))) {
                 log.warn("微信内容安全校验当日配额超限,跳过 fileId={}", fileId);
+                return;
+            }
+            if (StrUtil.isBlank(openid)) {
+                // 微信该接口要求合法openid(缺省返回40003 invalid openid),管理员/匿名/读路径补检无openid时跳过
+                log.warn("无小程序openid,跳过微信内容安全校验 fileId={}", fileId);
                 return;
             }
             String accessToken = miniWechatService.getAccessToken();
@@ -76,7 +90,7 @@ public class MediaCheckServiceImpl implements MediaCheckService {
                 markError(fileId, "empty access_token");
                 return;
             }
-            MediaCheckAsyncResult result = miniWechatService.mediaCheckAsync(accessToken, mediaUrl);
+            MediaCheckAsyncResult result = miniWechatService.mediaCheckAsync(accessToken, mediaUrl, openid);
             if (result == null) {
                 markError(fileId, "null response");
                 return;
@@ -169,6 +183,57 @@ public class MediaCheckServiceImpl implements MediaCheckService {
         } catch (Exception e) {
             log.error("refreshRiskyCache 重建失败", e);
         }
+    }
+
+    /**
+     * 读路径主动复查:进入个人主页时对「未校验/校验失败/结果过期/回调丢失」的头像重新提交异步校验。
+     * 异步执行不阻塞请求;同一 URL 有防抖窗口,避免频繁进入重复提交。
+     */
+    @Async("mediaCheckExecutor")
+    @Override
+    public void refreshCheckIfNeeded(String url,String openId) {
+        if (StrUtil.isBlank(url) || !(url.startsWith("http://") || url.startsWith("https://"))) {
+            return;
+        }
+        try {
+            SysFile file = sysFileMapper.selectOneByQuery(
+                    QueryWrapper.create().from(SysFile.class).eq(SysFile::getUrl, url));
+            if (file == null) {
+                return;
+            }
+            if (!needRecheck(file)) {
+                return;
+            }
+            String dedupKey = RECHECK_DEDUP_PREFIX + SecureUtil.md5(url);
+            if (Boolean.TRUE.equals(RedisUtils.hasKey(dedupKey))) {
+                return;
+            }
+            RedisUtils.getRestTemplate().opsForValue().set(dedupKey, "1", RECHECK_DEDUP_MINUTES, TimeUnit.MINUTES);
+            log.info("media_check 读路径触发复查 fileId={} url={}", file.getId(), url);
+            // 同 bean 内自调用,@Async 不生效,但本方法已在异步线程中执行,直接内联提交即可
+            submitAsyncCheck(file.getId(), file.getUrl(), openId);
+        } catch (Exception e) {
+            log.warn("refreshCheckIfNeeded 异常 url={}", url, e);
+        }
+    }
+
+    private boolean needRecheck(SysFile file) {
+        String status = file.getCheckStatus();
+        LocalDateTime checkTime = file.getCheckTime();
+        if (status == null) {
+            return true; // 从未校验
+        }
+        if ("ERROR".equals(status)) {
+            return true; // 上次校验失败,进入个人主页时补检
+        }
+        if ("PENDING".equals(status) && checkTime != null
+                && checkTime.isBefore(LocalDateTime.now().minusMinutes(PENDING_TIMEOUT_MINUTES))) {
+            return true; // 回调疑似丢失
+        }
+        if (checkTime != null && checkTime.isBefore(LocalDateTime.now().minusHours(RECHECK_TTL_HOURS))) {
+            return true; // 结果过期,定期复查
+        }
+        return false;
     }
 
     private boolean isHideOnReview() {

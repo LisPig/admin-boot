@@ -206,6 +206,8 @@ public class ApplyAuthServiceImpl extends ServiceImpl<ApplyAuthMapper, ApplyAuth
         }
         MiniUserVO vo = BeanCopyUtils.copy(miniUser, MiniUserVO.class);
         if (vo != null) {
+            // 进入个人主页/我的:触发一次头像复查(异步,不阻塞,防抖)
+            mediaCheckService.refreshCheckIfNeeded(vo.getAvatarUrl(),miniUser.getOpenid());
             // 违规头像替换为空串(前端回退占位图)
             vo.setAvatarUrl(mediaCheckService.resolveAvatarUrl(vo.getAvatarUrl()));
         }

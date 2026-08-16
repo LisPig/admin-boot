@@ -23,8 +23,9 @@ public interface MediaCheckService {
      *
      * @param fileId    文件ID
      * @param mediaUrl  图片URL
+     * @param openid    当前小程序用户openid,可空(空则微信按无用户身份评估)
      */
-    void submitAsyncCheck(Long fileId, String mediaUrl);
+    void submitAsyncCheck(Long fileId, String mediaUrl, String openid);
 
     /**
      * 处理微信 wxa_media_check 回调结果
@@ -47,5 +48,13 @@ public interface MediaCheckService {
      * 从数据库重建违规URL缓存
      */
     void refreshRiskyCache();
+
+    /**
+     * 读路径主动触发复查:进入个人主页等单头像场景时,对「从未校验 / 校验失败 / 结果过期」的图片重新提交一次异步校验。
+     * 异步执行、不阻塞读请求;同一 URL 有防抖,避免频繁进入重复提交。
+     *
+     * @param url 头像URL
+     */
+    void refreshCheckIfNeeded(String url,String openId);
 
 }

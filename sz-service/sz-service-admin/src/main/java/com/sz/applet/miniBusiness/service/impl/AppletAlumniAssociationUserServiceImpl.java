@@ -54,6 +54,8 @@ public class AppletAlumniAssociationUserServiceImpl extends ServiceImpl<AppletAl
         MiniUser miniUser = miniUserService.getById(userId);
         MiniUserVO miniUserVO = new MiniUserVO();
         BeanCopyUtils.copy(miniUser, miniUserVO);
+        // 进入个人主页:触发一次头像复查(异步,不阻塞,防抖)
+        mediaCheckService.refreshCheckIfNeeded(miniUserVO.getAvatarUrl(), miniUserVO.getOpenid());
         miniUserVO.setAvatarUrl(mediaCheckService.resolveAvatarUrl(miniUserVO.getAvatarUrl()));
 
         return miniUserVO;
