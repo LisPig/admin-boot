@@ -72,7 +72,7 @@ public class MediaCheckServiceImpl implements MediaCheckService {
         return true;
     }
 
-    //@Async("mediaCheckExecutor")
+    @Async("mediaCheckExecutor")
     @Override
     public void submitAsyncCheck(Long fileId, String mediaUrl, String openid) {
         try {
